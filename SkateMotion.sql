@@ -71,16 +71,16 @@ INSERT INTO Tipos_Usuario(idTipo, descripcion) VALUES
 (2, 'usuario');
 
 INSERT INTO Usuarios(idUsuario, nombre, contra, correo, idTipo) VALUES
-(1, 'Admin', '123', 'admin@gmail.com', '1'),
-(2, 'Pablo Castillo', 'pablo', 'pablo@gmail.com', '2'),
-(3, 'Diego Martinez', 'diego', 'diego@gmail.com', '2'),
-(4, 'Arturo Vargas', 'arturo', 'arturo@gmail.com', '2'),
-(5, 'Maria Lopez', 'maria', 'maria@gmail.com', '2'),
-(6, 'Juan Perez', 'juan', 'juan@gmail.com', '2'),
-(7, 'Ana Torres', 'ana', 'ana@gmail.com', '2'),
-(8, 'Luis Fernandez', 'luis', 'luis@gmail.com', '2'),
-(9, 'Carla Gomez', 'carla', 'carla@gmail.com', '2'),
-(10, 'Miguel Sanchez', 'miguel', 'miguel@gmail.com', '2');
+(1, 'Admin', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'admin@gmail.com', '1'),
+(2, 'Pablo Castillo', '26079e41910bcde04be636fbeecc9045379882b5ad3fe7f70b762436c6d98055', 'pablo@gmail.com', '2'),
+(3, 'Diego Martinez', '00e48a815525529ba9d33f8761a167588fe00c47bc82f515cf791c482ed99ecc', 'diego@gmail.com', '2'),
+(4, 'Arturo Vargas', '11cdf86d5723eecce5af1f33e5fde9f066e608d0a1068f445d99820eef5c19ae', 'arturo@gmail.com', '2'),
+(5, 'Maria Lopez', '94aec9fbed989ece189a7e172c9cf41669050495152bc4c1dbf2a38d7fd85627', 'maria@gmail.com', '2'),
+(6, 'Juan Perez', 'ed08c290d7e22f7bb324b15cbadce35b0b348564fd2d5f95752388d86d71bcca', 'juan@gmail.com', '2'),
+(7, 'Ana Torres', '24d4b96f58da6d4a8512313bbd02a28ebf0ca95dec6e4c86ef78ce7f01e788ac', 'ana@gmail.com', '2'),
+(8, 'Luis Fernandez', 'c5ff177a86e82441f93e3772da700d5f6838157fa1bfdc0bb689d7f7e55e7aba', 'luis@gmail.com', '2'),
+(9, 'Carla Gomez', '8813d406421e0063ef8ec81fc45170338b4cfd9547ee1ab157b90b46bcb6e2a7', 'carla@gmail.com', '2'),
+(10, 'Miguel Sanchez', '5ef68465886fa04d3e0bbe86b59d964dd98e5775e95717df978d8bedee6ff16c', 'miguel@gmail.com', '2');
 
 INSERT INTO Productos(idProducto, nombre, precio, inventarioProducto, categoria, rutaImagen) VALUES
 (1, 'DGK Overlord Tabla', 1200, 10, 'Tabla', 'OverloadTabla'),
