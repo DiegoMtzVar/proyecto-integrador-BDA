@@ -9,8 +9,8 @@ CREATE TABLE Usuarios(
     idUsuario INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255),
     contra VARCHAR(255),
-    correo VARCHAR(255),
-    idTipo INT,
+    correo VARCHAR(255) UNIQUE,
+    idTipo INT DEFAULT 2,
     FOREIGN KEY (idTipo) REFERENCES Tipos_Usuario(idTipo)
 );
 
@@ -26,7 +26,7 @@ CREATE TABLE Proveedores(
     idProveedor INT AUTO_INCREMENT PRIMARY KEY,
     nombreProveedor VARCHAR(255),
     telefonoProveedor VARCHAR(20),
-    correoProveedor VARCHAR(255),
+    correoProveedor VARCHAR(255) UNIQUE,
     dirProveedor VARCHAR(255)
 );
 
