@@ -1,14 +1,18 @@
 from database import mysql
 
 def getUser(email, password):
-    cur = mysql.connection.cursor()
-    cur.callproc('loginUsuario', (email, password))
-    id = cur.fetchall()[0][0]
-    return id
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('loginUsuario', (email, password))
+        
+        data = cur.fetchall()
+        return data.idUsuario
+    except:
+        return False
 
 def registerUser(name, email, password):
-    cur = mysql.connection.cursor()
     try:
+        cur = mysql.connection.cursor()
         cur.callproc('registrarUsuario', (name, password, email))
         mysql.connection.commit()
         return True

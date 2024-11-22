@@ -1,12 +1,14 @@
 from flask import request, flash, redirect, url_for, session, render_template
 from models.user import getUser, registerUser
+from hashlib import sha256
 
 def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
         
-        user = getUser(email, password)
+        hashed_password = sha256(password.encode()).hexdigest()
+        user = getUser(email, hashed_password)
         
         if user:
             session['user'] = user
@@ -23,7 +25,8 @@ def register():
         password = request.form['password']
         email = request.form['email']
         
-        if registerUser(name, email, password):
+        hashed_password = sha256(password.encode()).hexdigest()
+        if registerUser(name, email, hashed_password):
             flash('Usuario registrado', 'info')
             return redirect(url_for('login'))
         else:
