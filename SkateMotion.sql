@@ -88,20 +88,20 @@ INSERT INTO Productos(idProducto, nombre, precio, inventarioProducto, categoria,
 (3, 'POWELL Gundam Tabla',1000, 14, 'Tabla', 'GundamTabla'),
 (4, 'POWELL Sakura Tiger Tabla',1000, 20, 'Tabla', 'SakuraTabla'),
 (5, 'Real Wair Illuminated Tabla',1500, 5, 'Tabla', 'WairTabla'),
-(6, 'Hamaguchi Aloha Tabla',1400, 10, 'Tabla', 'AlohaTabla'),
-(7, 'Ace AF1 Eje', 600, 10, 'Eje', 'AF1Eje'),
-(8, 'Ace AF1 LTD Black Eje', 700, 5, 'Eje', 'AF1BlackEje'),
-(9, 'Bullet Standard Eje', 300, 8, 'Eje', 'BulletStandardEje'),
+(6, 'Element Aloha Tabla',1400, 10, 'Tabla', 'AlohaTabla'),
+(7, 'Krux AF1 Eje', 600, 10, 'Eje', 'AF1Eje'),
+(8, 'Krux AF1 LTD Black Eje', 700, 5, 'Eje', 'AF1BlackEje'),
+(9, 'Independent Standard Eje', 300, 8, 'Eje', 'BulletStandardEje'),
 (10,'Independent S11 Hollow Fabiana Eje', 600, 4, 'Eje', 'S11HollowEje'),
 (11,'Independent S11 Hollow IKP Eje', 640, 5, 'Eje', 'S11ForgedHollowIKPEje'),
 (12,'Krux K5 Standard Eje', 400, 9, 'Eje', 'KruxK5Eje'),
 (13,'Bones X-Formula V7 Ruedas', 420, 10, 'Rueda', 'XFormulaV7Ruedas'),
 (14,'Bones X-Formula Dino Ruedas', 420, 6, 'Rueda', 'XFormulaDinoRuedas'),
-(15,'Darkstar Responder Ruedas', 300, 5, 'Rueda', 'DarkstartRuedas'),
+(15,'Element Responder Ruedas', 300, 5, 'Rueda', 'DarkstartRuedas'),
 (16,'Bones X-Formula Look Book Ruedas', 440, 6, 'Rueda', 'LookBookRuedas'),
-(17,'OJ Double Duro Ruedas', 1000, 2, 'Rueda', 'DoubleDuroRuedas'),
-(18,'OJ Ace Pelka Ruedas', 1100, 4, 'Rueda', 'AcePelkaRuedas'),
-(19,'Alien Workshop Spectrum Completa', 2200, 3, 'Completa', 'SpectrumCompleta'),
+(17,'Spitfire Double Duro Ruedas', 1000, 2, 'Rueda', 'DoubleDuroRuedas'),
+(18,'Spitfire Ace Pelka Ruedas', 1100, 4, 'Rueda', 'AcePelkaRuedas'),
+(19,'Element Alien Workshop Spectrum Completa', 2200, 3, 'Completa', 'SpectrumCompleta'),
 (20,'Birdhouse Flying Falcon Completa', 2000, 4, 'Completa', 'FlyingFalconCompleta'),
 (21,'Birdhouse Lizzie Butterfly Completa', 2000, 3, 'Completa', 'LizzieCompleta'),
 (22,'Santa Cruz Classic Dot Black Completa', 1100, 5, 'Completa', 'DotBlackCompleta'),
@@ -163,27 +163,39 @@ INSERT INTO Viene_De(idProducto, idCompraProveedor, precioProveedor, cantidad) V
 (2, 2, 500, 12),
 (3, 2, 500, 14),
 (4, 2, 500, 20),
-(5, 5, 750, 5),
-(6, 6, 700, 10),
-(7, 7, 300, 10),
-(8, 8, 350, 5),
-(9, 9, 150, 8),
-(10, 10, 300, 4),
-(11, 1, 320, 5),
-(12, 2, 200, 9),
-(13, 3, 210, 10),
-(14, 4, 210, 6),
-(15, 5, 150, 5),
-(16, 6, 220, 6),
-(17, 7, 500, 2),
-(18, 8, 550, 4),
+(5, 3, 750, 5),
+(6, 9, 700, 10),
+(7, 5, 300, 10),
+(8, 5, 350, 5),
+(9, 4, 150, 8),
+(10, 4, 300, 4),
+(11, 4, 320, 5),
+(12, 5, 200, 9),
+(13, 7, 210, 10),
+(14, 7, 210, 6),
+(15, 9, 150, 5),
+(16, 7, 220, 6),
+(17, 6, 500, 2),
+(18, 6, 550, 4),
 (19, 9, 1100, 3),
 (20, 10, 1000, 4),
-(21, 1, 1000, 3),
-(22, 2, 550, 5),
-(23, 3, 550, 6),
-(24, 4, 750, 4);
+(21, 10, 1000, 3),
+(22, 8, 550, 5),
+(23, 8, 550, 6),
+(24, 2, 750, 4);
 
+--STORED PROCEDURES
+
+--Stored procedure para login de un usuario que regresa la id si existe
+DELIMITER $$
+CREATE PROCEDURE loginUsuario(
+    IN cor VARCHAR(255),
+    IN con VARCHAR(255)
+)
+BEGIN
+    SELECT idUsuario FROM Usuarios WHERE correo = cor AND contra = con;
+END $$
+DELIMITER ;
 
 --Stored procedure para registrar usuario
 DELIMITER $$
@@ -199,41 +211,14 @@ BEGIN
         INSERT INTO Usuarios(nombre, contra, correo) VALUES(nom, con, cor);
     ELSE 
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Usuario existente';
-    END IF;
+    END IF; 
 END $$
 DELIMITER ;
 
---Stored procedure para login de un usuario que regresa la id si existe
-DELIMITER $$
-CREATE PROCEDURE loginUsuario(
-    IN cor VARCHAR(255),
-    IN con VARCHAR(255)
-)
-BEGIN
-    SELECT idUsuario FROM Usuarios WHERE correo = cor AND contra = con;
-END $$
-DELIMITER;
-
--- Stored procedure para ver productos por tipo
-DELIMITER $$
-CREATE PROCEDURE productosPorTipo(
-    IN tipo VARCHAR(100)
-)
-BEGIN
-    SELECT * FROM Productos WHERE categoria = tipo;
-END $$
+--Queries (temporal)
 
 --Select Para ver productos y sus proveedores
 SELECT prod.nombre, prov.nombreProveedor 
 FROM Productos prod JOIN Viene_De  vi ON prod.idProducto = vi.idProducto 
 JOIN Proveedores_Compras pc ON vi.idCompraProveedor = pc.idCompraProveedor
 JOIN Proveedores prov ON pc.idProveedor = prov.idProveedor;
-
---Stored procedure para insertar compra
-DELIMITER $$
-CREATE PROCEDURE compra(
-    IN 
-    IN
-    IN
-
-)
