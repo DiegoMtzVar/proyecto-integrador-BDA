@@ -23,7 +23,7 @@ def getRecentlyPurchased(userID):
 def getProductsByType(type):
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('productosPorTipo', (type,))
+        cur.callproc('productosPorCategoria', (type,))
         
         data = cur.fetchall()
         return data

@@ -9,4 +9,4 @@ def index():
 
 
 def patinetas():
-    return render_template('patinetas.html', productos=getProductsByType("Completa"))
+    return render_template('patinetas.html', products=getProductsByType("Completa"))

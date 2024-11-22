@@ -217,16 +217,12 @@ BEGIN
 END $$
 DELIMITER ;
 
--- Stored procedure para ver productos recomendados (mas vendidos)
-DELIMITER $$
-CREATE PROCEDURE productosRecomendados()
-BEGIN
-    SELECT p.nombre as name, p.precio as price, p.inventarioProducto as stock, p.categoria as type, p.rutaImagen as imageRoute
-    FROM Productos p JOIN Contiene c ON p.idProducto = c.idProducto
-    GROUP BY p.idProducto
-    ORDER BY SUM(c.cantidad) DESC;
-END $$
-DELIMITER ;
+-- Vista para productos recomendados (mas vendidos)
+CREATE VIEW productosRecomendados AS
+SELECT p.nombre as name, p.precio as price, p.inventarioProducto as stock, p.categoria as type, p.rutaImagen as image
+FROM Productos p JOIN Contiene c ON p.idProducto = c.idProducto
+GROUP BY p.idProducto
+ORDER BY SUM(c.cantidad) DESC;
 
 
 --Stored procedure para ver compras recientes de un usuario
@@ -235,7 +231,7 @@ CREATE PROCEDURE productosRecientes(
     IN idUsuario INT
 )
 BEGIN
-    SELECT p.nombre as name, p.precio as price, p.inventarioProducto as stock, p.categoria as type, p.rutaImagen as imageRoute
+    SELECT p.nombre as name, p.precio as price, p.inventarioProducto as stock, p.categoria as type, p.rutaImagen as image
     FROM Productos p JOIN Contiene c ON p.idProducto = c.idProducto
     JOIN Compras co ON c.idCompra = co.idCompra
     WHERE co.idUsuario = idUsuario
@@ -248,7 +244,7 @@ CREATE PROCEDURE productosPorCategoria(
     IN cat VARCHAR(100)
 )
 BEGIN
-    SELECT nombre as name, precio as price, inventarioProducto as stock, categoria as type, rutaImagen as imageRoute
+    SELECT nombre as name, precio as price, inventarioProducto as stock, categoria as type, rutaImagen as image
     FROM Productos
     WHERE categoria = cat;
 END $$
@@ -260,7 +256,7 @@ CREATE PROCEDURE productosPorID(
     IN idProd INT
 )
 BEGIN
-    SELECT nombre as name, precio as price, inventarioProducto as stock, categoria as type, rutaImagen as imageRoute
+    SELECT nombre as name, precio as price, inventarioProducto as stock, categoria as type, rutaImagen as image
     FROM Productos
     WHERE idProducto = idProd;
 END $$
