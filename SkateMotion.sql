@@ -186,14 +186,16 @@ INSERT INTO Viene_De(idProducto, idCompraProveedor, precioProveedor, cantidad) V
 
 --STORED PROCEDURES
 
---Stored procedure para login de un usuario que regresa la id si existe
+--Stored procedure para login de un usuario que regresa la id y el rol si existe
 DELIMITER $$
 CREATE PROCEDURE loginUsuario(
     IN cor VARCHAR(255),
     IN con VARCHAR(255)
 )
 BEGIN
-    SELECT idUsuario FROM Usuarios WHERE correo = cor AND contra = con;
+    SELECT idUsuario as ID, descripcion as role 
+    FROM Usuarios u JOIN Tipos_Usuario t ON u.idTipo = t.idTipo 
+    WHERE correo = cor AND contra = con;
 END $$
 DELIMITER ;
 
