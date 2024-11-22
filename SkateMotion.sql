@@ -10,7 +10,7 @@ CREATE TABLE Usuarios(
     nombre VARCHAR(255),
     contra VARCHAR(255),
     correo VARCHAR(255) UNIQUE,
-    idTipo INT,
+    idTipo INT DEFAULT 2,
     FOREIGN KEY (idTipo) REFERENCES Tipos_Usuario(idTipo)
 );
 
