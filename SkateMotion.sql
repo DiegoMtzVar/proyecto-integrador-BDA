@@ -1,5 +1,7 @@
 CREATE DATABASE SkateMotion;
 
+USE SkateMotion;
+
 CREATE TABLE Tipos_Usuario(
     idTipo INT AUTO_INCREMENT PRIMARY KEY,
     descripcion VARCHAR(100)
