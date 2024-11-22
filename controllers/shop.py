@@ -1,10 +1,12 @@
-from flask import render_template
-from models import products
+from flask import render_template, session
+from models.products import getProductById, getProductsByType, getRecommendedProducts, getRecentlyPurchased
 
 def index():
-    products = products.getRe()
+    recently_purchased = getRecentlyPurchased(session["user"].id) if session.get("user") else []
     
-    return render_template('index.html')
+    return render_template('index.html', recommended_products = getRecommendedProducts(), recently_purchased = recently_purchased)
+
+
 
 def patinetas():
-    return render_template('patinetas.html', productos=products.getProductsbyType("patineta"))
+    return render_template('patinetas.html', productos=getProductsByType("Completa"))

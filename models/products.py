@@ -10,7 +10,17 @@ def getRecommendedProducts():
     except:
         return []
 
-def getProductsbyType(type):
+def getRecentlyPurchased(userID):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('productosRecientes', (userID,))
+        
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+
+def getProductsByType(type):
     try:
         cur = mysql.connection.cursor()
         cur.callproc('productosPorTipo', (type,))
