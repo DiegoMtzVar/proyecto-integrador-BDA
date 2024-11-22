@@ -5,8 +5,8 @@ def getUser(email, password):
         cur = mysql.connection.cursor()
         cur.callproc('loginUsuario', (email, password))
         
-        data = cur.fetchall()
-        return data.idUsuario
+        data = cur.fetchone()
+        return data
     except:
         return False
 

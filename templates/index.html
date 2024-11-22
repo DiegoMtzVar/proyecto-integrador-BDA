@@ -50,7 +50,7 @@
 					<div class="main-menu-wrap">
 						<!-- logo -->
 						<div class="site-logo">
-							<a href="index.html">
+							<a href="/">
 								<img src="../static/img/logo.png" alt="">
 							</a>
 						</div>
@@ -59,15 +59,15 @@
 						<!-- menu start -->
 						<nav class="main-menu">
 							<ul>
-								<li><a href="index.html" style="color:orange;">Inicio</a></li>
-								<li><a href="patinetas.html">Patinetas</a></li>
-								<li><a href="tablas.html">Tablas</a></li>
-								<li><a href="ejes.html">Ejes</a></li>
-								<li><a href="ruedas.html">Ruedas</a></li>
+								<li><a href="/" style="color:orange;">Inicio</a></li>
+								<li><a href="patinetas">Patinetas</a></li>
+								<li><a href="tablas">Tablas</a></li>
+								<li><a href="ejes">Ejes</a></li>
+								<li><a href="ruedas">Ruedas</a></li>
 								<li>
 									<div class="header-icons">
 										<a class="shopping-cart" href="cart.html"><i class="fas fa-shopping-cart"></i></a>
-										<a href="login.html"><i class="fas fa-user"></i></a>
+										<a href="login"><i class="fas fa-user"></i></a>
 									</div>
 								</li>
 							</ul>
@@ -92,8 +92,8 @@
 							<p class="subtitle">El mejor lugar de Patinetas de todo Nuevo León</p>
 							<h1>Patinetas al mejor precio</h1>
 							<div class="hero-btns">
-								<a href="patinetas.html" class="boxed-btn">Patinetas</a>
-								<a href="login.html" class="bordered-btn">Haz login</a>
+								<a href="patinetas" class="boxed-btn">Patinetas</a>
+								<a href="login" class="bordered-btn">Haz login</a>
 							</div>
 						</div>
 					</div>
@@ -160,6 +160,19 @@
 			</div>
 
 			<div class="row">
+				{% for product in recommended_products%}
+				<div class="col-lg-4 col-md-6 text-center">
+					<div class="single-product-item">
+						<div class="product-image">
+							<a href="single-product.html"><img src="{{ url_for('static', filename='{{ product.image_path}}') }}" alt=""></a>
+						</div>
+						<h3>{{ product.name }}</h3>
+						<p class="product-price"><span>Per Kg</span> {{ product.price }}$ </p>
+						<a href="cart.html" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+					</div>
+				</div>
+				{% endfor %}
+
 				<div class="col-lg-4 col-md-6 text-center">
 					<div class="single-product-item">
 						<div class="product-image">
@@ -170,6 +183,7 @@
 						<a href="cart.html" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
 					</div>
 				</div>
+				
 				<div class="col-lg-4 col-md-6 text-center">
 					<div class="single-product-item">
 						<div class="product-image">
