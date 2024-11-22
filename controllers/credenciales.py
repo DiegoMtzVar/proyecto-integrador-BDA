@@ -1,23 +1,23 @@
-from flask import request, flash, redirect, url_for, session
-from models.user import getUserID, registerUser
+from flask import request, flash, redirect, url_for, session, render_template
+from models.user import getUser, registerUser
 
 def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
         
-        id = getUserID(email, password)
+        user = getUser(email, password)
         
-        if id:
-            session['user'] = id
+        if user:
+            session['user'] = user
             flash('Has iniciado sesión', 'info')
             return redirect(url_for('landing'))
         else:
             flash('Usuario o contraseña incorrectos', 'error')
         
-    return 'Welcome to the login page!'
+    return render_template('login.html')
 
-def signup():
+def register():
     if request.method == 'POST':
         name = request.form['name']
         password = request.form['password']
@@ -29,7 +29,7 @@ def signup():
         else:
             flash('Error al registrar usuario', 'error')
         
-    return 'Welcome to the registro page!'
+    return render_template('register.html')
 
 def logout():
     session.pop('user', None)
