@@ -10,11 +10,18 @@ initDB(app)
 def landing():
     return render_template('index.html')
 
+# Rutas para la página principal
 app.add_url_rule('/', 'landing', landing)
+app.add_url_rule('/index', 'index', landing)
+app.add_url_rule('/landing', 'landing', landing)
+
+
+# Rutas para las credenciales
 app.add_url_rule('/login', 'login', login, methods=['GET', 'POST'])
 app.add_url_rule('/register', 'register', register, methods=['GET', 'POST'])
 app.add_url_rule('/logout', 'logout', logout, methods=['GET'])
 
+# Rutas para los productos
 app.add_url_rule('/patinetas', 'patinetas', patinetas)
 app.add_url_rule('/tablas', 'tablas', tablas)
 app.add_url_rule('/ejes', 'ejes', ejes)
