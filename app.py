@@ -1,4 +1,4 @@
-from flask import Flask, request, flash, redirect, url_for, session
+from flask import Flask, request, flash, redirect, url_for, session, render_template
 from flask_mysqldb import MySQL
 from controllers.credenciales import login, signup, logout
 
@@ -12,7 +12,7 @@ app.config['MYSQL_DB'] = 'SkateMotion'
 mysql = MySQL(app)
 
 def landing():
-    return 'Welcome to the landing page!'
+    return render_template('index.html')
 
 app.add_url_rule('/', 'landing', landing)
 app.add_url_rule('/login', 'login', login, methods=['GET', 'POST'])
