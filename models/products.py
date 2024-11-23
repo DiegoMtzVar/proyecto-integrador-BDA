@@ -7,9 +7,10 @@ def getRecommendedProducts():
         
         data = cur.fetchall()
         return data
-    except Exception as e:
-        print(e)
+    except:
         return []
+    finally:
+        cur.close()
 
 def getRecentlyPurchased(userID):
     try:
@@ -20,6 +21,8 @@ def getRecentlyPurchased(userID):
         return data
     except:
         return []
+    finally:
+        cur.close()
 
 def getProductsByCategory(type):
     try:
@@ -30,6 +33,8 @@ def getProductsByCategory(type):
         return data
     except:
         return []
+    finally:
+        cur.close()
 
 def getProductById(id):
     try:
@@ -40,6 +45,8 @@ def getProductById(id):
         return data
     except:
         return False
+    finally:
+        cur.close()
 
 def aniadirResena(idU,idP,calificacion,comentario):
     try:
