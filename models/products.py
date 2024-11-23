@@ -7,7 +7,8 @@ def getRecommendedProducts():
         
         data = cur.fetchall()
         return data
-    except:
+    except Exception as e:
+        print(e)
         return []
 
 def getRecentlyPurchased(userID):
