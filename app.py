@@ -25,5 +25,4 @@ app.add_url_rule('/tablas', 'tablas', productGallery, defaults={'category': 'Tab
 app.add_url_rule('/ruedas', 'ruedas', productGallery, defaults={'category': 'Rueda'})
 app.add_url_rule('/ejes', 'ejes', productGallery, defaults={'category': 'Eje'})
 app.add_url_rule('/cart', 'cart', cart)
-
-
+app.add_url_rule('/single-product/<int:id>', 'single_product', single_product)
