@@ -24,12 +24,19 @@ def cart():
         flash('Debes iniciar sesión para agregar productos al carrito', category='error')
         return redirect(url_for('login'))
     
-    productID = request.args.get('p')
-    if productID:
-        addProductToCart(productID, 1)
+    newProduct = request.args.get('p')
+    if newProduct:
+        addProductToCart(newProduct, 1)
+        return redirect(url_for('cart'))
+    
+    removedProduct = request.args.get('r')
+    if removedProduct:
+        cart = session.get('cart', {})
+        cart.pop(removedProduct, None)
+        session['cart'] = cart
         return redirect(url_for('cart'))
 
 
-    cart_products = list(session.get('cart', {}).values())
+    cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
     total = sum([product['price'] * product['quantity'] for product in cart_products])
     return render_template('cart.html', products=cart_products, total=total)

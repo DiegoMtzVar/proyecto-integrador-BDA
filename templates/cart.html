@@ -43,7 +43,7 @@
 						<tbody>
 							{% for product in products %}
 								<tr class="table-body-row">
-									<td class="product-remove"><a href="#"><i class="far fa-window-close"></i></a></td>
+									<td class="product-remove"><a href="?r={{ product.ID }}"><i class="far fa-window-close"></i></a></td>
 									<td class="product-image"><img src={{ url_for('static', filename='img/products/' + product.image) }} alt=""></td>
 									<td class="product-name">{{ product.name }}</td>
 									<td class="product-price">${{ product.price }}</td>
@@ -74,7 +74,7 @@
 						</tbody>
 					</table>
 					<div class="cart-buttons">
-						<a href="checkout.html" class="boxed-btn black">Check Out</a>
+						<a href="checkout" class="boxed-btn black">Check Out</a>
 					</div>
 				</div>
 
