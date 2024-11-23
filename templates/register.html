@@ -47,7 +47,8 @@
         </div>
     </div>
     <!--PreLoader Ends-->
-	
+	<div style="width: 100%; height: 100px; background-color: black; margin: 0 auto; padding: 0;"></div>
+	<div class="alert-container">
 	<!-- flash handler -->
 	{% with messages = get_flashed_messages(with_categories=True) %}
 		{% if messages %}
@@ -80,9 +81,8 @@
 		{% endif %}
 	{% endwith %}
 	<!-- end flash handler -->
-
+	</div>
 	<!-- header -->
-    <div style="width: 100%; height: 100px; background-color: #374b56; margin: 0 auto; padding: 0;"></div>
 	<div class="top-header-area" id="sticker">
 		<div class="container">
 			<div class="row">
