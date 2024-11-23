@@ -1,7 +1,7 @@
 from flask import Flask, request, flash, redirect, url_for, session, render_template
 from database import initDB
 from controllers.credenciales import login, register, logout, userAPI
-from controllers.shop import index, productGallery, cart, single_product
+from controllers.shop import index, productGallery, cart, single_product, resena
 from controllers.dashboard import dashboard
 
 app = Flask(__name__)
@@ -26,3 +26,7 @@ app.add_url_rule('/ruedas', 'ruedas', productGallery, defaults={'category': 'Rue
 app.add_url_rule('/ejes', 'ejes', productGallery, defaults={'category': 'Eje'})
 app.add_url_rule('/cart', 'cart', cart)
 app.add_url_rule('/single-product/<int:id>', 'single_product', single_product)
+app.add_url_rule('/dashboard', 'dashboard', dashboard)
+
+#ruta para reseña
+app.add_url_rule('/resena/<int:id>', 'resena', resena, methods=['GET', 'POST'])
