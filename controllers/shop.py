@@ -19,6 +19,7 @@ def addProductToCart(product, quantity):
         cart[product] = {'quantity': quantity, **getProductById(product)}
     session['cart'] = cart
 
+
 def cart():
     if not session.get("user"):
         flash('Debes iniciar sesión para agregar productos al carrito', category='error')
@@ -40,3 +41,11 @@ def cart():
     cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
     total = sum([product['price'] * product['quantity'] for product in cart_products])
     return render_template('cart.html', products=cart_products, total=total)
+
+def single_product(id):
+    product = getProductById(id)
+    if product:
+        return render_template('single-product.html', product=product)
+    else:
+        flash('Producto no encontrado', category='error')
+        return redirect(url_for('productGallery'))

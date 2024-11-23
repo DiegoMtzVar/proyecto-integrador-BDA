@@ -4,11 +4,11 @@
     <ul>
 
         <li><a href="/" {% if highlightSection == "inicio" %}style="color:orange;"{% endif %}>Inicio</a></li>
-        <li><a href="patinetas" {% if highlightSection == "Completa" %}style="color:orange;"{% endif %} >Patinetas</a></li>
-        <li><a href="tablas" {% if highlightSection == "Tabla" %}style="color:orange;"{% endif %}>Tablas</a></li>
-        <li><a href="ejes" {% if highlightSection == "Eje" %}style="color:orange;"{% endif %}>Ejes</a></li>
-        <li><a href="ruedas" {% if highlightSection == "Rueda" %}style="color:orange;"{% endif %} >Ruedas</a></li>
-        <li><a href="dashboard" {% if highlightSection == "Dashboard" %}style="color:orange;"{% endif %} ><span class="dashboard"></span></a></li>
+        <li><a href="{{ url_for('patinetas') }}" {% if highlightSection == "Completa" %}style="color:orange;"{% endif %} >Patinetas</a></li>
+        <li><a href="{{ url_for('tablas') }}" {% if highlightSection == "Tabla" %}style="color:orange;"{% endif %}>Tablas</a></li>
+        <li><a href="{{ url_for('ejes') }}" {% if highlightSection == "Eje" %}style="color:orange;"{% endif %}>Ejes</a></li>
+        <li><a href="{{ url_for('ruedas') }}" {% if highlightSection == "Rueda" %}style="color:orange;"{% endif %} >Ruedas</a></li>
+        <li><span class="dashboard"></span></li>
         <li>
             <div class="header-icons">
                 <a class="shopping-cart" href="cart"><i class="fas fa-shopping-cart"></i></a>
@@ -30,7 +30,7 @@
 <div class="col-lg-4 col-md-6 text-center">
     <div class="single-product-item">
         <div class="product-image">
-            <a href="single-product/{{ product.id }}"><img src="{{ url_for('static', filename='img/products/' + product.image) }}" alt=""></a>
+            <a href="single-product/{{ product.ID }}"><img src="{{ url_for('static', filename='img/products/' + product.image) }}" alt=""></a>
         </div>
         <h3>{{ product.name }}</h3>
         <p class="product-price"> {{ product.price }}$ </p>
