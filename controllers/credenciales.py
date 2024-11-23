@@ -37,4 +37,4 @@ def register():
 def logout():
     session.pop('user', None)
     flash('Has salido de sesión', 'info')
-    return url_for('landing')
+    return redirect(url_for('landing'))

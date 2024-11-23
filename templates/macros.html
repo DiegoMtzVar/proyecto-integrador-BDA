@@ -2,22 +2,30 @@
 <!-- menu start -->
 <nav class="main-menu">
     <ul>
+
         <li><a href="/" {% if highlightSection == "inicio" %}style="color:orange;"{% endif %}>Inicio</a></li>
-        <li><a href="patinetas">Patinetas</a></li>
-        <li><a href="tablas">Tablas</a></li>
-        <li><a href="ejes">Ejes</a></li>
-        <li><a href="ruedas">Ruedas</a></li>
+        <li><a href="patinetas" {% if highlightSection == "Completa" %}style="color:orange;"{% endif %} >Patinetas</a></li>
+        <li><a href="tablas" {% if highlightSection == "Tabla" %}style="color:orange;"{% endif %}>Tablas</a></li>
+        <li><a href="ejes" {% if highlightSection == "Eje" %}style="color:orange;"{% endif %}>Ejes</a></li>
+        <li><a href="ruedas" {% if highlightSection == "Rueda" %}style="color:orange;"{% endif %} >Ruedas</a></li>
+
         <li>
             <div class="header-icons">
                 <a class="shopping-cart" href="cart.html"><i class="fas fa-shopping-cart"></i></a>
                 <a href="login"><i class="fas fa-user"></i></a>
+                <a href="logout"><i class="fas fa-sign-out-alt"></i></a>
             </div>
         </li>
+
     </ul>
 </nav>
 <div class="mobile-menu"></div>
 <!-- menu end -->
 {% endmacro %}
+
+
+
+
 
 {% macro productCard(product) %}
 <div class="col-lg-4 col-md-6 text-center">

@@ -20,7 +20,7 @@ def getRecentlyPurchased(userID):
     except:
         return []
 
-def getProductsByType(type):
+def getProductsByCategory(type):
     try:
         cur = mysql.connection.cursor()
         cur.callproc('productosPorCategoria', (type,))

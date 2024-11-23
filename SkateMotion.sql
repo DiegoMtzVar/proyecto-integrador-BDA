@@ -83,7 +83,7 @@ INSERT INTO Usuarios(idUsuario, nombre, contra, correo, idTipo) VALUES
 (10, 'Miguel Sanchez', '5ef68465886fa04d3e0bbe86b59d964dd98e5775e95717df978d8bedee6ff16c', 'miguel@gmail.com', '2');
 
 INSERT INTO Productos(idProducto, nombre, precio, inventarioProducto, categoria, rutaImagen) VALUES
-(1, 'DGK Overlord Tabla', 1200, 10, 'Tabla', 'OverloadTabla.webp'),
+(1, 'DGK Overlord Tabla', 1200, 10, 'Tabla', 'OverlordTabla.webp'),
 (2, 'POWELL Caballero Dragon Tabla',1000, 12, 'Tabla', 'CaballeroTabla.webp'),
 (3, 'POWELL Gundam Tabla',1000, 14, 'Tabla', 'GundamTabla.webp'),
 (4, 'POWELL Sakura Tiger Tabla',1000, 20, 'Tabla', 'SakuraTabla.webp'),
@@ -97,7 +97,7 @@ INSERT INTO Productos(idProducto, nombre, precio, inventarioProducto, categoria,
 (12,'Krux K5 Standard Eje', 400, 9, 'Eje', 'KruxK5Eje.webp'),
 (13,'Bones X-Formula V7 Ruedas', 420, 10, 'Rueda', 'XFormulaV7Ruedas.webp'),
 (14,'Bones X-Formula Dino Ruedas', 420, 6, 'Rueda', 'XFormulaDinoRuedas.webp'),
-(15,'Element Responder Ruedas', 300, 5, 'Rueda', 'DarkstartRuedas.webp'),
+(15,'Element Responder Ruedas', 300, 5, 'Rueda', 'DarkstarRuedas.webp'),
 (16,'Bones X-Formula Look Book Ruedas', 440, 6, 'Rueda', 'LookBookRuedas.webp'),
 (17,'Spitfire Double Duro Ruedas', 1000, 2, 'Rueda', 'DoubleDuroRuedas.webp'),
 (18,'Spitfire Ace Pelka Ruedas', 1100, 4, 'Rueda', 'AcePelkaRuedas.webp'),
@@ -221,7 +221,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE productosRecomendados()
 BEGIN
-    SELECT p.idProducto as ID, p.nombre as name, p.precio as price, p.inventarioProducto as stock, p.categoria as type, p.rutaImagen as image
+    SELECT p.idProducto as ID, p.nombre as name, p.precio as price, p.inventarioProducto as stock, p.categoria as category, p.rutaImagen as image
     FROM Productos p JOIN Contiene c ON p.idProducto = c.idProducto
     GROUP BY p.idProducto
     ORDER BY SUM(c.cantidad) DESC;
@@ -234,7 +234,7 @@ CREATE PROCEDURE productosRecientes(
     IN idUsuario INT
 )
 BEGIN
-    SELECT p.idProducto as ID, p.nombre as name, p.precio as price, p.inventarioProducto as stock, p.categoria as type, p.rutaImagen as image
+    SELECT p.idProducto as ID, p.nombre as name, p.precio as price, p.inventarioProducto as stock, p.categoria as category, p.rutaImagen as image
     FROM Productos p JOIN Contiene c ON p.idProducto = c.idProducto
     JOIN Compras co ON c.idCompra = co.idCompra
     WHERE co.idUsuario = idUsuario
@@ -247,7 +247,7 @@ CREATE PROCEDURE productosPorCategoria(
     IN cat VARCHAR(100)
 )
 BEGIN
-    SELECT idProducto as ID, nombre as name, precio as price, inventarioProducto as stock, categoria as type, rutaImagen as image
+    SELECT idProducto as ID, nombre as name, precio as price, inventarioProducto as stock, categoria as category, rutaImagen as image
     FROM Productos
     WHERE categoria = cat;
 END $$
@@ -259,7 +259,7 @@ CREATE PROCEDURE productosPorID(
     IN idProd INT
 )
 BEGIN
-    SELECT nombre as name, precio as price, inventarioProducto as stock, categoria as type, rutaImagen as image
+    SELECT nombre as name, precio as price, inventarioProducto as stock, categoria as category, rutaImagen as image
     FROM Productos
     WHERE idProducto = idProd;
 END $$
