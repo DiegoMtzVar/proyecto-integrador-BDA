@@ -1,9 +1,10 @@
 {% extends "wrapper.html" %}
+{% from "macros.html" import menu, productCard %}
+
 {% block title %} SkateMotion Monterrey {% endblock %}
 {% block highlightSection %}inicio{% endblock %}
 
 {% block menu %}
-	{% from "macros.html" import menu %}
 	{{ menu("inicio") }}
 {% endblock %}
 
@@ -87,16 +88,7 @@
 
 		<div class="row">
 			{% for product in recommended_products %}
-			<div class="col-lg-4 col-md-6 text-center">
-				<div class="single-product-item">
-					<div class="product-image">
-						<a href="single-product.html"><img src="{{ url_for('static', filename='{{ product.image_path}}') }}" alt=""></a>
-					</div>
-					<h3>{{ product.name }}</h3>
-					<p class="product-price"><span>Per Kg</span> {{ product.price }}$ </p>
-					<a href="cart.html" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
-				</div>
-			</div>
+				{{ productCard(product) }}
 			{% endfor %}
 		</div>
 	</div>
@@ -117,16 +109,7 @@
 
 		<div class="row">
 			{% for product in recently_purchased %}
-			<div class="col-lg-4 col-md-6 text-center">
-				<div class="single-product-item">
-					<div class="product-image">
-						<a href="single-product.html"><img src="{{ url_for('static', filename='{{ product.image_path}}') }}" alt=""></a>
-					</div>
-					<h3>{{ product.name }}</h3>
-					<p class="product-price"><span>Per Kg</span> {{ product.price }}$ </p>
-					<a href="cart.html" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
-				</div>
-			</div>
+				{{ productCard(product) }}
 			{% endfor %}
 		</div>
 	</div>
