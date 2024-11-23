@@ -255,7 +255,7 @@ DELIMITER ;
 
 --Stored procedure para ver productos por ID
 DELIMITER $$
-CREATE PROCEDURE productosPorID(
+CREATE PROCEDURE productoPorID(
     IN idProd INT
 )
 BEGIN

@@ -11,9 +11,8 @@
 
         <li>
             <div class="header-icons">
-                <a class="shopping-cart" href="cart.html"><i class="fas fa-shopping-cart"></i></a>
-                <a href="login"><i class="fas fa-user"></i></a>
-                <a href="logout"><i class="fas fa-sign-out-alt"></i></a>
+                <a class="shopping-cart" href="cart"><i class="fas fa-shopping-cart"></i></a>
+                <span class="login-logout"></span>
             </div>
         </li>
 
@@ -35,7 +34,7 @@
         </div>
         <h3>{{ product.name }}</h3>
         <p class="product-price"> {{ product.price }}$ </p>
-        <a href="cart/{{ product.id }}" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+        <a href="cart?p={{ product.ID }}" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
     </div>
 </div>
 {% endmacro %}

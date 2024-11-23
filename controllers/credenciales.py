@@ -1,4 +1,4 @@
-from flask import request, flash, redirect, url_for, session, render_template
+from flask import request, flash, redirect, url_for, session, render_template, jsonify
 from models.user import getUser, registerUser
 from hashlib import sha256
 
@@ -12,10 +12,10 @@ def login():
         
         if user:
             session['user'] = user
-            flash('Has iniciado sesión', 'info')
+            flash('Has iniciado sesión', category='success')
             return redirect(url_for('landing'))
         else:
-            flash('Usuario o contraseña incorrectos', 'error')
+            flash('Usuario o contraseña incorrectos', category='error')
         
     return render_template('login.html')
 
@@ -30,11 +30,17 @@ def register():
             flash('Usuario registrado', 'info')
             return redirect(url_for('login'))
         else:
-            flash('Error al registrar usuario', 'error')
+            flash('Error al registrar usuario', category='error')
         
     return render_template('register.html')
 
 def logout():
     session.pop('user', None)
-    flash('Has salido de sesión', 'info')
+    flash('Has salido de sesión', category='info')
     return redirect(url_for('landing'))
+
+def userAPI():
+    if session.get('user'):
+        return jsonify(session['user'])
+    else:
+        return jsonify({'error': 'No hay sesión activa'})

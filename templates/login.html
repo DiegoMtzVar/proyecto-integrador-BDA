@@ -48,6 +48,39 @@
     </div>
     <!--PreLoader Ends-->
 	
+	<!-- flash handler -->
+	{% with messages = get_flashed_messages(with_categories=True) %}
+		{% if messages %}
+			{% for category, message in messages %}
+				{% if category == 'info' %}
+					<div class="alert alert-info alert-dismissible">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>{{ message }}</strong>
+					</div>
+				{% endif %}
+				{% if category == 'warning' %}
+					<div class="alert alert-warning alert-dismissible">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>{{ message }}</strong>
+					</div>
+				{% endif %}
+				{% if category == 'error' %}
+					<div class="alert alert-danger alert-dismissible">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>{{ message }}</strong>
+					</div>
+				{% endif %}
+				{% if category == 'success' %}
+					<div class="alert alert-success alert-dismissible">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>{{ message }}</strong>
+					</div>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	<!-- end flash handler -->
+
 	<!-- header -->
     <div style="width: 100%; height: 100px; background-color: #374b56; margin: 0 auto; padding: 0;"></div>
 	<div class="top-header-area" id="sticker">
@@ -57,7 +90,7 @@
 					<div class="main-menu-wrap">
 						<!-- logo -->
 						<div class="site-logo">
-							<a href="index.html">
+							<a href="/">
 								<img src="../static/img/logo.png" alt="">
 							</a>
 						</div>
@@ -66,7 +99,7 @@
 						<!-- menu start -->
 						<nav class="main-menu">
 							<ul>
-								<li><a href="landing">Inicio</a></li>
+								<li><a href="/">Inicio</a></li>
 								<li><a href="patinetas">Patinetas</a></li>
 								<li><a href="tablas">Tablas</a></li>
 								<li><a href="ejes">Ejes</a></li>

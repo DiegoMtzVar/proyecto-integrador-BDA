@@ -33,9 +33,32 @@ def getProductsByCategory(type):
 def getProductById(id):
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('productoPorId', (id,))
+        cur.callproc('productoPorID', (id,))
         
         data = cur.fetchone()
         return data
     except:
         return False
+
+def addProductToCart(userID, productID):
+    try:
+        cur = mysql.connection.cursor()
+        
+        # TODO
+        #cur.callproc('agregarProductoAlCarrito', (userID, productID))
+        
+        mysql.connection.commit()
+        return True
+    except:
+        return False
+
+def getCartProducts(userID):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('productosEnCarrito', (userID,))
+        
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+
