@@ -12,7 +12,7 @@ def login():
         
         if user:
             session['user'] = user
-            flash('Has iniciado sesión', category='success')
+            #flash('Has iniciado sesión', category='success')
             return redirect(url_for('landing'))
         else:
             flash('Usuario o contraseña incorrectos', category='error')
@@ -27,7 +27,7 @@ def register():
         
         hashed_password = sha256(password.encode()).hexdigest()
         if registerUser(name, email, hashed_password):
-            flash('Usuario registrado', 'info')
+            #flash('Usuario registrado', 'info')
             return redirect(url_for('login'))
         else:
             flash('Error al registrar usuario', category='error')
@@ -35,8 +35,8 @@ def register():
     return render_template('register.html')
 
 def logout():
-    session.pop('user', None)
-    flash('Has salido de sesión', category='info')
+    session.clear()
+    #flash('Has salido de sesión', category='info')
     return redirect(url_for('landing'))
 
 def userAPI():
