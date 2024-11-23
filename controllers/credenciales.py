@@ -27,10 +27,10 @@ def register():
         
         hashed_password = sha256(password.encode()).hexdigest()
         if registerUser(name, email, hashed_password):
-            flash('Usuario registrado', 'info')
+            flash('Usuario registrado', category='info')
             return redirect(url_for('login'))
         else:
-            flash('Error al registrar usuario', category='error')
+            flash('Ya existe esta registrado este correo, intente de nuevo', category='error')
         
     return render_template('register.html')
 
