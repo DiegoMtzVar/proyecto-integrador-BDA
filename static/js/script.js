@@ -6,6 +6,9 @@ $(document).ready(function() {
         success: function(data) {
             if (data.ID) {
                 $('span.login-logout').html('<a href="logout"><i class="fas fa-sign-out-alt"></i></a>');
+                if (data.role == 'administrador') {
+                    $('span.dashboard').html('<a href="dashboard" {% if highlightSection == "Dashboard" %}style="color:orange;"{% endif %} >Dashboard</a>')
+                }
             } else {
                 $('span.login-logout').html('<a href="login"><i class="fas fa-user"></i></a>');
             }
