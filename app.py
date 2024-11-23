@@ -1,7 +1,7 @@
 from flask import Flask, request, flash, redirect, url_for, session, render_template
 from database import initDB
 from controllers.credenciales import login, register, logout, userAPI
-from controllers.shop import index, productGallery, cart
+from controllers.shop import index, productGallery, cart, single_product
 
 app = Flask(__name__)
 app.secret_key = 'ggfhgghhggfdghjkmlhgf'
@@ -25,9 +25,9 @@ app.add_url_rule('/api/user', 'userAPI', userAPI, methods=['GET'])
 
 # Rutas para los productos
 app.add_url_rule('/patinetas', 'patinetas', productGallery, defaults={'category': 'Completa'})
-app.add_url_rule('/tablas', 'productGallery', productGallery, defaults={'category': 'Tabla'})
-app.add_url_rule('/ruedas', 'productGallery', productGallery, defaults={'category': 'Rueda'})
-app.add_url_rule('/ejes', 'productGallery', productGallery, defaults={'category': 'Eje'})
+app.add_url_rule('/tablas', 'tablas', productGallery, defaults={'category': 'Tabla'})
+app.add_url_rule('/ruedas', 'ruedas', productGallery, defaults={'category': 'Rueda'})
+app.add_url_rule('/ejes', 'ejes', productGallery, defaults={'category': 'Eje'})
 app.add_url_rule('/cart', 'cart', cart)
-
+app.add_url_rule('/single-product/<int:id>', 'single_product', single_product) 
 

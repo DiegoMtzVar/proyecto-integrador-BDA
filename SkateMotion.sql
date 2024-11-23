@@ -66,6 +66,16 @@ CREATE TABLE Viene_De(
     FOREIGN KEY (idProducto) REFERENCES Productos(idProducto)
 );
 
+CREATE TABLE Resenas(
+    idReseña INT AUTO_INCREMENT PRIMARY KEY,
+    idUsuario INT,
+    idProducto INT,
+    calificacion INT,
+    comentario VARCHAR(255),
+    FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
+    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto)
+);
+
 INSERT INTO Tipos_Usuario(idTipo, descripcion) VALUES
 (1, 'administrador'),
 (2, 'usuario');

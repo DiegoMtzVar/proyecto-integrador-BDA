@@ -23,3 +23,12 @@ def cart():
             flash('Error al agregar el producto al carrito', category='error')
 
     return render_template('cart.html', products=getCartProducts(session["user"]["ID"]))
+
+
+def single_product(id):
+    product = getProductById(id)
+    if product:
+        return render_template('single-product.html', product=product)
+    else:
+        flash('Producto no encontrado', category='error')
+        return redirect(url_for('productGallery'))
