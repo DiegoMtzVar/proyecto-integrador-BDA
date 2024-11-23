@@ -9,6 +9,8 @@ def getUser(email, password):
         return data
     except:
         return False
+    finally:
+        cur.close()
 
 def registerUser(name, email, password):
     try:
@@ -18,3 +20,5 @@ def registerUser(name, email, password):
         return True
     except:
         return False
+    finally:
+        cur.close()
