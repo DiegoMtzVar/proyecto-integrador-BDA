@@ -1,0 +1,20 @@
+{% macro menu(highlightSection) %}
+<!-- menu start -->
+<nav class="main-menu">
+    <ul>
+        <li><a href="/" {% if highlightSection == "inicio" %}style="color:orange;"{% endif %}>Inicio</a></li>
+        <li><a href="patinetas">Patinetas</a></li>
+        <li><a href="tablas">Tablas</a></li>
+        <li><a href="ejes">Ejes</a></li>
+        <li><a href="ruedas">Ruedas</a></li>
+        <li>
+            <div class="header-icons">
+                <a class="shopping-cart" href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+                <a href="login"><i class="fas fa-user"></i></a>
+            </div>
+        </li>
+    </ul>
+</nav>
+<div class="mobile-menu"></div>
+<!-- menu end -->
+{% endmacro %}

@@ -28,3 +28,7 @@ app.add_url_rule('/patinetas', 'patinetas', patinetas)
 def cart():
     return 'Welcome to the cart page!'
 app.add_url_rule('/cart', 'cart', cart)
+
+@app.route('/test')
+def test():
+    return render_template('index2.html')
