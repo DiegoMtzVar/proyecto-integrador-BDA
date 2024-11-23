@@ -2,19 +2,15 @@ from flask import Flask, request, flash, redirect, url_for, session, render_temp
 from database import initDB
 from controllers.credenciales import login, register, logout, userAPI
 from controllers.shop import index, productGallery, cart
+from controllers.dashboard import dashboard
 
 app = Flask(__name__)
 app.secret_key = 'ggfhgghhggfdghjkmlhgf'
 initDB(app)
 
-def landing():
-    if session.get("user") and session["user"]["role"] == 'admin': return render_template('dashboard.html')
-
-    return index()
-
 # Rutas para la página principal
-app.add_url_rule('/', 'landing', landing)
-app.add_url_rule('/landing', 'landing', landing)
+app.add_url_rule('/', 'landing', index)
+app.add_url_rule('/landing', 'landing', index)
 
 
 # Rutas para las credenciales
@@ -30,4 +26,10 @@ app.add_url_rule('/ruedas', 'productGallery', productGallery, defaults={'categor
 app.add_url_rule('/ejes', 'productGallery', productGallery, defaults={'category': 'Eje'})
 app.add_url_rule('/cart', 'cart', cart)
 
-
+# Rutas para el dashboard
+app.add_url_rule('/dashboard', 'dashboard', dashboard)
+app.add_url_rule('/dashboard/historialVentas', 'dashboard', dashboard)
+app.add_url_rule('/dashboard/historialComprasProveedor', 'dashboard', dashboard) 
+app.add_url_rule('/dashboard/usuariosGestion', 'dashboard', dashboard)
+app.add_url_rule('/dashboard/productosGestion', 'dashboard', dashboard)
+app.add_url_rule('/dashboard/promociones', 'dashboard', dashboard)
