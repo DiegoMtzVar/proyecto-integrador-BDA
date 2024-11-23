@@ -2,7 +2,7 @@ from flask import Flask, request, flash, redirect, url_for, session, render_temp
 from database import initDB
 from controllers.credenciales import login, register, logout, userAPI
 from controllers.shop import index, productGallery, cart, single_product
-from controllers.dashboard import dashboard
+from controllers.dashboard import dashboard, historialComprasProveedor, usuariosGestion, productosGestion, promociones
 
 app = Flask(__name__)
 app.secret_key = 'ggfhgghhggfdghjkmlhgf'
@@ -26,3 +26,11 @@ app.add_url_rule('/ruedas', 'ruedas', productGallery, defaults={'category': 'Rue
 app.add_url_rule('/ejes', 'ejes', productGallery, defaults={'category': 'Eje'})
 app.add_url_rule('/cart', 'cart', cart)
 app.add_url_rule('/single-product/<int:id>', 'single_product', single_product)
+
+# Rutas para el dashboard
+app.add_url_rule('/dashboard', 'dashboard', dashboard)
+app.add_url_rule('/dashboard/historialVentas', 'historialVentas', dashboard)
+app.add_url_rule('/dashboard/historialComprasProveedor', 'historialComprasProveedor', historialComprasProveedor)
+app.add_url_rule('/dashboard/usuariosGestion', 'usuariosGestion', usuariosGestion)
+app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGestion)
+app.add_url_rule('/dashboard/promociones', 'promociones', promociones)
