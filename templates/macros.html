@@ -38,3 +38,15 @@
     </div>
 </div>
 {% endmacro %}
+
+{% macro cartProduct(product) %}
+<tr class="table-body-row">
+    <td class="product-remove"><a href="#"><i class="far fa-window-close"></i></a></td>
+    <td class="product-image"><a href="single-product/{{ product.id }}"><img src="{{ url_for('static', filename='img/products/' + product.image) }}" alt=""></a>
+    </td>
+    <td class="product-name">Strawberry</td>
+    <td class="product-price">$85</td>
+    <td class="product-quantity"><input type="number" placeholder="0"></td>
+    <td class="product-total">1</td>
+</tr>
+{% end macro %}
