@@ -1,5 +1,5 @@
 from flask import render_template, session, request, flash, redirect, url_for
-from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, addProductToCart, getCartProducts
+from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased
 
 def index():
     recently_purchased = getRecentlyPurchased(session["user"]["ID"]) if session.get("user") else []
@@ -9,6 +9,16 @@ def index():
 def productGallery(category):
     return render_template('productGallery.html', products=getProductsByCategory(category), category=category)
 
+
+
+def addProductToCart(product, quantity):
+    cart = session.get('cart', {})
+    if cart.get(product):
+        cart[product]["quantity"] += quantity
+    else:
+        cart[product] = {'quantity': quantity, **getProductById(product)}
+    session['cart'] = cart
+
 def cart():
     if not session.get("user"):
         flash('Debes iniciar sesión para agregar productos al carrito', category='error')
@@ -16,10 +26,10 @@ def cart():
     
     productID = request.args.get('p')
     if productID:
-        success = addProductToCart(session["user"]["ID"], productID)
-        if success:
-            flash('Producto agregado al carrito', category='success')
-        else:
-            flash('Error al agregar el producto al carrito', category='error')
+        addProductToCart(productID, 1)
+        return redirect(url_for('cart'))
 
-    return render_template('cart.html', products=getCartProducts(session["user"]["ID"]))
+
+    cart_products = list(session.get('cart', {}).values())
+    total = sum([product['price'] * product['quantity'] for product in cart_products])
+    return render_template('cart.html', products=cart_products, total=total)
