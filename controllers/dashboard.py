@@ -67,13 +67,11 @@ def agregarProducto():
     if not name or not price or not category or not provider or not image:
         return flash('Faltan campos', category='error')
     
-    if image:
-        try:
-            image.save(f'static/img/products/{image.filename}')
-        except:
-            return flash('Error al guardar imagen', category='error')
+    if not image.filename.endswith(('.png', '.jpg', '.jpeg', '.gif')):
+        return flash('Formato de imagen no soportado', category='error')
     
     if products.addProduct(name, price, category, image.filename):
+        image.save(f'static/img/products/{image.filename}')
         flash('Producto agregado', category='info')
     else:
         flash('Error al agregar producto', category='error')
