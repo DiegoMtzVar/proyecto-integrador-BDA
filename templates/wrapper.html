@@ -1,3 +1,15 @@
+{% macro bgFromCategory(cat) %}
+	{% if cat == "info" %}
+		bg-info
+	{% elif cat == "success" %}
+		bg-success
+	{% elif cat == "warning" %}
+		bg-warning
+	{% elif cat == "error" %}
+		bg-danger
+	{% endif %}
+{% endmacro %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,38 +67,23 @@
     </div>
     <!--PreLoader Ends-->
 
-	<!-- flash handler
+	<!-- flash handler -->
 	{% with messages = get_flashed_messages(with_categories=True) %}
 		{% if messages %}
 			{% for category, message in messages %}
-				{% if category == 'info' %}
-					<div class="alert alert-info alert-dismissible">
-						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-						<strong>{{ message }}</strong>
+			<div class="modal-dialog flash" style="position:absolute; z-index:2; right:5%; top: 10%;">
+				<div class="modal-content">
+					<div class="modal-header {{ bgFromCategory(category) }}">
+						<h5 class="modal-title" id="modalLabel">
+							{{ message }}
+						</h5>
 					</div>
-				{% endif %}
-				{% if category == 'warning' %}
-					<div class="alert alert-warning alert-dismissible">
-						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-						<strong>{{ message }}</strong>
-					</div>
-				{% endif %}
-				{% if category == 'error' %}
-					<div class="alert alert-danger alert-dismissible">
-						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-						<strong>{{ message }}</strong>
-					</div>
-				{% endif %}
-				{% if category == 'success' %}
-					<div class="alert alert-success alert-dismissible">
-						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-						<strong>{{ message }}</strong>
-					</div>
-				{% endif %}
+				</div>
+			</div>
 			{% endfor %}
 		{% endif %}
 	{% endwith %}
-	end flash handler -->
+	<!-- end flash handler -->
 
 
 	<!-- header -->

@@ -1,5 +1,6 @@
 
 $(document).ready(function() {
+    // Componente de login/logout
     request = $.ajax({
         url: '/api/user',
         type: 'GET',
@@ -17,6 +18,8 @@ $(document).ready(function() {
         }
     });
 
+
+    // Modal de confirmación
     $('#modal').on('show.bs.modal', function (event) { // Evento que se ejecuta al abrir el modal
         const button = $(event.relatedTarget); // Botón que activó el modal
 
@@ -36,6 +39,10 @@ $(document).ready(function() {
         });
     });
 
+    // Flash messages
+    $('.flash').delay(3000).fadeOut(1000);
+
+    // DataTable
     let table = $('#dataTable').dataTable({
         columnDefs: [
             {
@@ -73,7 +80,7 @@ $(document).ready(function() {
             let id = row.data()[0];
             
             let request = $.ajax({
-                url: '/dashboard/productosGestion/getRecentPurchases/' + id,
+                url: '/dashboard/usuariosGestion/getRecentPurchases/' + id,
                 type: 'GET',
                 dataType: 'json'
             });
@@ -82,7 +89,6 @@ $(document).ready(function() {
                 row.child(formatRecentPurchases(data)).show();
             });
         }
-        console.log('click');
     });
 
 
