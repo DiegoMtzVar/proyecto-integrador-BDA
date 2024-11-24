@@ -227,6 +227,15 @@ BEGIN
 END $$
 DELIMITER ;
 
+--Stored procedure para obtener todos los usuarios
+DELIMITER $$
+CREATE PROCEDURE obtenerUsuarios()
+BEGIN
+    SELECT idUsuario as ID, nombre as name, correo as email, descripcion as role
+    FROM Usuarios u JOIN Tipos_Usuario t ON u.idTipo = t.idTipo;
+END $$
+DELIMITER ;
+
 -- Stored procedure para productos recomendados (mas vendidos)
 DELIMITER $$
 CREATE PROCEDURE productosRecomendados()
@@ -275,15 +284,6 @@ BEGIN
 END $$
 DELIMITER ;
 
---Queries (temporal)
-
---Select Para ver productos y sus proveedores
-SELECT prod.nombre, prov.nombreProveedor 
-FROM Productos prod JOIN Viene_De  vi ON prod.idProducto = vi.idProducto 
-JOIN Proveedores_Compras pc ON vi.idCompraProveedor = pc.idCompraProveedor
-JOIN Proveedores prov ON pc.idProveedor = prov.idProveedor;
-
-
 --Stored Procedure para checar si la persona que quiere hacer una reseña si lo compro
 DELIMITER $$
 CREATE PROCEDURE aniadirResena(
@@ -325,3 +325,11 @@ BEGIN
     END IF;
 END $$
 DELIMITER ;
+
+--Queries (temporal)
+
+--Select Para ver productos y sus proveedores
+SELECT prod.nombre, prov.nombreProveedor 
+FROM Productos prod JOIN Viene_De  vi ON prod.idProducto = vi.idProducto 
+JOIN Proveedores_Compras pc ON vi.idCompraProveedor = pc.idCompraProveedor
+JOIN Proveedores prov ON pc.idProveedor = prov.idProveedor;

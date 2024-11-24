@@ -6,17 +6,15 @@ $(document).ready(function() {
         dataType: 'json',
         success: function(data) {
             if (data.ID) {
-                $('span.login-logout').html('<a href="logout"><i class="fas fa-sign-out-alt"></i></a>');
-                if (data.role == 'administrador') {
-                    $('a.dashboard').html('Dashboard')
-                }
+                $('a.logout').show();
+                $('a.login').hide();
+
+                if (data.role === 'administrador') { $('a.dashboard').html('Dashboard') }
             } else {
-                $('span.login-logout').html('<a href="login"><i class="fas fa-user"></i></a>');
+                $('a.logout').hide();
+                $('a.login').show();
             }
         }
-    });
-    request.done(function(data) {
-        console.log('done');
     });
 
     $('#modal').on('show.bs.modal', function (event) { // Evento que se ejecuta al abrir el modal
@@ -38,6 +36,55 @@ $(document).ready(function() {
         });
     });
 
-    $('#dataTable').dataTable();
+    let table = $('#dataTable').dataTable({
+        columnDefs: [
+            {
+                targets: 0,
+                className: 'dt-control'
+            },
+            {
+                targets: [3, 4],
+                searchable: false,
+                orderable: false
+            }
+        ]
+    });
+
+    formatRecentPurchases = function(data) {
+        return (
+            data.map(function(purchase) {
+                return (
+                    '<tr>' +
+                        '<td>' + purchase.name + '</td>' +
+                    '</tr>'
+                );
+            }
+        )
+        );
+    }
+
+    table.on('click', 'td.dt-control', function(e) {
+        let tr = e.target.closest('tr');
+        let row = table.api().row(tr);
+
+        if (row.child.isShown()) {
+            row.child.hide();
+        } else {
+            let id = row.data()[0];
+            
+            let request = $.ajax({
+                url: '/dashboard/productosGestion/getRecentPurchases/' + id,
+                type: 'GET',
+                dataType: 'json'
+            });
+    
+            request.done(function(data) {
+                row.child(formatRecentPurchases(data)).show();
+            });
+        }
+        console.log('click');
+    });
+
+
 });
 

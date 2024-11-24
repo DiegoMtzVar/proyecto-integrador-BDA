@@ -2,7 +2,10 @@ from flask import render_template, session, request, flash, redirect, url_for
 from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, aniadirResena
 
 def index():
-    recently_purchased = getRecentlyPurchased(session["user"]["ID"]) if session.get("user") else []
+    if session.get("user"):
+        recently_purchased = getRecentlyPurchased(session["user"]["ID"]) if session.get("user") and session["user"].get("ID") else []
+    else:
+        recently_purchased = []
     
     return render_template('index.html', recommended_products = getRecommendedProducts(), recently_purchased = recently_purchased)
 

@@ -10,7 +10,7 @@ def getRecommendedProducts():
     except:
         return []
     finally:
-        cur.close()
+        if cur: cur.close()
 
 def getRecentlyPurchased(userID):
     try:
@@ -22,7 +22,7 @@ def getRecentlyPurchased(userID):
     except:
         return []
     finally:
-        cur.close()
+        if cur: cur.close()
 
 def getProductsByCategory(type):
     try:
@@ -34,7 +34,7 @@ def getProductsByCategory(type):
     except:
         return []
     finally:
-        cur.close()
+        if cur: cur.close()
 
 def getProductById(id):
     try:
@@ -46,7 +46,7 @@ def getProductById(id):
     except:
         return False
     finally:
-        cur.close()
+        if cur: cur.close()
 
 def aniadirResena(idU,idP,calificacion,comentario):
     try:
@@ -57,5 +57,5 @@ def aniadirResena(idU,idP,calificacion,comentario):
     except Exception as e:
         print(f"Error al ejecutar el procedimiento almacenado: {e}")
     finally:
-        cur.close()
+        if cur: cur.close()
     return False

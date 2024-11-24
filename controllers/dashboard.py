@@ -1,5 +1,6 @@
-from flask import render_template, session, flash, url_for, redirect
+from flask import render_template, session, flash, url_for, redirect, jsonify
 from models.analytics import getUsers, promoteUser, demoteUser
+from models.products import getRecommendedProducts, getRecentlyPurchased, getProductsByCategory, getProductById
 
 def verifyAdmin():
     if session.get('user') and session['user']['role'] == 'admin':
@@ -11,6 +12,9 @@ def verifyAdmin():
 def dashboard():
     if not verifyAdmin(): return False
     return render_template('dashboard/dashboard.html')
+
+def historialVentas():
+    return render_template('dashboard/historialVentas.html')
 
 def historialComprasProveedor():
     return render_template('dashboard/historialComprasProveedor.html')
@@ -37,6 +41,10 @@ def demote(userID):
         flash('Error al degradar usuario', category='error')
     
     return usuariosGestion()
+
+def getRecentPurchases(userID):
+    if not verifyAdmin(): return False
+    return jsonify(getRecentlyPurchased(userID))
 
 def productosGestion():
     return render_template('dashboard/productosGestion.html')

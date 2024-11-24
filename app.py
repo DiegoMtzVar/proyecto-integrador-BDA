@@ -2,7 +2,7 @@ from flask import Flask, request, flash, redirect, url_for, session, render_temp
 from database import initDB
 from controllers.credenciales import login, register, logout, userAPI
 from controllers.shop import index, productGallery, cart, single_product, resena
-from controllers.dashboard import dashboard, historialComprasProveedor, usuariosGestion, productosGestion, promociones
+from controllers.dashboard import dashboard, historialVentas, historialComprasProveedor, usuariosGestion, productosGestion, promociones, promote, demote, getRecentPurchases
 
 app = Flask(__name__)
 app.secret_key = 'ggfhgghhggfdghjkmlhgf'
@@ -31,12 +31,13 @@ app.add_url_rule('/resena/<int:id>', 'resena', resena, methods=['GET', 'POST'])
 
 # Rutas para el dashboard
 app.add_url_rule('/dashboard', 'dashboard', dashboard)
-app.add_url_rule('/dashboard/historialVentas', 'historialVentas', dashboard)
+app.add_url_rule('/dashboard/historialVentas', 'historialVentas', historialVentas)
 app.add_url_rule('/dashboard/historialComprasProveedor', 'historialComprasProveedor', historialComprasProveedor)
 
 app.add_url_rule('/dashboard/usuariosGestion', 'usuariosGestion', usuariosGestion)
 app.add_url_rule('/dashboard/usuariosGestion/promote/<int:userID>', 'usuariosGestion-promote', promote)
 app.add_url_rule('/dashboard/usuariosGestion/demote/<int:userID>', 'usuariosGestion-demote', demote)
+app.add_url_rule('/dashboard/productosGestion/getRecentPurchases/<int:userID>', 'getRecentPurchases', getRecentPurchases)
 
 app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGestion)
 app.add_url_rule('/dashboard/promociones', 'promociones', promociones)

@@ -63,7 +63,6 @@
                                         <th>ID</th>
                                         <th>Nombre</th>
                                         <th>Correo</th>
-                                        <th>Rol</th>
                                         <th>Borrar</th>
                                         <th>Derechos</th>
                                     </tr>
@@ -71,21 +70,19 @@
                                 <tbody>
                                     {% for user in users %}
                                     <tr>
-                                        <td>{{ user.ID }}</td>
-                                        <td>{{ user.name }}</td>
-                                        <td>{{ user.email }}</td>
-
-                                        <td>
+                                        <td class="text-center">  {{ user.ID }}</td>
+                                        <td>{{ user.name }}<br>
                                             {# Color verde para usuarios y rojo para admin #}
-                                            {% if user.role == "user" %}
-                                                <span style="color: green;">{{ user.role }}</span>
-                                            {% elif user.role == "admin" %}
-                                                <span style="color: red;">{{ user.role }}</span>
+                                            {% if user.role == "usuario" %}
+                                                <span class="badge badge-pill badge-secondary">{{ user.role }}</span>
+                                            {% elif user.role == "administrador" %}
+                                                <span class="badge badge-pill badge-danger">{{ user.role }}</span>
                                             {% else %}
                                                 {{ user.role }}
                                             {% endif %}
                                         </td>
-                                        <td>
+                                        <td>{{ user.email }}</td>
+                                        <td class="text-center" >
                                             <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal" 
                                                 data-title="Confirmar eliminación"
                                                 data-body="¿Estás seguro de que deseas eliminar la cuenta de {{ user.name }}? Esta acción no se puede deshacer."
@@ -94,8 +91,8 @@
                                                 Borrar
                                             </button>
                                         </td>
-                                        <td>
-                                            {% if user.role == "user" %}
+                                        <td class="text-center" >
+                                            {% if user.role == "usuario" %}
                                                 <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modal" 
                                                     data-title="Confirmar promoción"
                                                     data-body="¿Estás seguro de que quieres promover a {{ user.name }}? Este usuario se convertirá en administrador."
