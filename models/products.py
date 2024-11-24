@@ -71,3 +71,48 @@ def getProducts():
         return []
     finally:
         if cur: cur.close()
+
+def getResenas(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerResenas', (id,))
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
+def getCompras(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerCompras', (id,))
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
+def getCategories():
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerCategorias')
+        
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
+def addProduct(name, price, category, image):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('agregarProducto', (name, price, category, image))
+        mysql.connection.commit()
+        return True
+    except:
+        return False
+    finally:
+        if cur: cur.close()

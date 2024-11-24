@@ -5,6 +5,22 @@
 
 {% block menu %}
 	{{ menu("Dashboard") }}
+<script>
+    function validateForm(e) {
+        var form = document.querySelector('.modal-content');
+        if (form.checkValidity()) {
+            form.submit();
+        } else {
+            e.preventDefault();
+            setTimeout(function() {
+                var modal = document.getElementById('modal');
+                $(modal).modal('show');
+            }, 500);
+            var modal = document.getElementById('modal');
+            $(modal).modal('show');
+        }
+    }
+</script>
 {% endblock %}
 
 {% block content %}
@@ -16,22 +32,45 @@
 		{{sidebar("productosGestion")}}
 	{% endblock %}
 
-    <!-- Modal -->
+    <!-- Modal creación de productos -->
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+        <div class="modal-dialog modal-dialog-centered">
+            <form class="modal-content" method="POST" enctype="multipart/form-data">
+                <!-- Modal Header -->
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Titulo del modal</h5>
+                    <h5 class="modal-title" id="modalLabel">Crear Producto</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Cuerpo del modal</div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name">Nombre</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+
+                        <label for="price">Precio</label>
+                        <input type="number" class="form-control" id="price" name="price" min="0" required>
+
+                        <label for="category">Categoría</label>
+                        <select class="form-control" id="category" name="category" required>
+                            <option value="" disabled selected>Selecciona una categoría</option>
+                            {% for category in categories %}
+                                <option value="{{ category.ID }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                        <label for="image">Imagen</label>
+                        <input type="file" class="form-control" id="image" name="image" required>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                    <a class="btn btn-primary" href="">Confirmar</a>
+                    <button class="btn btn-primary" type="submit" onclick="validateForm(event)">Confirmar</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -47,10 +86,15 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-2 text-gray-800">Productos</h1>
-                <p class="mb-4">Aquí puedes manejar el inventario de productos, borrar productos o agregar nuevos</p>
+                <div class="d-inline-flex align-items-center justify-content-between w-100">
+                    <div>
+                        <h1 class="h3 mb-2 text-gray-800">Productos</h1>
+                        <p class="mb-4">Aquí puedes manejar el inventario de productos, borrar productos o agregar nuevos  </p>
+                    </div>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#modal">Agregar Producto</button>
+                </div>
 
-                <!-- DataTales Example -->
+                <!-- DataTable -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary"></h6>
@@ -104,4 +148,10 @@
 
 </div>
 <!-- End of Page Wrapper -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('#tablaProductos').dataTable();
+</script>
 {% endblock %}
