@@ -2,15 +2,14 @@ from flask import Flask, request, flash, redirect, url_for, session, render_temp
 from database import initDB
 from controllers.credenciales import login, register, logout, userAPI
 from controllers.shop import index, productGallery, cart, single_product
-from controllers.dashboard import dashboard, historialComprasProveedor, usuariosGestion, productosGestion, promociones
+from controllers.dashboard import dashboard, historialComprasProveedor, usuariosGestion, promote, demote, productosGestion, promociones
 
 app = Flask(__name__)
 app.secret_key = 'ggfhgghhggfdghjkmlhgf'
 initDB(app)
 
 # Rutas para la página principal
-app.add_url_rule('/', 'landing', index)
-app.add_url_rule('/landing', 'landing', index)
+app.add_url_rule('/', 'index', index)
 
 
 # Rutas para las credenciales
@@ -31,6 +30,10 @@ app.add_url_rule('/single-product/<int:id>', 'single_product', single_product)
 app.add_url_rule('/dashboard', 'dashboard', dashboard)
 app.add_url_rule('/dashboard/historialVentas', 'historialVentas', dashboard)
 app.add_url_rule('/dashboard/historialComprasProveedor', 'historialComprasProveedor', historialComprasProveedor)
+
 app.add_url_rule('/dashboard/usuariosGestion', 'usuariosGestion', usuariosGestion)
+app.add_url_rule('/dashboard/usuariosGestion/promote/<int:userID>', 'usuariosGestion-promote', promote)
+app.add_url_rule('/dashboard/usuariosGestion/demote/<int:userID>', 'usuariosGestion-demote', demote)
+
 app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGestion)
 app.add_url_rule('/dashboard/promociones', 'promociones', promociones)

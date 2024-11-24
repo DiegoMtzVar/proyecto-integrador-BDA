@@ -13,7 +13,7 @@ def login():
         if user:
             session['user'] = user
             #flash('Has iniciado sesión', category='success')
-            return redirect(url_for('landing'))
+            return redirect(url_for('index'))
         else:
             flash('Usuario o contraseña incorrectos', category='error')
         
@@ -37,7 +37,7 @@ def register():
 def logout():
     session.clear()
     #flash('Has salido de sesión', category='info')
-    return redirect(url_for('landing'))
+    return redirect(url_for('index'))
 
 def userAPI():
     if session.get('user'):
