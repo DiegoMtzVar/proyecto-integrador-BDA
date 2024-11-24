@@ -1,5 +1,5 @@
 from flask import render_template, session, request, flash, redirect, url_for
-from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, aniadirResena
+from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, aniadirResena, getResenas
 
 def index():
     if session.get("user"):
@@ -47,8 +47,9 @@ def cart():
 
 def single_product(id):
     product = getProductById(id)
+    resenas = getResenas(id)
     if product:
-        return render_template('single-product.html', product=product)
+        return render_template('single-product.html', product=product, resenas=resenas)
     else:
         flash('Producto no encontrado', category='error')
         return redirect(url_for('productGallery'))

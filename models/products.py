@@ -71,3 +71,14 @@ def getProducts():
         return []
     finally:
         if cur: cur.close()
+
+def getResenas(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerResenas', (id,))
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()

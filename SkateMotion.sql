@@ -378,9 +378,26 @@ BEGIN
 END $$
 DELIMITER ;
 
+--Procedimiento almacenado para obtener las reseñas de un producto donde regrese el nombre del usuario y id del producto y usuario
+DELIMITER $$
+CREATE PROCEDURE obtenerResenas(
+    IN p_idProducto INT
+)
+BEGIN
+    SELECT r.idReseña as ID, 
+    u.nombre as name, 
+    r.calificacion as rating, 
+    r.comentario as comment
+    FROM Resenas r JOIN Usuarios u ON r.idUsuario = u.idUsuario
+    WHERE r.idProducto = p_idProducto;
+END $$
+DELIMITER ;
+
+
 --Queries (temporal)
 --Select Para ver productos y sus proveedores
 SELECT prod.nombre, prov.nombreProveedor 
 FROM Productos prod JOIN Viene_De vi ON prod.idProducto = vi.idProducto 
 JOIN Proveedores_Compras pc ON vi.idCompraProveedor = pc.idCompraProveedor
 JOIN Proveedores prov ON pc.idProveedor = prov.idProveedor;
+
