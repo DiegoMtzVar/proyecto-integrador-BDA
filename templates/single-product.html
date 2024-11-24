@@ -97,6 +97,42 @@
 	</div>
 	<!-- end single product -->
 
+	
+	<!-- product reviews -->
+	<div class="product-reviews mt-150 mb-150">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<h2>Reseñas del Producto</h2><br>
+					{% for resena in resenas %}
+					<div class="card flex-row flex-wrap" style="margin: 5px; margin-bottom: 15px;">
+						<div class="card-header border-0">
+							<div class="review-header">
+								<div class="star-rating">
+									{% for i in range(1, 6) %}
+										{% if i <= resena.rating %}
+											<i class="fa fa-star" style="color: gold; font-size: 1.5em;"></i>
+										{% else %}
+											<i class="fa fa-star" style="color: lightgray; font-size: 1.5em;"></i>
+										{% endif %}
+									{% endfor %}
+								</div>
+								<div style="padding:5px">
+								<strong class="review-name">{{ resena.name }}</strong></div>
+							</div>
+						</div>
+						<div class="card-block px-2">
+							<br>
+							<p class="card-text">{{ resena.comment }}</p>
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end product reviews -->
+
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
 			const stars = document.querySelectorAll('.star-rating .fa-star');

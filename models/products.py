@@ -72,6 +72,28 @@ def getProducts():
     finally:
         if cur: cur.close()
 
+def getResenas(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerResenas', (id,))
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
+def getCompras(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerCompras', (id,))
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
 def getCategories():
     try:
         cur = mysql.connection.cursor()
