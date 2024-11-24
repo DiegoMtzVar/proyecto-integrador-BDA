@@ -426,6 +426,68 @@ BEGIN
 END $$
 DELIMITER ;
 
+
+--Stored procedure para ganancias totales
+DELIMITER $$
+CREATE PROCEDURE gananciasTotales()
+BEGIN
+    WITH tablaTotal1 AS(
+    SELECT SUM(precio*cantidad) as total1
+    FROM Productos prod JOIN Contiene cont ON prod.idProducto=cont.idProducto)
+    , tablaTotal2 AS(
+    SELECT SUM(precioProveedor * cantidad) as total2
+    FROM Viene_De)
+    SELECT total1 - total2 as total 
+    FROM tablaTotal1 JOIN tablaTotal2;
+END $$
+DELIMITER ;
+
+--Stored procedure para ingresos de cierto mes
+DELIMITER $$
+CREATE PROCEDURE ingresosMes(
+    IN mes INT,
+    IN anio INT
+)
+BEGIN
+    WITH tablaTotal AS(
+    SELECT precio*cantidad as total
+    FROM Productos prod JOIN Contiene cont ON prod.idProducto=cont.idProducto
+    JOIN Compras comp ON comp.idCompra = cont.idCompra
+    WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%'))
+    SELECT SUM(total) as ingresosMes FROM tablaTotal;
+END $$
+DELIMITER ;
+
+--Stored procedure para egresos de cierto mes
+DELIMITER $$
+CREATE PROCEDURE egresosMes(
+    IN mes INT,
+    IN anio INT
+)
+BEGIN
+    WITH tablaTotal AS(
+    SELECT precioProveedor * cantidad as total
+    FROM Viene_De v JOIN Proveedores_Compras p ON p.idCompraProveedor = v.idCompraProveedor
+    WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%'))
+    SELECT SUM(total) as egresosMes FROM tablaTotal;
+END $$
+DELIMITER ;
+
+
+--Stored procedures para 5 productos mas comprados
+DELIMITER $$
+CREATE PROCEDURE masComprados(
+    IN mes INT,
+    IN anio INT
+)
+BEGIN
+    SELECT nombre, SUM(cantidad) as cantidad
+    FROM Contiene c JOIN Productos p ON c.idProducto = p.idProducto
+    GROUP BY c.idProducto 
+    ORDER BY cantidad DESC LIMIT 5;
+END $$
+DELIMITER ;
+
 --Queries (temporal)
 --Select Para ver productos y sus proveedores
 SELECT prod.nombre, prov.nombreProveedor 
