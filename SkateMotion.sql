@@ -269,7 +269,7 @@ CREATE PROCEDURE productoPorID(
     IN idProd INT
 )
 BEGIN
-    SELECT nombre as name, precio as price, inventarioProducto as stock, categoria as category, rutaImagen as image
+    SELECT idProducto as ID, nombre as name, precio as price, inventarioProducto as stock, categoria as category, rutaImagen as image
     FROM Productos
     WHERE idProducto = idProd;
 END $$
@@ -282,3 +282,46 @@ SELECT prod.nombre, prov.nombreProveedor
 FROM Productos prod JOIN Viene_De  vi ON prod.idProducto = vi.idProducto 
 JOIN Proveedores_Compras pc ON vi.idCompraProveedor = pc.idCompraProveedor
 JOIN Proveedores prov ON pc.idProveedor = prov.idProveedor;
+
+
+--Stored Procedure para checar si la persona que quiere hacer una reseña si lo compro
+DELIMITER $$
+CREATE PROCEDURE aniadirResena(
+    IN idUsuario INT,
+    IN idProducto INT,
+    IN calificacion INT,
+    IN comentario VARCHAR(255)
+)
+BEGIN 
+    DECLARE compra_existente INT DEFAULT 0;
+    SELECT COUNT(*) INTO compra_existente FROM Contiene c JOIN Compras co ON c.idCompra = co.idCompra
+    WHERE co.idUsuario = idUsuario AND c.idProducto = idProducto;
+    IF compra_existente = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se ha comprado el producto';
+    ELSE
+        INSERT INTO Resenas(idUsuario, idProducto, calificacion, comentario) VALUES(idUsuario, idProducto, calificacion, comentario);
+    END IF;
+END $$
+DELIMITER ;
+
+
+--Stored Procedure para hacer una compra
+DELIMITER $$
+CREATE PROCEDURE hacerCompra(
+    IN p_idUsuario INT,
+    IN p_idProducto INT,
+    IN p_cantidad INT
+)
+BEGIN
+    DECLARE stock INT DEFAULT 0;
+    SELECT inventarioProducto INTO stock FROM Productos WHERE idProducto = p_idProducto;
+    IF stock < p_cantidad THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'No hay suficiente stock';
+    ELSE
+        INSERT INTO Compras(fecha, idUsuario) VALUES(CURDATE(), p_idUsuario);
+        INSERT INTO Contiene(idProducto, idCompra, cantidad) VALUES(p_idProducto, LAST_INSERT_ID(), p_cantidad);
+        UPDATE Productos SET inventarioProducto = stock - p_cantidad WHERE idProducto = p_idProducto;
+    END IF;
+END $$
+DELIMITER ;

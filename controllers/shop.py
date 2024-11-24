@@ -1,5 +1,5 @@
 from flask import render_template, session, request, flash, redirect, url_for
-from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased
+from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, aniadirResena
 
 def index():
     recently_purchased = getRecentlyPurchased(session["user"]["ID"]) if session.get("user") else []
@@ -49,3 +49,17 @@ def single_product(id):
     else:
         flash('Producto no encontrado', category='error')
         return redirect(url_for('productGallery'))
+    
+def resena(id):
+    if not session.get("user"):
+        flash('Debes iniciar sesión para hacer reseñas', category='error')
+        return redirect(url_for('login'))
+    rating=request.form['rating']
+    comentario=request.form['resena']
+    idU=session['user']['ID']   
+    if aniadirResena(idU,id,rating,comentario):
+        flash('Reseña añadida', category='info')
+        return redirect(url_for('single_product', id=id))
+    else:
+        flash('No has comprado ese producto', category='error')
+    return redirect(url_for('single_product', id=id))

@@ -1,0 +1,15 @@
+.star-rating {
+    display: flex;
+    flex-direction: row;
+}
+
+.star-rating .fa-star {
+    font-size: 3em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating .fa-star.hovered,
+.star-rating .fa-star.selected {
+    color: gold;
+}

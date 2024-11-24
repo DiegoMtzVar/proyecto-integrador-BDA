@@ -48,3 +48,14 @@ def getProductById(id):
     finally:
         cur.close()
 
+def aniadirResena(idU,idP,calificacion,comentario):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('aniadirResena', (idU,idP,calificacion,comentario))
+        mysql.connection.commit()
+        return True
+    except Exception as e:
+        print(f"Error al ejecutar el procedimiento almacenado: {e}")
+    finally:
+        cur.close()
+    return False
