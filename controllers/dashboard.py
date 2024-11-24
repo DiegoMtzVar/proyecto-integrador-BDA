@@ -1,4 +1,4 @@
-from flask import render_template, session, flash, url_for, redirect, jsonify
+from flask import render_template, session, flash, url_for, redirect, jsonify, request
 from models import analytics, user, products
 from functools import wraps
 
@@ -57,10 +57,35 @@ def deleteUser(userID):
 def getRecentPurchases(userID):
     return jsonify(products.getRecentlyPurchased(userID))
 
+def agregarProducto():
+    name = request.form['name']
+    price = request.form['price']
+    category = request.form['category']
+    provider = request.form['provider']
+    image = request.files['image']
+    
+    if not name or not price or not category or not provider or not image:
+        return flash('Faltan campos', category='error')
+    
+    if image:
+        try:
+            image.save(f'static/img/products/{image.filename}')
+        except:
+            return flash('Error al guardar imagen', category='error')
+    
+    if products.addProduct(name, price, category, image.filename):
+        flash('Producto agregado', category='info')
+    else:
+        flash('Error al agregar producto', category='error')
+
 @secureRoute
 def productosGestion():
-    print(products.getProducts())
-    return render_template('dashboard/productosGestion.html', products=products.getProducts())
+    if request.method == 'POST':
+        agregarProducto()
+    
+    return render_template('dashboard/productosGestion.html', 
+                            products=products.getProducts(), 
+                            categories=products.getCategories())
 
 @secureRoute
 def promociones():

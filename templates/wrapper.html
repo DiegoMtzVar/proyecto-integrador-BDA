@@ -71,13 +71,11 @@
 	{% with messages = get_flashed_messages(with_categories=True) %}
 		{% if messages %}
 			{% for category, message in messages %}
-			<div class="modal-dialog flash" style="position:absolute; z-index:2; right:5%; top: 10%;">
-				<div class="modal-content">
-					<div class="modal-header {{ bgFromCategory(category) }}">
-						<h5 class="modal-title" id="modalLabel">
-							{{ message }}
-						</h5>
-					</div>
+			<div class="modal-dialog flash" style="position:fixed; z-index:2; right:5%; top: 10%;">
+				<div class="modal-header {{ bgFromCategory(category) }}">
+					<h5 class="modal-title" id="modalLabel">
+						{{ message }}
+					</h5>
 				</div>
 			</div>
 			{% endfor %}
@@ -191,7 +189,7 @@
 	<!-- script js -->
 	<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
-
+	{% block script %}{% endblock %}
 
 </body>
 </html>

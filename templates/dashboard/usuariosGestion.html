@@ -18,7 +18,7 @@
 
     <!-- Modal -->
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalLabel">Titulo del modal</h5>
@@ -129,4 +129,56 @@
 
 </div>
 <!-- End of Page Wrapper -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+let table = $('#tablaUsuarios').dataTable({
+    columnDefs: [
+        {
+            targets: 0,
+            className: 'dt-control'
+        },
+        {
+            targets: [3, 4],
+            searchable: false,
+            orderable: false
+        }
+    ]
+});
+
+formatRecentPurchases = function(data) {
+    return (
+        data.map(function(purchase) {
+            return (
+                '<tr>' +
+                    '<td>' + purchase.name + '</td>' +
+                '</tr>'
+            );
+        }
+    )
+    );
+}
+
+table.on('click', 'td.dt-control', function(e) {
+    let tr = e.target.closest('tr');
+    let row = table.api().row(tr);
+
+    if (row.child.isShown()) {
+        row.child.hide();
+    } else {
+        let id = row.data()[0];
+        
+        let request = $.ajax({
+            url: '/dashboard/usuariosGestion/getRecentPurchases/' + id,
+            type: 'GET',
+            dataType: 'json'
+        });
+
+        request.done(function(data) {
+            row.child(formatRecentPurchases(data)).show();
+        });
+    }
+});
+</script>
 {% endblock %}

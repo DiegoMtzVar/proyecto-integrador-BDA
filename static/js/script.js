@@ -41,58 +41,5 @@ $(document).ready(function() {
 
     // Flash messages
     $('.flash').delay(3000).fadeOut(1000);
-
-    // DataTable de usuarios
-    let table = $('#tablaUsuarios').dataTable({
-        columnDefs: [
-            {
-                targets: 0,
-                className: 'dt-control'
-            },
-            {
-                targets: [3, 4],
-                searchable: false,
-                orderable: false
-            }
-        ]
-    });
-
-    formatRecentPurchases = function(data) {
-        return (
-            data.map(function(purchase) {
-                return (
-                    '<tr>' +
-                        '<td>' + purchase.name + '</td>' +
-                    '</tr>'
-                );
-            }
-        )
-        );
-    }
-
-    table.on('click', 'td.dt-control', function(e) {
-        let tr = e.target.closest('tr');
-        let row = table.api().row(tr);
-
-        if (row.child.isShown()) {
-            row.child.hide();
-        } else {
-            let id = row.data()[0];
-            
-            let request = $.ajax({
-                url: '/dashboard/usuariosGestion/getRecentPurchases/' + id,
-                type: 'GET',
-                dataType: 'json'
-            });
-    
-            request.done(function(data) {
-                row.child(formatRecentPurchases(data)).show();
-            });
-        }
-    });
-
-    // DataTable de productos
-    $('#tablaProductos').dataTable();
-
 });
 
