@@ -1,5 +1,5 @@
 from flask import render_template, session, request, flash, redirect, url_for
-from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, aniadirResena, getResenas
+from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, aniadirResena, getResenas, getCompras
 
 def index():
     if session.get("user"):
@@ -39,11 +39,10 @@ def cart():
         cart.pop(removedProduct, None)
         session['cart'] = cart
         return redirect(url_for('cart'))
-
-
+    compras = getCompras(session['user']['ID'])
     cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
     total = sum([product['price'] * product['quantity'] for product in cart_products])
-    return render_template('cart.html', products=cart_products, total=total)
+    return render_template('cart.html', products=cart_products, total=total, compras=compras)
 
 def single_product(id):
     product = getProductById(id)
@@ -67,3 +66,4 @@ def resena(id):
     else:
         flash('No has comprado ese producto', category='error')
     return redirect(url_for('single_product', id=id))
+

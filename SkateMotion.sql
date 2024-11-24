@@ -9,6 +9,11 @@ CREATE TABLE Tipos_Usuario(
     descripcion VARCHAR(100)
 );
 
+CREATE TABLE Tipos_Status(
+    idStatus INT AUTO_INCREMENT PRIMARY KEY,
+    descripcion VARCHAR(100)
+);
+
 CREATE TABLE Usuarios(
     idUsuario INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255),
@@ -39,7 +44,9 @@ CREATE TABLE Compras(
     idCompra INT AUTO_INCREMENT PRIMARY KEY,
     fecha DATE,
     idUsuario INT,
-    FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario)
+    idStatus INT,
+    FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
+    FOREIGN KEY (idStatus) REFERENCES Tipos_Status(idStatus)
 );
 
 CREATE TABLE Contiene(
@@ -81,6 +88,12 @@ CREATE TABLE Resenas(
 INSERT INTO Tipos_Usuario(idTipo, descripcion) VALUES
 (1, 'administrador'),
 (2, 'usuario');
+
+INSERT INTO Tipos_Status(idStatus, descripcion) VALUES
+(1, 'Pendiente'),
+(2, 'En bodega'),
+(3, 'En camino'),
+(4, 'Entregado');
 
 INSERT INTO Usuarios(idUsuario, nombre, contra, correo, idTipo) VALUES
 (1, 'Admin', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'admin@gmail.com', '1'),
@@ -132,17 +145,17 @@ INSERT INTO Proveedores(idProveedor, nombreProveedor, telefonoProveedor, correoP
 (9, 'Element Skateboards', '8123456781', 'element@gmail.com', 'Calle Element 404'),
 (10, 'Birdhouse Industries', '8198765431', 'bidhouse@gmail.com', 'Avenida Globe 505');
 
-INSERT INTO Compras(idCompra, fecha, idUsuario) VALUES 
-(1, CURDATE(), 1),
-(2, CURDATE(), 1),
-(3, CURDATE(), 2),
-(4, CURDATE(), 3),
-(5, CURDATE(), 4),
-(6, CURDATE(), 4),
-(7, CURDATE(), 4),
-(8, CURDATE(), 8),
-(9, CURDATE(), 9),
-(10, CURDATE(), 10);
+INSERT INTO Compras(idCompra, fecha, idStatus, idUsuario) VALUES 
+(1, CURDATE(),4, 1),
+(2, CURDATE(),4, 1),
+(3, CURDATE(),4, 2),
+(4, CURDATE(),4, 3),
+(5, CURDATE(),1, 4),
+(6, CURDATE(),2, 4),
+(7, CURDATE(),3, 4),
+(8, CURDATE(),4, 8),
+(9, CURDATE(),4, 9),
+(10, CURDATE(),4, 10);
 
 INSERT INTO Contiene(idProducto, idCompra, cantidad) VALUES
 (1,1,2),
@@ -274,6 +287,7 @@ BEGIN
     WHERE co.idUsuario = idUsuario
     ORDER BY co.fecha DESC;
 END $$
+DELIMITER ;
 
 -- Stored procedure para ver productos por categoria
 DELIMITER $$
@@ -312,7 +326,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE obtenerProductos()
 BEGIN
-    SELECT idProducto as ID, 
+    SELECT Productos.idProducto as ID, 
     nombre as name, 
     precio as price, 
     inventarioProducto as stock, 
@@ -393,6 +407,24 @@ BEGIN
 END $$
 DELIMITER ;
 
+--Stored procedure para que cuando le das el usuario te regrese las compras y la informacion del producto y su status
+DELIMITER $$
+CREATE PROCEDURE obtenerCompras(
+    IN p_idUsuario INT
+)
+BEGIN
+    SELECT c.idCompra as ID, 
+    c.fecha as date, 
+    p.nombre as name, 
+    p.precio as price, 
+    p.categoria as category,
+    p.rutaImagen as image,
+    tp.descripcion as status
+    FROM Tipos_Status tp JOIN Compras c ON c.idStatus=tp.idStatus JOIN Contiene co ON c.idCompra = co.idCompra
+    JOIN Productos p ON co.idProducto = p.idProducto 
+    WHERE c.idUsuario = p_idUsuario;
+END $$
+DELIMITER ;
 
 --Queries (temporal)
 --Select Para ver productos y sus proveedores

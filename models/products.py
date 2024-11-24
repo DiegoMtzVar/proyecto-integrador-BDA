@@ -82,3 +82,14 @@ def getResenas(id):
         return []
     finally:
         if cur: cur.close()
+
+def getCompras(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerCompras', (id,))
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
