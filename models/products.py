@@ -59,3 +59,15 @@ def aniadirResena(idU,idP,calificacion,comentario):
     finally:
         if cur: cur.close()
     return False
+
+def getProducts():
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerProductos')
+        
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()

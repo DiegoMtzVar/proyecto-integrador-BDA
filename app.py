@@ -1,5 +1,5 @@
 from flask import Flask, request, flash, redirect, url_for, session, render_template
-from database import initDB
+from database import initDB, mysql
 from controllers.credenciales import login, register, logout, userAPI
 from controllers.shop import index, productGallery, cart, single_product, resena
 from controllers.dashboard import *
@@ -43,7 +43,16 @@ app.add_url_rule('/dashboard/usuariosGestion/getRecentPurchases/<int:userID>', '
 app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGestion)
 app.add_url_rule('/dashboard/promociones', 'promociones', promociones)
 
-@app.route('/test')
+app.register_error_handler(404, lambda e: flash('Página no encontrada', category='error') or redirect(url_for('index')))
+app.register_error_handler(500, lambda e: flash('Error interno del servidor', category='error') or redirect(url_for('index')))
+
+
+@app.route('/f')
 def test():
     flash('Esto es una prueba', category='info')
     return render_template('index.html')
+
+@app.route('/sc')
+def reset():
+    session.clear()
+    return redirect(url_for('index'))

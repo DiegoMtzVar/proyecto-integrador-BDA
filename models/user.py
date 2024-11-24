@@ -38,7 +38,7 @@ def getUsers():
 def promoteUser(userID):
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('promocionarUsuario', (userID,))
+        cur.callproc('cambiarRol', (userID, 1))
         
         mysql.connection.commit()
         return True
@@ -50,7 +50,7 @@ def promoteUser(userID):
 def demoteUser(userID):
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('bajarUsuario', (userID,))
+        cur.callproc('cambiarRol', (userID, 2))
         
         mysql.connection.commit()
         return True

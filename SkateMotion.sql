@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS SkateMotion;
+
 CREATE DATABASE SkateMotion;
 
 USE SkateMotion;
@@ -195,7 +197,6 @@ INSERT INTO Viene_De(idProducto, idCompraProveedor, precioProveedor, cantidad) V
 (24, 2, 750, 4);
 
 --STORED PROCEDURES
-
 --Stored procedure para login de un usuario que regresa la id y el rol si existe
 DELIMITER $$
 CREATE PROCEDURE loginUsuario(
@@ -203,7 +204,8 @@ CREATE PROCEDURE loginUsuario(
     IN con VARCHAR(255)
 )
 BEGIN
-    SELECT idUsuario as ID, descripcion as role 
+    SELECT idUsuario as ID, 
+    descripcion as role 
     FROM Usuarios u JOIN Tipos_Usuario t ON u.idTipo = t.idTipo 
     WHERE correo = cor AND contra = con;
 END $$
@@ -231,7 +233,10 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE obtenerUsuarios()
 BEGIN
-    SELECT idUsuario as ID, nombre as name, correo as email, descripcion as role
+    SELECT idUsuario as ID, 
+    nombre as name, 
+    correo as email, 
+    descripcion as role
     FROM Usuarios u JOIN Tipos_Usuario t ON u.idTipo = t.idTipo;
 END $$
 DELIMITER ;
@@ -240,7 +245,12 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE productosRecomendados()
 BEGIN
-    SELECT p.idProducto as ID, p.nombre as name, p.precio as price, p.inventarioProducto as stock, p.categoria as category, p.rutaImagen as image
+    SELECT p.idProducto as ID, 
+    p.nombre as name, 
+    p.precio as price, 
+    p.inventarioProducto as stock, 
+    p.categoria as category, 
+    p.rutaImagen as image
     FROM Productos p JOIN Contiene c ON p.idProducto = c.idProducto
     GROUP BY p.idProducto
     ORDER BY SUM(c.cantidad) DESC;
@@ -253,7 +263,12 @@ CREATE PROCEDURE productosRecientes(
     IN idUsuario INT
 )
 BEGIN
-    SELECT p.idProducto as ID, p.nombre as name, p.precio as price, p.inventarioProducto as stock, p.categoria as category, p.rutaImagen as image
+    SELECT p.idProducto as ID, 
+    p.nombre as name, 
+    p.precio as price, 
+    p.inventarioProducto as stock, 
+    p.categoria as category, 
+    p.rutaImagen as image
     FROM Productos p JOIN Contiene c ON p.idProducto = c.idProducto
     JOIN Compras co ON c.idCompra = co.idCompra
     WHERE co.idUsuario = idUsuario
@@ -266,7 +281,12 @@ CREATE PROCEDURE productosPorCategoria(
     IN cat VARCHAR(100)
 )
 BEGIN
-    SELECT idProducto as ID, nombre as name, precio as price, inventarioProducto as stock, categoria as category, rutaImagen as image
+    SELECT idProducto as ID, 
+    nombre as name, 
+    precio as price, 
+    inventarioProducto as stock, 
+    categoria as category, 
+    rutaImagen as image
     FROM Productos
     WHERE categoria = cat;
 END $$
@@ -278,9 +298,29 @@ CREATE PROCEDURE productoPorID(
     IN idProd INT
 )
 BEGIN
-    SELECT idProducto as ID, nombre as name, precio as price, inventarioProducto as stock, categoria as category, rutaImagen as image
-    FROM Productos
-    WHERE idProducto = idProd;
+    SELECT idProducto as ID, 
+    nombre as name, 
+    precio as price, 
+    inventarioProducto as stock, 
+    categoria as category, 
+    rutaImagen as image
+    FROM Productos WHERE idProducto = idProd;
+END $$
+DELIMITER ;
+
+--Stored procedure para ver todos los productos
+DELIMITER $$
+CREATE PROCEDURE obtenerProductos()
+BEGIN
+    SELECT idProducto as ID, 
+    nombre as name, 
+    precio as price, 
+    inventarioProducto as stock, 
+    categoria as category, 
+    rutaImagen as image
+    FROM Productos, Viene_De, Proveedores_Compras
+    WHERE Productos.idProducto = Viene_De.idProducto 
+    AND Viene_De.idCompraProveedor = Proveedores_Compras.idCompraProveedor;
 END $$
 DELIMITER ;
 
@@ -304,7 +344,6 @@ BEGIN
 END $$
 DELIMITER ;
 
-
 --Stored Procedure para hacer una compra
 DELIMITER $$
 CREATE PROCEDURE hacerCompra(
@@ -319,17 +358,29 @@ BEGIN
         SIGNAL SQLSTATE '45000' 
         SET MESSAGE_TEXT = 'No hay suficiente stock';
     ELSE
+    START TRANSACTION;
         INSERT INTO Compras(fecha, idUsuario) VALUES(CURDATE(), p_idUsuario);
         INSERT INTO Contiene(idProducto, idCompra, cantidad) VALUES(p_idProducto, LAST_INSERT_ID(), p_cantidad);
         UPDATE Productos SET inventarioProducto = stock - p_cantidad WHERE idProducto = p_idProducto;
+    COMMIT;
     END IF;
 END $$
 DELIMITER ;
 
---Queries (temporal)
+-- Procedimiento almacenado para cambiar el rol de un usuario
+DELIMITER $$
+CREATE PROCEDURE cambiarRol(
+    IN p_idUsuario INT,
+    IN p_idTipo INT
+)
+BEGIN
+    UPDATE Usuarios SET idTipo = p_idTipo WHERE idUsuario = p_idUsuario;
+END $$
+DELIMITER ;
 
+--Queries (temporal)
 --Select Para ver productos y sus proveedores
 SELECT prod.nombre, prov.nombreProveedor 
-FROM Productos prod JOIN Viene_De  vi ON prod.idProducto = vi.idProducto 
+FROM Productos prod JOIN Viene_De vi ON prod.idProducto = vi.idProducto 
 JOIN Proveedores_Compras pc ON vi.idCompraProveedor = pc.idCompraProveedor
 JOIN Proveedores prov ON pc.idProveedor = prov.idProveedor;

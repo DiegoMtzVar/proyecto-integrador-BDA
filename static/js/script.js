@@ -42,8 +42,8 @@ $(document).ready(function() {
     // Flash messages
     $('.flash').delay(3000).fadeOut(1000);
 
-    // DataTable
-    let table = $('#dataTable').dataTable({
+    // DataTable de usuarios
+    let table = $('#tablaUsuarios').dataTable({
         columnDefs: [
             {
                 targets: 0,
@@ -91,6 +91,8 @@ $(document).ready(function() {
         }
     });
 
+    // DataTable de productos
+    $('#tablaProductos').dataTable();
 
 });
 

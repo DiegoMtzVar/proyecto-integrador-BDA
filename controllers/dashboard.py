@@ -1,14 +1,12 @@
 from flask import render_template, session, flash, url_for, redirect, jsonify
-from models import analytics, user
-from models.products import getRecommendedProducts, getRecentlyPurchased, getProductsByCategory, getProductById
+from models import analytics, user, products
 from functools import wraps
 
 def secureRoute(route):
     @wraps(route)
     def wrapped_route(*args, **kwargs):
         if not session.get('user') or not session['user']['role'] == 'administrador':
-            flash('Debes iniciar sesión para acceder a esta página', category='error')
-            return redirect(url_for('login'))
+            return redirect(url_for('index'))
         return route(*args, **kwargs)
     return wrapped_route
 
@@ -57,11 +55,12 @@ def deleteUser(userID):
 
 @secureRoute
 def getRecentPurchases(userID):
-    return jsonify(getRecentlyPurchased(userID))
+    return jsonify(products.getRecentlyPurchased(userID))
 
 @secureRoute
 def productosGestion():
-    return render_template('dashboard/productosGestion.html')
+    print(products.getProducts())
+    return render_template('dashboard/productosGestion.html', products=products.getProducts())
 
 @secureRoute
 def promociones():
