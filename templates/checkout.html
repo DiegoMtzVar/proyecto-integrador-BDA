@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Responsive Bootstrap4 Shop Template, Created by Imran Hossain from https://imransdesign.com/">
+
+	<!-- title -->
+	<title>Checkout</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
+	<!-- favicon -->
+	<link rel="shortcut icon" type="image/png" href="assets/img/favicon.png">
+	<!-- google font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+	<!-- fontawesome -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+	<!-- owl carousel -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.css') }}">
+	<!-- magnific popup -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/magnific-popup.css') }}">
+	<!-- animate css -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}">
+	<!-- mean menu css -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/meanmenu.min.css') }}">
+	<!-- main style -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+	<!-- responsive -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .btn-orange {
+            background-color: orange;
+            border-color: orange;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+	
+	<!--PreLoader-->
+    <div class="loader">
+        <div class="loader-inner">
+            <div class="circle"></div>
+        </div>
+    </div>
+    <!--PreLoader Ends-->
+	<div style="width: 100%; height: 100px; background-color: black; margin: 0 auto; padding: 0; "></div>
+
+	<div class="alert-container">
+	<!-- flash handler -->
+	{% with messages = get_flashed_messages(with_categories=True) %}
+		{% if messages %}
+			{% for category, message in messages %}
+				{% if category == 'info' %}
+					<div class="alert alert-info alert-dismissible">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>{{ message }}</strong>
+					</div>
+				{% endif %}
+				{% if category == 'warning' %}
+					<div class="alert alert-warning alert-dismissible">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>{{ message }}</strong>
+					</div>
+				{% endif %}
+				{% if category == 'error' %}
+					<div class="alert alert-danger alert-dismissible custom-alert">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>{{ message }}</strong>
+					</div>
+				{% endif %}
+				{% if category == 'success' %}
+					<div class="alert alert-success alert-dismissible">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>{{ message }}</strong>
+					</div>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+</div>
+	<!-- end flash handler -->
+
+	<!-- header -->
+	<div class="top-header-area"id="sticker">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 col-sm-12 text-center">
+					<div class="main-menu-wrap">
+						<!-- logo -->
+						<div class="site-logo">
+							<a href="/">
+								<img src="../static/img/logo.png" alt="">
+							</a>
+						</div>
+						<!-- logo -->
+
+						<!-- menu start -->
+						<nav class="main-menu">
+							<ul>
+								<li><a href="/">Inicio</a></li>
+								<li><a href="patinetas">Patinetas</a></li>
+								<li><a href="tablas">Tablas</a></li>
+								<li><a href="ejes">Ejes</a></li>
+								<li><a href="ruedas">Ruedas</a></li>
+								<li>
+									<div class="header-icons">
+										<a class="shopping-cart" href="cart"><i class="fas fa-shopping-cart"></i></a>
+										<a href="{{ url_for('logout')}}" class="logout"><i class="fas fa-sign-out-alt"></i></a>
+									</div>
+								</li>
+							</ul>
+						</nav>
+						<div class="mobile-menu"></div>
+						<!-- menu end -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end header -->
+	
+
+    <!-- Sección principal -->
+    <div class="container"style="margin-top:50px;">
+        <div class="card" style="width:80%;  margin: 0 auto;">
+            <div class="card-body">
+                <form action="{{ url_for('finalizarCompra')}}" method="post">
+                    <div class="mb-3 text-center">
+                        <i class="fas fa-money-check fa-4x"></i>
+                    </div>
+                    <div class="mb-3 text-center">
+                        <h3><span class="orange-text">Completar</span> <br>Orden</h3>
+                    </div>
+                    <hr>
+                    <h4>Tipo de Entrega:</h4>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="entrega" id="entregaNormal" value="1" checked>
+                            <label class="form-check-label" for="entregaNormal" style="font-size:15px;">
+                                Entrega Normal (5 días, sin costo adicional)
+                            </label>
+                        </div><br>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="entrega" id="entregaFlash" value="2">
+                            <label class="form-check-label" for="entregaFlash" style="font-size:15px;">
+                                Entrega Flash (3 días, costo adicional de $300 pesos)
+                            </label>
+                        </div><br>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="entrega" id="entregaExpress" value="3">
+                            <label class="form-check-label" for="entregaExpress" style="font-size:15px;">
+                                Entrega Express (1 días, costo adicional de $500 pesos)
+                            </label>
+                        </div>
+                    </div>
+                    <hr>
+                    <h4>Información de Entrega</h4>
+                    <div class="mb-3">
+                        <label for="pais" class="form-label">Pais:</label>
+                        <input type="text" class="form-control" name="pais" id="pais" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estado" class="form-label">Estado:</label>
+                        <input type="text" class="form-control" name="estado" id="estado" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="municipio" class="form-label">Municipio:</label>
+                        <input type="text" class="form-control" name="municipio" id="municipio" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="calle" class="form-label">Calle y Numero:</label>
+                        <input type="text" class="form-control" name="calle" id="calle" placeholder="Benito Juarez #456" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="postal" class="form-label">Codigo Postal:</label>
+                        <input type="text" class="form-control" name="postal" id="postal" placeholder="66230" required>
+                    </div>
+                    <hr>
+                    <h4>Información de Pago</h4>
+                    <div class="mb-3">
+                        <label for="numero" class="form-label">Numero de Tarjeta:</label>
+                        <input type="tel" class="form-control" name="numero" id="numero" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nombreTarjeta" class="form-label">Nombre de Titular:</label>
+                        <input type="text" class="form-control" name="nombreTarjeta" id="nombreTarjeta" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cvv" class="form-label">CVV:</label>
+                        <input type="text" class="form-control" name="cvv" id="cvv" maxlength="3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fecha" class="form-label">Fecha de expiración:</label>
+                        <input type="text" class="form-control" name="fecha" id="fecha" placeholder="07/25" required>
+                    </div><br>
+                    <hr>
+                    <h4>Resumen de Compra</h4>
+                    <div class="cart-section mt-100 mb-100">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="cart-table-wrap">
+                                        <table class="cart-table">
+                                            <thead class="cart-table-head">
+                                                <tr class="table-head-row">
+                                                    <th class="product-remove"></th>
+                                                    <th class="product-image">Imagen Producto</th>
+                                                    <th class="product-name">Nombre</th>
+                                                    <th class="product-price">Precio</th>
+                                                    <th class="product-quantity">Cantidad</th>
+                                                    <th class="product-total">Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for product in products %}
+                                                    <tr class="table-body-row">
+                                                        <td class="product-remove"><a href="?r={{ product.ID }}"><i class="far fa-window-close"></i></a></td>
+                                                        <td class="product-image"><img src="{{ url_for('static', filename='img/products/' + product.image) }}" alt=""></td>
+                                                        <td class="product-name">{{ product.name }}</td>
+                                                        <td class="product-price">${{ product.price }}</td>
+                                                        <td class="product-quantity">{{ product.quantity }} </td>
+                                                        <td class="product-total">${{ product.price * product.quantity }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="total-section">
+                                        <table class="total-table">
+                                            <thead class="total-table-head">
+                                                <tr class="table-total-row">
+                                                    <th>Total</th>
+                                                    <th>Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="total-data">
+                                                    <td><strong>Subtotal: </strong></td>
+                                                    <td>${{ total }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <p>*Se le va a añadir al total dependiendo del tipo de envio que escogiste</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-orange">Finalizar Compra</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div><br>
+
+	
+	
+	<!-- jquery -->
+	<script src="{{ url_for('static', filename='js/jquery-1.11.3.min.js') }}"></script>
+	<!-- bootstrap -->
+	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+	<!-- count down -->
+	<script src="{{ url_for('static', filename='js/jquery.countdown.js') }}"></script>
+	<!-- isotope -->
+	<script src="{{ url_for('static', filename='js/jquery.isotope-3.0.6.min.js') }}"></script>
+	<!-- waypoints -->
+	<script src="{{ url_for('static', filename='js/waypoints.js') }}"></script>
+	<!-- owl carousel -->
+	<script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+	<!-- magnific popup -->
+	<script src="{{ url_for('static', filename='js/jquery.magnific-popup.min.js') }}"></script>
+	<!-- mean menu -->
+	<script src="{{ url_for('static', filename='js/jquery.meanmenu.min.js') }}"></script>
+	<!-- sticker js -->
+	<script src="{{ url_for('static', filename='js/sticker.js') }}"></script>
+	<!-- main js -->
+	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- Bootstrap JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+</body>
+</html>

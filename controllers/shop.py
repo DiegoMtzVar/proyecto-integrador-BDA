@@ -1,5 +1,5 @@
 from flask import render_template, session, request, flash, redirect, url_for
-from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, aniadirResena, getResenas, getCompras
+from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, aniadirResena, getResenas, getCompras, aniadirCompra,aniadirContiene
 
 def index():
     if session.get("user"):
@@ -67,3 +67,47 @@ def resena(id):
         flash('No has comprado ese producto', category='error')
     return redirect(url_for('single_product', id=id))
 
+def checkout():
+    if not session.get("user"):
+        flash('Debes iniciar sesión para agregar productos al carrito', category='error')
+        return redirect(url_for('login'))
+    
+    newProduct = request.args.get('p')
+    if newProduct:
+        addProductToCart(newProduct, 1)
+        return redirect(url_for('cart'))
+    
+    removedProduct = request.args.get('r')
+    if removedProduct:
+        cart = session.get('cart', {})
+        cart.pop(removedProduct, None)
+        session['cart'] = cart
+        return redirect(url_for('cart'))
+    compras = getCompras(session['user']['ID'])
+    cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
+    total = sum([product['price'] * product['quantity'] for product in cart_products])
+    return render_template('checkout.html', products=cart_products, total=total, compras=compras)
+
+def finalizarCompra():
+    if not session.get("user"):
+        flash('Debes iniciar sesión para comprar cosas', category='error')
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        entrega = request.form['entrega']
+        pais = request.form['pais']
+        estado = request.form['estado']
+        municipio = request.form['municipio']
+        calle = request.form['calle']
+        postal = request.form['postal']
+        direccion = pais+", "+estado+", "+municipio+", "+calle+", "+postal
+        cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
+        id=aniadirCompra(session['user']['ID'],direccion,entrega)
+        print(id)
+        if id:
+            for product in cart_products:
+                aniadirContiene(product['ID'],id,product['quantity'])
+            session['cart'] = {}
+            flash('Compra realizada', category='info')
+        else:
+            flash('Error al realizar la compra', category='error')
+    return redirect(url_for('cart'))

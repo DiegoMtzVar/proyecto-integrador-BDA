@@ -1,0 +1,53 @@
+{% extends "wrapper.html" %}
+{% from "macros.html" import menu, sidebar %}
+
+{% block title %} SkateMotion Monterrey {% endblock %}
+
+{% block menu %}
+	{{ menu("Dashboard") }}
+{% endblock %}
+
+{% block content %}
+<div style="width: 100%; height: 100px; background-color: #051922; margin: 0 auto; padding: 0; "></div>
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    {% block sidebar %}
+		{{sidebar("usuariosGestion")}}
+	{% endblock %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Titulo del modal</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Cuerpo del modal</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    <a class="btn btn-primary" href="">Confirmar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            
+
+        </div>
+        <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+{% endblock %}

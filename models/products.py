@@ -93,3 +93,30 @@ def getCompras(id):
         return []
     finally:
         if cur: cur.close()
+
+def aniadirCompra(idU,direccion,entrega):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('aniadirCompra', (idU, direccion, entrega))
+        result = cur.fetchall()
+        id = result[0]["ID"] if result else None
+        mysql.connection.commit()
+        print(f"ID de la compra: {id}")
+        return id
+    except Exception as e:
+        print(f"Error al ejecutar el procedimiento almacenado: {e}")
+    finally:
+        if cur: cur.close()
+    return False
+
+def aniadirContiene(idU,idC,cantidad):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('aniadirContiene', (idU,idC,cantidad))
+        mysql.connection.commit()
+        return True
+    except Exception as e:
+        print(f"Error al ejecutar el procedimiento almacenado: {e}")
+    finally:
+        if cur: cur.close()
+    return False
