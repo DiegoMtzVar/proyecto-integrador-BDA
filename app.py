@@ -1,7 +1,7 @@
 from flask import Flask, request, flash, redirect, url_for, session, render_template
 from database import initDB, mysql
 from controllers.credentials import login, register, logout, userAPI
-from controllers.shop import index, productGallery, cart, single_product, resena, checkout, finalizarCompra
+from controllers.shop import index, productGallery, cart, single_product, resena, checkout, finalizarCompra,cupon
 from controllers.dashboard import *
 app = Flask(__name__)
 app.secret_key = 'ggfhgghhggfdghjkmlhgf'
@@ -25,6 +25,7 @@ app.add_url_rule('/ejes', 'ejes', productGallery, defaults={'category': 'Eje'})
 app.add_url_rule('/cart', 'cart', cart)
 app.add_url_rule('/single-product/<int:id>', 'single_product', single_product)
 app.add_url_rule('/checkout','checkout',checkout)
+app.add_url_rule('/cupon','cupon',cupon, methods=['POST'])
 app.add_url_rule('/finalizarCompra','finalizarCompra',finalizarCompra,methods=['POST'])
 
 #ruta para reseña

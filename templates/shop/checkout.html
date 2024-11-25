@@ -243,9 +243,19 @@
                                             </thead>
                                             <tbody>
                                                 <tr class="total-data">
-                                                    <td><strong>Subtotal: </strong></td>
+                                                    <td><strong>Total: </strong></td>
                                                     <td>${{ total }}</td>
                                                 </tr>
+                                                {% if promocion %}
+                                                <tr class="total-data">
+                                                    <td><strong>Descuento: </strong></td>
+                                                    <td>{{ promocion.discount }}%</td>
+                                                </tr>
+                                                <tr class="total-data">
+                                                    <td><strong>Total con Descuento: </strong></td>
+                                                    <td>${{ total - (total * promocion.discount/100) }}</td>
+                                                </tr>
+                                                {% endif %}
                                             </tbody>
                                         </table>
                                         <p>*Se le va a añadir al total dependiendo del tipo de envio que escogiste</p>
