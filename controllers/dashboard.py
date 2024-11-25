@@ -42,7 +42,7 @@ def stockProducts():
 # Controladores de ventas y proveedores
 @secureRoute
 def ventas():
-    return render_template('dashboard/ventas.html')
+    return render_template('dashboard/ventas.html', sales=products.getSales())
 
 # Controladores de proveedores
 @secureRoute

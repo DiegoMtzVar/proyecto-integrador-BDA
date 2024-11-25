@@ -599,6 +599,7 @@ BEGIN
     FROM Tipos_Categorias;
 END $$
 DELIMITER ;
+
 --Queries (temporal)
 --Select Para ver productos y sus proveedores
 SELECT prod.nombre, prov.nombreProveedor 
@@ -606,3 +607,37 @@ FROM Productos prod JOIN Viene_De vi ON prod.idProducto = vi.idProducto
 JOIN Compras pc ON vi.idCompraProveedor = pc.idCompraProveedor
 JOIN Proveedores prov ON pc.idProveedor = prov.idProveedor;
 
+-- Stored procedure para obtener todas las ventas
+DELIMITER $$
+CREATE PROCEDURE obtenerVentas()
+BEGIN
+    SELECT c.idCompra as ID, 
+    c.fecha as saleDate,
+    c.fecha_entrega as deliveryDate,
+    c.direccion as address,
+    u.nombre as name, 
+    tp.descripcion as status
+    FROM Tipos_Status tp 
+    JOIN Ventas c ON c.idStatus = tp.idStatus 
+    JOIN Usuarios u ON c.idUsuario = u.idUsuario;
+END $$
+DELIMITER ;
+
+-- Obtener los productos de una venta
+DELIMITER $$
+CREATE PROCEDURE obtenerProductosVenta(
+    IN idCompra INT
+)
+BEGIN
+    SELECT p.idProducto as ID,
+    p.nombre as name, 
+    c.cantidad as quantity, 
+    p.precio as price, 
+    p.imagen as image,
+    tc.descripcion as category
+    FROM Productos p 
+    JOIN Contiene c ON p.idProducto = c.idProducto
+    JOIN Tipos_Categorias tc ON p.idCategoria = tc.idCategoria
+    WHERE c.idCompra = idCompra;
+END $$
+DELIMITER ;
