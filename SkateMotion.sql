@@ -559,6 +559,18 @@ BEGIN
 END $$
 DELIMITER ;
 
+--Stored procedure para los proveedores regresando el total de compras de todos los tiempos
+DELIMITER $$
+CREATE PROCEDURE totalProveedor()
+BEGIN
+    SELECT nombreProveedor, SUM(precioProveedor * cantidad) as total
+    FROM Proveedores p JOIN Compras pc ON p.idProveedor = pc.idProveedor
+    JOIN Viene_De vd ON pc.idCompraProveedor = vd.idCompraProveedor GROUP BY p.idProveedor;
+END $$
+DELIMITER ;
+
+DELIMITER ;
+
 --Stored procedure para obtener las categorias
 DELIMITER $$
 CREATE PROCEDURE obtenerCategorias()
@@ -568,7 +580,6 @@ BEGIN
     FROM Tipos_Categorias;
 END $$
 DELIMITER ;
-
 --Queries (temporal)
 --Select Para ver productos y sus proveedores
 SELECT prod.nombre, prov.nombreProveedor 
