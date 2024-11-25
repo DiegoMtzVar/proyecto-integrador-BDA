@@ -39,15 +39,27 @@ def totalProveedor():
 def stockProducts():
     return analytics.stockProducts()
 
-# Controladores de ventas y proveedores
+# Controladores de ventas
 @secureRoute
 def ventas():
-    return render_template('dashboard/ventas.html')
+    return render_template('dashboard/ventas.html', sales=products.getSales())
+
+def updateStatus(ventaID, statusID):
+    if products.updateSaleStatus(ventaID, statusID):
+        flash('Venta actualizada', category='info')
+    else:
+        flash(f'Error al actualizar venta con ID: {ventaID}', category='error')
+    
+    return redirect(url_for('ventas'))
 
 # Controladores de proveedores
 @secureRoute
 def proveedores():
-    return render_template('dashboard/proveedores.html')
+    return render_template('dashboard/proveedores.html', purchases=products.getSupplierPurchases())
+
+@secureRoute
+def getProductsInPurchase(userID):
+    return jsonify(products.getProductsInPurchase(userID))
 
 # Controladores de gestión de usuarios
 @secureRoute
@@ -68,7 +80,7 @@ def demote(userID):
     if user.demoteUser(userID):
         flash('Usuario bajado', category='info')
     else:
-        flash(f'Error al bajar usuario con ID:{userID}', category='error')
+        flash(f'Error al bajar usuario con ID: {userID}', category='error')
     
     return redirect(url_for('usuariosGestion'))
 
@@ -77,23 +89,22 @@ def deleteUser(userID):
     if user.deleteUser(userID):
         flash('Usuario eliminado', category='info')
     else:
-        flash(f'Error al eliminar usuario con ID:{userID}', category='error')
+        flash(f'Error al eliminar usuario con ID: {userID}', category='error')
     
     return redirect(url_for('usuariosGestion'))
 
 @secureRoute
 def getRecentPurchases(userID):
-    return jsonify(products.getRecentlyPurchased(userID))
+    return jsonify(products.getUserPurchases(userID))
 
 # Controladores de gestión de productos
-def agregarProducto():
+def crearProducto():
     name = request.form['name']
     price = request.form['price']
     category = request.form['category']
-    provider = request.form['provider']
     image = request.files['image']
     
-    if not name or not price or not category or not provider or not image:
+    if not name or not price or not category or not image:
         return flash('Faltan campos', category='error')
     
     if not image.filename.endswith(('.png', '.jpg', '.jpeg', '.gif')):
@@ -108,7 +119,7 @@ def agregarProducto():
 @secureRoute
 def productosGestion():
     if request.method == 'POST':
-        agregarProducto()
+        crearProducto()
     print(products.getProducts())
     return render_template('dashboard/productosGestion.html', 
                             products=products.getProducts(), 
@@ -118,3 +129,4 @@ def productosGestion():
 @secureRoute
 def promociones():
     return render_template('dashboard/promociones.html')
+

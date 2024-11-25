@@ -7,29 +7,57 @@
 	{{ menu("Dashboard") }}
 {% endblock %}
 
+{% macro statusStyle(status) %}
+    {% if status == "Pendiente" %}
+        bg-danger
+    {% elif status == "En bodega" %}
+        bg-warning
+    {% elif status == "En camino" %}
+        bg-info
+    {% elif status == "Entregado" %}
+        bg-success
+    {% endif %}
+{% endmacro %}
+
+{% macro statusID(status) %}
+    {% if status == "Pendiente" %}
+        1
+    {% elif status == "En bodega" %}
+        2
+    {% elif status == "En camino" %}
+        3
+    {% elif status == "Entregado" %}
+        4
+    {% endif %}
+{% endmacro %}
+
 {% block content %}
 <div style="width: 100%; height: 100px; background-color: #051922; margin: 0 auto; padding: 0; "></div>
 <!-- Page Wrapper -->
 <div id="wrapper">
 
     {% block sidebar %}
-		{{sidebar("ventas")}}
+		{{sidebar("Ventas")}}
 	{% endblock %}
 
-    <!-- Modal -->
-    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <!-- Modal estado -->
+    <div class="modal fade" id="modalEstado" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Titulo del modal</h5>
+                    <h5 class="modal-title" id="modalLabel">Actualizar estado</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Cuerpo del modal</div>
+                <div class="modal-body d-flex justify-content-between">
+                    <a class="btn btn-danger" href="">Pendiente</a>
+                    <a class="btn btn-warning" href="">En bodega</a>
+                    <a class="btn btn-info" href="">En camino</a>
+                    <a class="btn btn-success" href="">Entregado</a>
+                </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                    <a class="btn btn-primary" href="">Confirmar</a>
                 </div>
             </div>
         </div>
@@ -57,7 +85,38 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="tablaUsuarios" width="100%" cellspacing="0">
+                            <table class="table table-bordered" id="tablaVentas" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha Venta</th>
+                                        <th>Fecha Entregado</th>
+                                        <th>Usuario</th>
+                                        <th>Direccion</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for sale in sales %}
+                                    <tr>
+                                        <td>{{ sale.saleDate }}</td>
+                                        <td>{{ sale.deliveryDate }}</td>
+                                        <td>{{ sale.name }}</td>
+                                        <td>{{ sale.address }}</td>
+                                        <td>{{ sale.total }}</td>
+                                        <td data-order="{{ statusID(sale.status) }}">
+                                            <div class="progress-bar progress-bar-striped {{ statusStyle(sale.status) }}" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                                {{sale.status}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary" data-toggle="modal" data-target="#modalEstado" data-id="{{ sale.ID }}">Actualizar Estado</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+
                             
                             </table>
                         </div>
@@ -77,4 +136,30 @@
 <!-- End of Page Wrapper -->
 {% endblock %}
 
-{% block script %}{% endblock %}
+{% block script %}
+<script>
+let table = $('#tablaVentas').dataTable({
+    columnDefs: [
+        {
+            targets: 6,
+            searchable: false,
+            orderable: false
+        }
+    ]
+});
+
+// Modal de estado
+$('#modalEstado').on('show.bs.modal', function (event) { // Evento que se ejecuta al abrir el modal
+    const button = $(event.relatedTarget); // Botón que activó el modal
+
+    const saleID = button.data('id'); // ID de la venta
+
+    const modal = $(this);
+
+    modal.find('.btn-danger').attr('href', `/dashboard/ventas/update/${saleID}/1`);
+    modal.find('.btn-warning').attr('href', `/dashboard/ventas/update/${saleID}/2`);
+    modal.find('.btn-info').attr('href', `/dashboard/ventas/update/${saleID}/3`);
+    modal.find('.btn-success').attr('href', `/dashboard/ventas/update/${saleID}/4`);
+});
+</script>
+{% endblock %}

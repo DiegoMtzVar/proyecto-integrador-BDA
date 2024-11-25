@@ -8,6 +8,7 @@
         <li><a href="{{ url_for('tablas') }}" {% if highlightSection == "Tabla" %}style="color:orange;"{% endif %}>Tablas</a></li>
         <li><a href="{{ url_for('ejes') }}" {% if highlightSection == "Eje" %}style="color:orange;"{% endif %}>Ejes</a></li>
         <li><a href="{{ url_for('ruedas') }}" {% if highlightSection == "Rueda" %}style="color:orange;"{% endif %} >Ruedas</a></li>
+        <li><a href="{{ url_for('comprasRecientes') }}" {% if highlightSection == "comprasRecientes" %}style="color:orange;"{% endif %} >Compras Recientes</a></li>
         <li><a href="{{ url_for('dashboard')}}" {% if highlightSection == "Dashboard" %}style="color:orange;"{% endif %} class="dashboard"></a></li>
         <li>
             <div class="header-icons">

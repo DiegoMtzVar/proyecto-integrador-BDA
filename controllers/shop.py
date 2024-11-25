@@ -1,18 +1,17 @@
 from flask import render_template, session, request, flash, redirect, url_for
-from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, aniadirResena, getResenas, getCompras, aniadirCompra,aniadirContiene, ultimaCompra, getCuponesbyID
+from models.products import *
 
 def index():
-    if session.get("user"):
-        recently_purchased = getRecentlyPurchased(session["user"]["ID"]) if session.get("user") and session["user"].get("ID") else []
-    else:
-        recently_purchased = []
-    
-    return render_template('shop/index.html', recommended_products = getRecommendedProducts(), recently_purchased = recently_purchased)
+    return render_template('shop/index.html', recommended_products = getRecommendedProducts())
 
 def productGallery(category):
     return render_template('shop/productGallery.html', products=getProductsByCategory(category), category=category)
 
-
+def comprasRecientes():
+    if not session.get("user"):
+        flash('Debes iniciar sesión para ver tus compras', category='error')
+        return redirect(url_for('login'))
+    return render_template('shop/comprasRecientes.html', compras=getUserPurchases(session['user']['ID']))
 
 def addProductToCart(product, quantity):
     cart = session.get('cart', {})
@@ -41,11 +40,9 @@ def cart():
         cart.pop(removedProduct, None)
         session['cart'] = cart
         return redirect(url_for('cart'))
-    compras = getCompras(session['user']['ID'])
     cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
     total = sum([product['price'] * product['quantity'] for product in cart_products])
-    promocion=session.get('promocion', {})
-    return render_template('shop/cart.html', products=cart_products, total=total, compras=compras,promocion=promocion)
+    return render_template('shop/cart.html', products=cart_products, total=total, compras=compras)
 
 def single_product(id):
     product = getProductById(id)
@@ -86,14 +83,12 @@ def checkout():
         cart.pop(removedProduct, None)
         session['cart'] = cart
         return redirect(url_for('cart'))
-    compras = getCompras(session['user']['ID'])
     cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
     if not cart_products:
         flash('No tienes productos en el carrito', category='error')
         return redirect(url_for('cart'))
     total = sum([product['price'] * product['quantity'] for product in cart_products])
-    promocion=session.get('promocion', {})
-    return render_template('shop/checkout.html', products=cart_products, total=total, compras=compras,promocion=promocion)
+    return render_template('shop/checkout.html', products=cart_products, total=total, compras=compras)
 
 def finalizarCompra():
     if not session.get("user"):

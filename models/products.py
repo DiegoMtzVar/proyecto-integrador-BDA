@@ -12,18 +12,6 @@ def getRecommendedProducts():
     finally:
         if cur: cur.close()
 
-def getRecentlyPurchased(userID):
-    try:
-        cur = mysql.connection.cursor()
-        cur.callproc('obtenerVentasUsuario', (userID,))
-        
-        data = cur.fetchall()
-        return data
-    except:
-        return []
-    finally:
-        if cur: cur.close()
-
 def getProductsByCategory(type):
     try:
         cur = mysql.connection.cursor()
@@ -83,7 +71,7 @@ def getResenas(id):
     finally:
         if cur: cur.close()
 
-def getCompras(id):
+def getUserPurchases(id):
     try:
         cur = mysql.connection.cursor()
         cur.callproc('obtenerVentasUsuario', (id,))
@@ -109,10 +97,11 @@ def getCategories():
 def addProduct(name, price, category, image):
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('agregarProducto', (name, price, category, image))
+        cur.callproc('crearProducto', (name, price, 0, category, image))
         mysql.connection.commit()
         return True
-    except:
+    except Exception as e:
+        print(f"Error al ejecutar el procedimiento almacenado: {e}")
         return False
     finally:
         if cur: cur.close()
@@ -130,6 +119,7 @@ def aniadirCompra(idU,direccion,entrega):
     finally:
         if cur: cur.close()
     return False
+
 def ultimaCompra(id):
     try:
         cur = mysql.connection.cursor()
@@ -154,12 +144,72 @@ def aniadirContiene(idU,idC,cantidad,promocion):
         if cur: cur.close()
     return False
 
+def aniadirContiene(idU,idC,cantidad,promocion):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('aniadirContiene', (idU,idC,cantidad,promocion))
+        mysql.connection.commit()
+        return True
+    except Exception as e:
+        print(f"Error al ejecutar el procedimiento almacenado: {e}")
+    finally:
+        if cur: cur.close()
+    return False
+
 def getCuponesbyID(cupon):
     try:
         cur = mysql.connection.cursor()
         cur.callproc('obtenerCuponesbyID', (cupon,))
         
         data = cur.fetchone() if cur else False
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
+
+def getSales():
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerVentas')
+        
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
+def updateSaleStatus(ventaID, statusID):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('actualizarEstadoVenta', (ventaID, statusID))
+        mysql.connection.commit()
+        return True
+    except:
+        return False
+    finally:
+        if cur: cur.close()
+
+def getSupplierPurchases():
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('comprasProveedores')
+        
+        data = cur.fetchall()
+        
+        return data
+    except Exception:
+        return []
+    finally:
+        if cur: cur.close()
+
+def getProductsInPurchase(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('productosEnCompra', (id,))
+        data = cur.fetchall()
         return data
     except:
         return []
