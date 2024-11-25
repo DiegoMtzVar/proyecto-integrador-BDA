@@ -387,11 +387,22 @@ BEGIN
     ELSEIF tipoEnvio = 3 THEN
         INSERT INTO Compras(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 1 DAY);
     END IF;
-    select LAST_INSERT_ID() as ID;
 END $$
 DELIMITER ;
 
-call aniadirCompra(2, 'Mexico, CDMX, Polanco, Venustiano Carranza #123, 03100', 1);
+--Stored procedure para regresar la ultima compra
+DELIMITER $$
+CREATE PROCEDURE ultimaCompra(
+    IN idU INT
+)
+BEGIN
+    SELECT idCompra as ID
+    FROM Compras
+    WHERE idUsuario = idU
+    ORDER BY idCompra DESC
+    LIMIT 1;
+END $$
+DELIMITER ;
 
 --Stored Procedure para añadir contiene
 DELIMITER $$

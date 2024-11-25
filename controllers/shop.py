@@ -1,5 +1,5 @@
 from flask import render_template, session, request, flash, redirect, url_for
-from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, aniadirResena, getResenas, getCompras, aniadirCompra,aniadirContiene
+from models.products import getProductById, getProductsByCategory, getRecommendedProducts, getRecentlyPurchased, aniadirResena, getResenas, getCompras, aniadirCompra,aniadirContiene, ultimaCompra
 
 def index():
     if session.get("user"):
@@ -101,7 +101,8 @@ def finalizarCompra():
         postal = request.form['postal']
         direccion = pais+", "+estado+", "+municipio+", "+calle+", "+postal
         cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
-        id=aniadirCompra(session['user']['ID'],direccion,entrega)
+        aniadirCompra(session['user']['ID'],direccion,entrega)
+        id=ultimaCompra(session['user']['ID'])
         print(id)
         if id:
             for product in cart_products:

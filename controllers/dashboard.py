@@ -95,3 +95,7 @@ def promociones():
 @secureRoute
 def mostBought():
     return analytics.mostBought()
+
+@secureRoute
+def providerPercentage():
+    return analytics.providerPercentage()

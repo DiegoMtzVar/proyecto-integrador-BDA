@@ -51,3 +51,14 @@ def mostBought():
         return []
     finally:
         if cur: cur.close()
+
+def providerPercentage():
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('porcentajeProveedor')
+        data = cur.fetchall()
+        return jsonify(data)
+    except:
+        return []
+    finally:
+        if cur: cur.close()
