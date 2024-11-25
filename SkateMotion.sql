@@ -19,6 +19,11 @@ CREATE TABLE Tipos_Envios(
     descripcion VARCHAR(100)
 );
 
+CREATE TABLE Tipos_Categorias(
+    idCategoria INT AUTO_INCREMENT PRIMARY KEY,
+    descripcion VARCHAR(100)
+);
+
 CREATE TABLE Usuarios(
     idUsuario INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255),
@@ -33,8 +38,9 @@ CREATE TABLE Productos(
     nombre VARCHAR(255),
     precio INT,
     inventarioProducto INT,
-    categoria VARCHAR(100),
-    rutaImagen VARCHAR(100)
+    idCategoria INT,
+    rutaImagen VARCHAR(100),
+    FOREIGN KEY (idCategoria) REFERENCES Tipos_Categorias(idCategoria)
 );
 
 CREATE TABLE Proveedores(
@@ -47,7 +53,7 @@ CREATE TABLE Proveedores(
 
 CREATE TABLE Ventas(
     idCompra INT AUTO_INCREMENT PRIMARY KEY,
-    fecha DATE,
+    fecha DATE DEFAULT CURDATE(),
     fecha_entrega DATE,
     direccion text,
     idUsuario INT,
@@ -109,6 +115,12 @@ INSERT INTO Tipos_Status(idStatus, descripcion) VALUES
 (3, 'En camino'),
 (4, 'Entregado');
 
+INSERT INTO Tipos_Categorias(idCategoria, descripcion) VALUES
+(1, 'Tabla'),
+(2, 'Eje'),
+(3, 'Rueda'),
+(4, 'Completa');
+
 INSERT INTO Usuarios(idUsuario, nombre, contra, correo, idTipo) VALUES
 (1, 'Admin', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'admin@gmail.com', '1'),
 (2, 'Pablo Castillo', '26079e41910bcde04be636fbeecc9045379882b5ad3fe7f70b762436c6d98055', 'pablo@gmail.com', '2'),
@@ -121,31 +133,31 @@ INSERT INTO Usuarios(idUsuario, nombre, contra, correo, idTipo) VALUES
 (9, 'Carla Gomez', '8813d406421e0063ef8ec81fc45170338b4cfd9547ee1ab157b90b46bcb6e2a7', 'carla@gmail.com', '2'),
 (10, 'Miguel Sanchez', '5ef68465886fa04d3e0bbe86b59d964dd98e5775e95717df978d8bedee6ff16c', 'miguel@gmail.com', '2');
 
-INSERT INTO Productos(idProducto, nombre, precio, inventarioProducto, categoria, rutaImagen) VALUES
-(1, 'DGK Overlord Tabla', 1200, 10, 'Tabla', 'OverlordTabla.webp'),
-(2, 'POWELL Caballero Dragon Tabla',1000, 12, 'Tabla', 'CaballeroTabla.webp'),
-(3, 'POWELL Gundam Tabla',1000, 14, 'Tabla', 'GundamTabla.webp'),
-(4, 'POWELL Sakura Tiger Tabla',1000, 20, 'Tabla', 'SakuraTabla.webp'),
-(5, 'Real Wair Illuminated Tabla',1500, 5, 'Tabla', 'WairTabla.webp'),
-(6, 'Element Aloha Tabla',1400, 10, 'Tabla', 'AlohaTabla.webp'),
-(7, 'Krux AF1 Eje', 600, 10, 'Eje', 'AF1Eje.webp'),
-(8, 'Krux AF1 LTD Black Eje', 700, 5, 'Eje', 'AF1BlackEje.webp'),
-(9, 'Independent Standard Eje', 300, 8, 'Eje', 'BulletStandardEje.webp'),
-(10,'Independent S11 Hollow Fabiana Eje', 600, 4, 'Eje', 'S11HollowEje.webp'),
-(11,'Independent S11 Hollow IKP Eje', 640, 5, 'Eje', 'S11ForgedHollowIKPEje.webp'),
-(12,'Krux K5 Standard Eje', 400, 9, 'Eje', 'KruxK5Eje.webp'),
-(13,'Bones X-Formula V7 Ruedas', 420, 10, 'Rueda', 'XFormulaV7Ruedas.webp'),
-(14,'Bones X-Formula Dino Ruedas', 420, 6, 'Rueda', 'XFormulaDinoRuedas.webp'),
-(15,'Element Responder Ruedas', 300, 5, 'Rueda', 'DarkstarRuedas.webp'),
-(16,'Bones X-Formula Look Book Ruedas', 440, 6, 'Rueda', 'LookBookRuedas.webp'),
-(17,'Spitfire Double Duro Ruedas', 1000, 2, 'Rueda', 'DoubleDuroRuedas.webp'),
-(18,'Spitfire Ace Pelka Ruedas', 1100, 4, 'Rueda', 'AcePelkaRuedas.webp'),
-(19,'Element Alien Workshop Spectrum Completa', 2200, 3, 'Completa', 'SpectrumCompleta.webp'),
-(20,'Birdhouse Flying Falcon Completa', 2000, 4, 'Completa', 'FlyingFalconCompleta.webp'),
-(21,'Birdhouse Lizzie Butterfly Completa', 2000, 3, 'Completa', 'LizzieCompleta.webp'),
-(22,'Santa Cruz Classic Dot Black Completa', 1100, 5, 'Completa', 'DotBlackCompleta.webp'),
-(23,'Santa Cruz Classic Dot Green Completa', 1100, 6, 'Completa', 'DotGreenCompleta.webp'),
-(24,'POWELL Peralta Dragon Completa', 1500, 4, 'Completa', 'PeraltaDragonCompleta.webp');
+INSERT INTO Productos(idProducto, nombre, precio, inventarioProducto, idCategoria, rutaImagen) VALUES
+(1, 'DGK Overlord Tabla', 1200, 10, 1, 'OverlordTabla.webp'),
+(2, 'POWELL Caballero Dragon Tabla', 1000, 12, 1, 'CaballeroTabla.webp'),
+(3, 'POWELL Gundam Tabla', 1000, 14, 1, 'GundamTabla.webp'),
+(4, 'POWELL Sakura Tiger Tabla', 1000, 20, 1, 'SakuraTabla.webp'),
+(5, 'Real Wair Illuminated Tabla', 1500, 5, 1, 'WairTabla.webp'),
+(6, 'Element Aloha Tabla', 1400, 10, 1, 'AlohaTabla.webp'),
+(7, 'Krux AF1 Eje', 600, 10, 2, 'AF1Eje.webp'),
+(8, 'Krux AF1 LTD Black Eje', 700, 5, 2, 'AF1BlackEje.webp'),
+(9, 'Independent Standard Eje', 300, 8, 2, 'BulletStandardEje.webp'),
+(10, 'Independent S11 Hollow Fabiana Eje', 600, 4, 2, 'S11HollowEje.webp'),
+(11, 'Independent S11 Hollow IKP Eje', 640, 5, 2, 'S11ForgedHollowIKPEje.webp'),
+(12, 'Krux K5 Standard Eje', 400, 9, 2, 'KruxK5Eje.webp'),
+(13, 'Bones X-Formula V7 Ruedas', 420, 10, 3, 'XFormulaV7Ruedas.webp'),
+(14, 'Bones X-Formula Dino Ruedas', 420, 6, 3, 'XFormulaDinoRuedas.webp'),
+(15, 'Element Responder Ruedas', 300, 5, 3, 'DarkstarRuedas.webp'),
+(16, 'Bones X-Formula Look Book Ruedas', 440, 6, 3, 'LookBookRuedas.webp'),
+(17, 'Spitfire Double Duro Ruedas', 1000, 2, 3, 'DoubleDuroRuedas.webp'),
+(18, 'Spitfire Ace Pelka Ruedas', 1100, 4, 3, 'AcePelkaRuedas.webp'),
+(19, 'Element Alien Workshop Spectrum Completa', 2200, 3, 4, 'SpectrumCompleta.webp'),
+(20, 'Birdhouse Flying Falcon Completa', 2000, 4, 4, 'FlyingFalconCompleta.webp'),
+(21, 'Birdhouse Lizzie Butterfly Completa', 2000, 3, 4, 'LizzieCompleta.webp'),
+(22, 'Santa Cruz Classic Dot Black Completa', 1100, 5, 4, 'DotBlackCompleta.webp'),
+(23, 'Santa Cruz Classic Dot Green Completa', 1100, 6, 4, 'DotGreenCompleta.webp'),
+(24, 'POWELL Peralta Dragon Completa', 1500, 4, 4, 'PeraltaDragonCompleta.webp');
 
 INSERT INTO Proveedores(idProveedor, nombreProveedor, telefonoProveedor, correoProveedor, dirProveedor) VALUES
 (1, 'DGK', '8112838182', 'dgk@gmail.com', 'Calle Los Cabos 104'),
@@ -272,13 +284,15 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE productosRecomendados()
 BEGIN
-    SELECT p.idProducto as ID, 
-    p.nombre as name, 
-    p.precio as price, 
-    p.inventarioProducto as stock, 
-    p.categoria as category, 
-    p.rutaImagen as image
-    FROM Productos p JOIN Contiene c ON p.idProducto = c.idProducto
+    SELECT p.idProducto AS ID, 
+           p.nombre AS name, 
+           p.precio AS price, 
+           p.inventarioProducto AS stock,
+           tc.descripcion AS category, 
+           p.rutaImagen AS image
+    FROM Productos p
+    JOIN Contiene c ON p.idProducto = c.idProducto
+    JOIN Tipos_Categorias tc ON p.idCategoria = tc.idCategoria
     GROUP BY p.idProducto
     ORDER BY SUM(c.cantidad) DESC;
 END $$
@@ -290,14 +304,15 @@ CREATE PROCEDURE productosPorCategoria(
     IN cat VARCHAR(100)
 )
 BEGIN
-    SELECT idProducto as ID, 
-    nombre as name, 
-    precio as price, 
-    inventarioProducto as stock, 
-    categoria as category, 
-    rutaImagen as image
-    FROM Productos
-    WHERE categoria = cat;
+    SELECT p.idProducto as ID, 
+    p.nombre as name, 
+    p.precio as price, 
+    p.inventarioProducto as stock, 
+    tc.descripcion as category, 
+    p.rutaImagen as image
+    FROM Productos p
+    JOIN Tipos_Categorias tc ON p.idCategoria = tc.idCategoria
+    WHERE tc.descripcion = cat;
 END $$
 DELIMITER ;
 
@@ -307,13 +322,15 @@ CREATE PROCEDURE productoPorID(
     IN idProd INT
 )
 BEGIN
-    SELECT idProducto as ID, 
-    nombre as name, 
-    precio as price, 
-    inventarioProducto as stock, 
-    categoria as category, 
-    rutaImagen as image
-    FROM Productos WHERE idProducto = idProd;
+    SELECT p.idProducto AS ID, 
+           p.nombre AS name, 
+           p.precio AS price, 
+           p.inventarioProducto AS stock,
+           tc.descripcion AS category, 
+           p.rutaImagen AS image
+    FROM Productos p
+    JOIN Tipos_Categorias tc ON p.idCategoria = tc.idCategoria
+    WHERE p.idProducto = idProd;
 END $$
 DELIMITER ;
 
@@ -321,15 +338,21 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE obtenerProductos()
 BEGIN
-    SELECT Productos.idProducto as ID, 
-    nombre as name, 
-    precio as price, 
-    inventarioProducto as stock, 
-    categoria as category, 
-    rutaImagen as image
-    FROM Productos, Viene_De, Compras
-    WHERE Productos.idProducto = Viene_De.idProducto 
-    AND Viene_De.idCompraProveedor = Compras.idCompraProveedor;
+    SELECT 
+        Productos.idProducto AS ID, 
+        Productos.nombre AS name, 
+        Productos.precio AS price, 
+        Productos.inventarioProducto AS stock, 
+        Tipos_Categorias.descripcion AS descripcion,
+        Productos.rutaImagen AS image
+    FROM 
+        Productos
+    JOIN 
+        Viene_De ON Productos.idProducto = Viene_De.idProducto 
+    JOIN 
+        Compras ON Viene_De.idCompraProveedor = Compras.idCompraProveedor
+    JOIN 
+        Tipos_Categorias ON Productos.idCategoria = Tipos_Categorias.idCategoria;
 END $$
 DELIMITER ;
 
@@ -439,12 +462,15 @@ BEGIN
     SELECT c.idCompra as ID, 
     c.fecha as date, 
     p.nombre as name, 
-    p.precio as price, 
-    p.categoria as category,
+    p.precio as price,
+    tc.descripcion as category,
     p.rutaImagen as image,
     tp.descripcion as status
-    FROM Tipos_Status tp JOIN Ventas c ON c.idStatus=tp.idStatus JOIN Contiene co ON c.idCompra = co.idCompra
-    JOIN Productos p ON co.idProducto = p.idProducto 
+    FROM Tipos_Status tp 
+    JOIN Ventas c ON c.idStatus = tp.idStatus 
+    JOIN Contiene co ON c.idCompra = co.idCompra
+    JOIN Productos p ON co.idProducto = p.idProducto
+    JOIN Tipos_Categorias tc ON p.idCategoria = tc.idCategoria
     WHERE c.idUsuario = p_idUsuario;
 END $$
 DELIMITER ;
@@ -530,6 +556,16 @@ BEGIN
     JOIN Viene_De vd ON pc.idCompraProveedor = vd.idCompraProveedor 
     WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%')
     GROUP BY p.idProveedor;
+END $$
+DELIMITER ;
+
+--Stored procedure para obtener las categorias
+DELIMITER $$
+CREATE PROCEDURE obtenerCategorias()
+BEGIN
+    SELECT idCategoria as ID, 
+    descripcion as category
+    FROM Tipos_Categorias;
 END $$
 DELIMITER ;
 

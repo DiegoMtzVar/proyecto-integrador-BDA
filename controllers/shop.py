@@ -85,6 +85,9 @@ def checkout():
         return redirect(url_for('cart'))
     compras = getCompras(session['user']['ID'])
     cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
+    if not cart_products:
+        flash('No tienes productos en el carrito', category='error')
+        return redirect(url_for('cart'))
     total = sum([product['price'] * product['quantity'] for product in cart_products])
     return render_template('shop/checkout.html', products=cart_products, total=total, compras=compras)
 
