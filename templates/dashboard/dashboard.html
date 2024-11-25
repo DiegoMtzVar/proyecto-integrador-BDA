@@ -82,7 +82,7 @@ $(document).ready(function(){
 		});
 	});
 	$.getJSON('/dashboard/totalProveedorMes', function(data){
-        var chartData2 = data.map(function(item) {
+        var chartData = data.map(function(item) {
             return {
                 name: item.nombreProveedor,
                 y: parseFloat(item.total)
@@ -110,15 +110,89 @@ $(document).ready(function(){
             series: [{
                 name: 'Proveedores',
                 colorByPoint: true,
-                data: chartData2
+                data: chartData
             }]
         
 		});
 	});
+	$.getJSON('/dashboard/totalProveedorMes', function(data){
+        var chartData = data.map(function(item) {
+            return {
+                name: item.nombreProveedor,
+                y: parseFloat(item.total)
+            };
+        });
+        Highcharts.chart('piechartPorcentajeMes', {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: ''
+            },
+                            
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Proveedores',
+                colorByPoint: true,
+                data: chartData
+            }]
+        
+		});
+	});
+	$.getJSON('/dashboard/totalProveedor', function(data){
+        var chartData = data.map(function(item) {
+            return {
+                name: item.nombreProveedor,
+                y: parseFloat(item.total)
+            };
+        });
+        Highcharts.chart('piechartValoresTodo', {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: ''
+            },
+                            
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+						format: '<b>{point.name}</b>: ${point.y:.2f}',
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Proveedores',
+                colorByPoint: true,
+                data: chartData
+            }]
+        
+		});
+	});
+
 });
 function showChart(chartId) {
-    document.getElementById('piechartPorcentajeTodo').style.display = 'none';
+    document.getElementById('piechartPorcentajeMes').style.display = 'none';
     document.getElementById('piechartValoresMes').style.display = 'none';
+	document.getElementById(chartId).style.display = 'block';
+}
+function showChart2(chartId) {
+    document.getElementById('piechartValoresTodo').style.display = 'none';
+    document.getElementById('piechartPorcentajeTodo').style.display = 'none';
     document.getElementById(chartId).style.display = 'block';
 	}
 </script>
@@ -239,7 +313,7 @@ function showChart(chartId) {
 					</div>
 				</div>
 
-				<!-- Pie Chart -->
+				<!-- Pie Chart Mes-->
 				<div class="col-xl-6 col-lg-7">
 					<div class="card shadow mb-4">
 						<!-- Card Header - Dropdown -->
@@ -251,8 +325,37 @@ function showChart(chartId) {
 									<i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
 								</a>
 								<div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-									<a class="dropdown-item" href="#" onclick="showChart('piechartPorcentajeTodo')">Show Percentages</a>
-									<a class="dropdown-item" href="#" onclick="showChart('piechartValoresMes')">Show Values</a>
+									<a class="dropdown-item" href="#" onclick="showChart('piechartPorcentajeMes')">Mostrar Porcentajes</a>
+									<a class="dropdown-item" href="#" onclick="showChart('piechartValoresMes')">Mostrar Valores</a>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Card Body -->
+						<div class="card-body" style="height:450px;">
+							<div class="chart-pie pt-4 pb-2">
+								<div id="piechartPorcentajeMes" style="width:100%;"></div>
+								<div id="piechartValoresMes" style="width:100%; display:none;"></div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+
+				<!-- Pie Chart Total-->
+				<div class="col-xl-6 col-lg-7">
+					<div class="card shadow mb-4">
+						<!-- Card Header - Dropdown -->
+						
+						<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+							<h6 class="m-0 font-weight-bold text-primary">Total de compras por Proveedor </h6>
+							<div class="dropdown no-arrow">
+								<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+								</a>
+								<div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+									<a class="dropdown-item" href="#" onclick="showChart2('piechartPorcentajeTodo')">Mostrar Porcentajes</a>
+									<a class="dropdown-item" href="#" onclick="showChart2('piechartValoresTodo')">Mostrar Valores</a>
 								</div>
 							</div>
 						</div>
@@ -261,7 +364,7 @@ function showChart(chartId) {
 						<div class="card-body" style="height:450px;">
 							<div class="chart-pie pt-4 pb-2">
 								<div id="piechartPorcentajeTodo" style="width:100%;"></div>
-								<div id="piechartValoresMes" style="width:100%; display:none;"></div>
+								<div id="piechartValoresTodo" style="width:100%; display:none;"></div>
 							</div>
 							
 						</div>
