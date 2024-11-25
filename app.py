@@ -53,6 +53,7 @@ app.add_url_rule('/dashboard/masCompradoHisto', 'masCompradoHisto', mostSold)
 app.add_url_rule('/dashboard/porcentajeProveedor', 'porcentajeProveedor', providerPercentage)
 app.add_url_rule('/dashboard/totalProveedorMes', 'totalProveedorMes', totalProveedorMes)
 app.add_url_rule('/dashboard/totalProveedor', 'totalProveedor', totalProveedor)
+app.add_url_rule('/dashboard/stockProducts', 'stockProducts', stockProducts)
 
 
 app.register_error_handler(404, lambda e: flash('Página no encontrada', category='error') or redirect(url_for('index')))

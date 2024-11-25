@@ -543,6 +543,15 @@ BEGIN
 END $$
 DELIMITER ;
 
+--Stored procedure para stock por producto
+DELIMITER $$
+CREATE PROCEDURE stockProducto()
+BEGIN
+    SELECT nombre, inventarioProducto as stock
+    FROM Productos;
+END $$
+DELIMITER ;
+
 --Queries (temporal)
 --Select Para ver productos y sus proveedores
 SELECT prod.nombre, prov.nombreProveedor 
