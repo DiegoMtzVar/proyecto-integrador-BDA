@@ -19,6 +19,13 @@ CREATE TABLE Tipos_Envios(
     descripcion VARCHAR(100)
 );
 
+CREATE TABLE Cupones(
+    codigoCupon VARCHAR(10),
+    descuento INT,
+    activo BOOLEAN DEFAULT TRUE,
+    PRIMARY KEY (codigoCupon)
+);
+
 CREATE TABLE Usuarios(
     idUsuario INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255),
@@ -53,9 +60,11 @@ CREATE TABLE Ventas(
     idUsuario INT,
     idStatus INT DEFAULT 1,
     idEnvio INT,
+    codigoCupon VARCHAR(10),
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
     FOREIGN KEY (idStatus) REFERENCES Tipos_Status(idStatus),
-    FOREIGN KEY (idEnvio) REFERENCES Tipos_Envios(idEnvio)
+    FOREIGN KEY (idEnvio) REFERENCES Tipos_Envios(idEnvio),
+    FOREIGN KEY (codigoCupon) REFERENCES Cupones(codigoCupon)
 );
 
 CREATE TABLE Contiene(
