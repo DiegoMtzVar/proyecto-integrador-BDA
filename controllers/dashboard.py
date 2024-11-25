@@ -31,6 +31,14 @@ def providerPercentage():
 def totalProveedorMes():
     return analytics.totalMonthlySupplier()
 
+@secureRoute
+def totalProveedor():
+    return analytics.providerTotal()
+
+@secureRoute
+def stockProducts():
+    return analytics.stockProducts()
+
 # Controladores de ventas y proveedores
 @secureRoute
 def ventas():

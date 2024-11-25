@@ -76,3 +76,26 @@ def totalMonthlySupplier():
         return []
     finally:
         if cur: cur.close()
+
+def providerTotal():
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('totalProveedor')
+        data = cur.fetchall()
+        return jsonify(data)
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
+def stockProducts():
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('stockProducto')
+        data = cur.fetchall()
+        print(data)
+        return jsonify(data)
+    except:
+        return []
+    finally:
+        if cur: cur.close()
