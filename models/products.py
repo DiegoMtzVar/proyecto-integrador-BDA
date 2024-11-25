@@ -144,18 +144,6 @@ def aniadirContiene(idU,idC,cantidad,promocion):
         if cur: cur.close()
     return False
 
-def aniadirContiene(idU,idC,cantidad,promocion):
-    try:
-        cur = mysql.connection.cursor()
-        cur.callproc('aniadirContiene', (idU,idC,cantidad,promocion))
-        mysql.connection.commit()
-        return True
-    except Exception as e:
-        print(f"Error al ejecutar el procedimiento almacenado: {e}")
-    finally:
-        if cur: cur.close()
-    return False
-
 def getCuponesbyID(cupon):
     try:
         cur = mysql.connection.cursor()
