@@ -527,6 +527,16 @@ BEGIN
 END $$
 DELIMITER ;
 
+--Stored procedure para los proveedores regresando el porcentaje de compras totales
+DELIMITER $$
+CREATE PROCEDURE porcentajeProveedor()
+BEGIN
+    SELECT nombreProveedor, SUM(precioProveedor * cantidad) / (SELECT SUM(precioProveedor * cantidad) FROM Viene_De) as porcentaje
+    FROM Proveedores p JOIN Proveedores_Compras pc ON p.idProveedor = pc.idProveedor
+    JOIN Viene_De vd ON pc.idCompraProveedor = vd.idCompraProveedor GROUP BY p.idProveedor;
+END $$
+DELIMITER ;
+
 --Queries (temporal)
 --Select Para ver productos y sus proveedores
 SELECT prod.nombre, prov.nombreProveedor 
