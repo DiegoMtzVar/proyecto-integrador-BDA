@@ -13,7 +13,7 @@
 <div id="wrapper">
 
     {% block sidebar %}
-		{{sidebar("Promociones")}}
+		{{sidebar("Proveedores")}}
 	{% endblock %}
 
     <script>
@@ -38,7 +38,7 @@
             <form class="modal-content" method="POST" enctype="multipart/form-data">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Crear Promocion</h5>
+                    <h5 class="modal-title" id="modalLabel">Hacer Pedido</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -87,10 +87,10 @@
                     <!-- Page Heading -->
                     <div class="d-inline-flex align-items-center justify-content-between w-100">
                         <div>
-                            <h1 class="h3 mb-2 text-gray-800">Promociones</h1>
-                            <p class="mb-4">Aquí puedes manejar promociones con cupones</p>
+                            <h1 class="h3 mb-2 text-gray-800">Proveedores</h1>
+                            <p class="mb-4">Aquí puedes mandar pedidos a proveedores y visualizar pedidos previos</p>
                         </div>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#modal">Agregar Promocion</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#modal">Hacer Pedido</button>
                     </div>
 
                     <!-- content card -->
@@ -105,26 +105,26 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Descuento</th>
-                                            <th>Editar</th>
-                                            <th>Borrar</th>
+                                            <th>Nombre</th>
+                                            <th>Correo</th>
+                                            <th>Telefono</th>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Fecha</th>
+                                            <th>Estado</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for promocion in promociones %}
+                                        {% for proveedor in proveedores %}
                                         <tr>
-                                            <td class="text-center">  {{ promocion.ID }}</td>
-                                            <td>{{ promocion.discount }}</td>
-                                            <td class="text-center">
-                                                <a href="/dashboard/promociones/edit/{{ promocion.ID }}" class="btn btn-primary btn-circle">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                            </td>
-                                            <td class="text-center">
-                                                <a href="/dashboard/promociones/delete/{{ promocion.ID }}" class="btn btn-danger btn-circle">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </td>
+                                            <td class="text-center">  {{ proveedor.ID }}</td>
+                                            <td>{{ proveedor.name }}</td>
+                                            <td>{{ proveedor.email }}</td>
+                                            <td>{{ proveedor.phone }}</td>
+                                            <td>{{ proveedor.product }}</td>
+                                            <td>{{ proveedor.quantity }}</td>
+                                            <td>{{ proveedor.date }}</td>
+                                            <td>{{ proveedor.status }}</td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>

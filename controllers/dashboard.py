@@ -2,6 +2,7 @@ from flask import render_template, session, flash, url_for, redirect, jsonify, r
 from models import analytics, user, products
 from functools import wraps
 
+# Función decoradora para asegurar que solo los administradores puedan acceder a las rutas
 def secureRoute(route):
     @wraps(route)
     def wrapped_route(*args, **kwargs):
@@ -10,6 +11,7 @@ def secureRoute(route):
         return route(*args, **kwargs)
     return wrapped_route
 
+# Controladores del dashboard
 @secureRoute
 def dashboard():
     return render_template('dashboard/dashboard.html',  
@@ -18,13 +20,14 @@ def dashboard():
                            outmes = analytics.getMonthOut())
 
 @secureRoute
-def historialVentas():
-    return render_template('dashboard/historialVentas.html')
+def ventas():
+    return render_template('dashboard/ventas.html')
 
 @secureRoute
-def historialComprasProveedor():
-    return render_template('dashboard/historialComprasProveedor.html')
+def proveedores():
+    return render_template('dashboard/proveedores.html')
 
+# Controladores de gestión de usuarios
 @secureRoute
 def usuariosGestion():
     return render_template('dashboard/usuariosGestion.html', users=user.getUsers())
@@ -60,6 +63,7 @@ def deleteUser(userID):
 def getRecentPurchases(userID):
     return jsonify(products.getRecentlyPurchased(userID))
 
+# Controladores de gestión de productos
 def agregarProducto():
     name = request.form['name']
     price = request.form['price']
@@ -83,7 +87,7 @@ def agregarProducto():
 def productosGestion():
     if request.method == 'POST':
         agregarProducto()
-    
+    print(products.getProducts())
     return render_template('dashboard/productosGestion.html', 
                             products=products.getProducts(), 
                             categories=products.getCategories())
@@ -93,8 +97,8 @@ def promociones():
     return render_template('dashboard/promociones.html')
 
 @secureRoute
-def mostBought():
-    return analytics.mostBought()
+def mostSold():
+    return analytics.mostSold()
 
 @secureRoute
 def providerPercentage():

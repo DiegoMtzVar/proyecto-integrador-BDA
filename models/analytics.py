@@ -41,10 +41,10 @@ def getMonthOut():
     finally:
         if cur: cur.close()
 
-def mostBought():
+def mostSold():
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('masComprados')
+        cur.callproc('masVendidos')
         data = cur.fetchall()
         return jsonify(data)
     except:

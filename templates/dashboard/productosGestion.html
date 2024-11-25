@@ -5,33 +5,33 @@
 
 {% block menu %}
 	{{ menu("Dashboard") }}
-<script>
-    function validateForm(e) {
-        var form = document.querySelector('.modal-content');
-        if (form.checkValidity()) {
-            form.submit();
-        } else {
-            e.preventDefault();
-            setTimeout(function() {
+    {% endblock %}
+    
+    {% block content %}
+    <div style="width: 100%; height: 100px; background-color: #051922; margin: 0 auto; padding: 0; "></div>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        
+        {% block sidebar %}
+        {{sidebar("productosGestion")}}
+        {% endblock %}
+        
+    <script>
+        function validateForm(e) {
+            var form = document.querySelector('.modal-content');
+            if (form.checkValidity()) {
+                form.submit();
+            } else {
+                e.preventDefault();
+                setTimeout(function() {
+                    var modal = document.getElementById('modal');
+                    $(modal).modal('show');
+                }, 500);
                 var modal = document.getElementById('modal');
                 $(modal).modal('show');
-            }, 500);
-            var modal = document.getElementById('modal');
-            $(modal).modal('show');
+            }
         }
-    }
-</script>
-{% endblock %}
-
-{% block content %}
-<div style="width: 100%; height: 100px; background-color: #051922; margin: 0 auto; padding: 0; "></div>
-<!-- Page Wrapper -->
-<div id="wrapper">
-
-    {% block sidebar %}
-		{{sidebar("productosGestion")}}
-	{% endblock %}
-
+    </script>
     <!-- Modal creación de productos -->
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -94,12 +94,12 @@
                     <button class="btn btn-primary" data-toggle="modal" data-target="#modal">Agregar Producto</button>
                 </div>
 
-                <!-- DataTable -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary"></h6>
                     </div>
                     <div class="card-body">
+                        <!-- DataTable -->
                         <div class="table-responsive">
                             <table class="table table-bordered" id="tablaProductos" width="100%" cellspacing="0">
                                 <thead>

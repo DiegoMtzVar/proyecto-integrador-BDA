@@ -56,17 +56,17 @@
     </div>
 
     <!-- Nav Item - Historial Ventas -->
-    <li class="nav-item {% if highlightSection == "historialVentas" %}active{% endif %}">
-        <a class="nav-link" href="{{ url_for('historialVentas')}}">
-            <i class="fas fa-fw fa-clock"></i>
-            <span>Historial de Ventas</span></a>
+    <li class="nav-item {% if highlightSection == "Ventas" %}active{% endif %}">
+        <a class="nav-link" href="{{ url_for('ventas')}}">
+            <i class="fas fa-dollar-sign"></i>
+            <span>Ventas</span></a>
     </li>
 
-    <!-- Nav Item - Historial Compras a proveedor -->
-    <li class="nav-item {% if highlightSection == "historialComprasProveedor" %}active{% endif %}">
-        <a class="nav-link" href="{{ url_for('historialComprasProveedor')}}">
-            <i class="fas fa-fw fa-clock"></i>
-            <span>Historial Proveedor</span></a>
+    <!-- Nav Item - Proveedores -->
+    <li class="nav-item {% if highlightSection == "Proveedores" %}active{% endif %}">
+        <a class="nav-link" href="{{ url_for('proveedores')}}">
+            <i class="fas fa-box"></i>
+            <span>Proveedores</span></a>
     </li>
 
     <!-- Nav Item - Gestionar Usuarios -->
@@ -84,7 +84,7 @@
     </li>
 
     <!-- Nav Item - Gestionar Promociones -->
-    <li class="nav-item {% if highlightSection == "promociones" %}active{% endif %}">
+    <li class="nav-item {% if highlightSection == "Promociones" %}active{% endif %}">
         <a class="nav-link" href="{{ url_for('promociones')}}">
             <i class="fas fa-fw fa-percent"></i>
             <span>Promociones</span></a>

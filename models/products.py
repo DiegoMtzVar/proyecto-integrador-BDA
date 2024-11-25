@@ -15,7 +15,7 @@ def getRecommendedProducts():
 def getRecentlyPurchased(userID):
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('productosRecientes', (userID,))
+        cur.callproc('obtenerVentasUsuario', (userID,))
         
         data = cur.fetchall()
         return data
@@ -67,7 +67,8 @@ def getProducts():
         
         data = cur.fetchall()
         return data
-    except:
+    except Exception as e:
+        print(f"Error al ejecutar el procedimiento almacenado: {e}")
         return []
     finally:
         if cur: cur.close()
@@ -86,7 +87,7 @@ def getResenas(id):
 def getCompras(id):
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('obtenerCompras', (id,))
+        cur.callproc('obtenerVentasUsuario', (id,))
         data = cur.fetchall()
         return data
     except:

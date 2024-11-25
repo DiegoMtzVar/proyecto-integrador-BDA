@@ -150,10 +150,29 @@ let table = $('#tablaUsuarios').dataTable({
 formatRecentPurchases = function(data) {
     return (
         data.map(function(purchase) {
+            if (purchase.status == 'Pendiente') {
+                syleClass = 'bg-danger';
+                width = 25;
+            } else if (purchase.status == 'En bodega') {
+                styleClass = 'bg-warning';
+                width = 50;
+            } else if (purchase.status == 'En camino') {
+                styleClass = 'bg-info';
+                width = 75;
+            } else if (purchase.status == 'Entregado') {
+                styleClass = 'bg-success';
+                width = 100;
+            }
             return (
-                '<tr>' +
-                    '<td>' + purchase.name + '</td>' +
-                '</tr>'
+                `<div class="row justify-content-between w-100">
+                    <div class="col-md-4">${purchase.name}</div>
+                    <div class="col-md-4 text-right">$${purchase.price}</div>
+                    <div class="progress w-100">
+                        <div class="progress-bar progress-bar-striped ${styleClass}" role="progressbar" style="width: ${width}%" aria-valuenow="${width}" aria-valuemin="0" aria-valuemax="100">
+                            ${purchase.status}
+                        </div>
+                    </div>
+                </div>`
             );
         }
     )

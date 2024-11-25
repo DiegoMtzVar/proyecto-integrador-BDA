@@ -7,10 +7,10 @@ def index():
     else:
         recently_purchased = []
     
-    return render_template('index.html', recommended_products = getRecommendedProducts(), recently_purchased = recently_purchased)
+    return render_template('shop/index.html', recommended_products = getRecommendedProducts(), recently_purchased = recently_purchased)
 
 def productGallery(category):
-    return render_template('productGallery.html', products=getProductsByCategory(category), category=category)
+    return render_template('shop/productGallery.html', products=getProductsByCategory(category), category=category)
 
 
 
@@ -42,13 +42,13 @@ def cart():
     compras = getCompras(session['user']['ID'])
     cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
     total = sum([product['price'] * product['quantity'] for product in cart_products])
-    return render_template('cart.html', products=cart_products, total=total, compras=compras)
+    return render_template('shop/cart.html', products=cart_products, total=total, compras=compras)
 
 def single_product(id):
     product = getProductById(id)
     resenas = getResenas(id)
     if product:
-        return render_template('single-product.html', product=product, resenas=resenas)
+        return render_template('shop/single-product.html', product=product, resenas=resenas)
     else:
         flash('Producto no encontrado', category='error')
         return redirect(url_for('productGallery'))
@@ -86,7 +86,7 @@ def checkout():
     compras = getCompras(session['user']['ID'])
     cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
     total = sum([product['price'] * product['quantity'] for product in cart_products])
-    return render_template('checkout.html', products=cart_products, total=total, compras=compras)
+    return render_template('shop/checkout.html', products=cart_products, total=total, compras=compras)
 
 def finalizarCompra():
     if not session.get("user"):

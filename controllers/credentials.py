@@ -16,7 +16,7 @@ def login():
             return redirect(url_for('index'))
         else:
             flash('Usuario o contraseña incorrectos', category='error')
-    return render_template('login.html')
+    return render_template('credentials/login.html')
 
 def register():
     if request.method == 'POST':
@@ -31,7 +31,7 @@ def register():
         else:
             flash('Ya existe esta registrado este correo, intente de nuevo', category='error')
         
-    return render_template('register.html')
+    return render_template('credentials/register.html')
 
 def logout():
     session.clear()

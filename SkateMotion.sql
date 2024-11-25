@@ -45,7 +45,7 @@ CREATE TABLE Proveedores(
     dirProveedor VARCHAR(255)
 );
 
-CREATE TABLE Compras(
+CREATE TABLE Ventas(
     idCompra INT AUTO_INCREMENT PRIMARY KEY,
     fecha DATE,
     fecha_entrega DATE,
@@ -63,11 +63,11 @@ CREATE TABLE Contiene(
     idCompra INT,
     cantidad INT,
     PRIMARY KEY (idProducto, idCompra),
-    FOREIGN KEY (idCompra) REFERENCES Compras(idCompra),
+    FOREIGN KEY (idCompra) REFERENCES Ventas(idCompra),
     FOREIGN KEY (idProducto) REFERENCES Productos(idProducto)
 );
 
-CREATE TABLE Proveedores_Compras(
+CREATE TABLE Compras(
     idCompraProveedor INT AUTO_INCREMENT PRIMARY KEY,
     fecha DATE,
     idProveedor INT,
@@ -80,7 +80,7 @@ CREATE TABLE Viene_De(
     precioProveedor INT,
     cantidad INT,
     PRIMARY KEY (idProducto, idCompraProveedor),
-    FOREIGN KEY (idCompraProveedor) REFERENCES Proveedores_Compras(idCompraProveedor),
+    FOREIGN KEY (idCompraProveedor) REFERENCES Compras(idCompraProveedor),
     FOREIGN KEY (idProducto) REFERENCES Productos(idProducto)
 );
 
@@ -159,7 +159,7 @@ INSERT INTO Proveedores(idProveedor, nombreProveedor, telefonoProveedor, correoP
 (9, 'Element Skateboards', '8123456781', 'element@gmail.com', 'Calle Element 404'),
 (10, 'Birdhouse Industries', '8198765431', 'bidhouse@gmail.com', 'Avenida Globe 505');
 
-INSERT INTO Compras(idCompra, fecha, direccion, idStatus, idUsuario, idEnvio, fecha_entrega) VALUES 
+INSERT INTO Ventas(idCompra, fecha, direccion, idStatus, idUsuario, idEnvio, fecha_entrega) VALUES 
 (1, CURDATE(), 'Mexico, CDMX, Polanco, Venustiano Carranza #123, 03100', 4, 1, 1, CURDATE() + INTERVAL 5 DAY),
 (2, CURDATE(), 'Mexico, CDMX, Polanco, Insurgentes Sur #456, 03100', 4, 1, 2, CURDATE() + INTERVAL 3 DAY),
 (3, CURDATE(), 'Mexico, Jalisco, Guadalajara, Benito Juarez #456, 44100', 4, 2, 3, CURDATE() + INTERVAL 1 DAY),
@@ -185,7 +185,7 @@ INSERT INTO Contiene(idProducto, idCompra, cantidad) VALUES
 (9,9,3),
 (18,10,2);
 
-INSERT INTO Proveedores_Compras(idCompraProveedor, fecha, idProveedor) VALUES
+INSERT INTO Compras(idCompraProveedor, fecha, idProveedor) VALUES
 (1, CURDATE(), 1),
 (2, CURDATE(), 2),
 (3, CURDATE(), 3),
@@ -284,25 +284,6 @@ BEGIN
 END $$
 DELIMITER ;
 
---Stored procedure para ver compras recientes de un usuario
-DELIMITER $$
-CREATE PROCEDURE productosRecientes(
-    IN idUsuario INT
-)
-BEGIN
-    SELECT p.idProducto as ID, 
-    p.nombre as name, 
-    p.precio as price, 
-    p.inventarioProducto as stock, 
-    p.categoria as category, 
-    p.rutaImagen as image
-    FROM Productos p JOIN Contiene c ON p.idProducto = c.idProducto
-    JOIN Compras co ON c.idCompra = co.idCompra
-    WHERE co.idUsuario = idUsuario
-    ORDER BY co.fecha DESC;
-END $$
-DELIMITER ;
-
 -- Stored procedure para ver productos por categoria
 DELIMITER $$
 CREATE PROCEDURE productosPorCategoria(
@@ -346,9 +327,9 @@ BEGIN
     inventarioProducto as stock, 
     categoria as category, 
     rutaImagen as image
-    FROM Productos, Viene_De, Proveedores_Compras
+    FROM Productos, Viene_De, Compras
     WHERE Productos.idProducto = Viene_De.idProducto 
-    AND Viene_De.idCompraProveedor = Proveedores_Compras.idCompraProveedor;
+    AND Viene_De.idCompraProveedor = Compras.idCompraProveedor;
 END $$
 DELIMITER ;
 
@@ -362,7 +343,7 @@ CREATE PROCEDURE aniadirResena(
 )
 BEGIN 
     DECLARE compra_existente INT DEFAULT 0;
-    SELECT COUNT(*) INTO compra_existente FROM Contiene c JOIN Compras co ON c.idCompra = co.idCompra
+    SELECT COUNT(*) INTO compra_existente FROM Contiene c JOIN Ventas co ON c.idCompra = co.idCompra
     WHERE co.idUsuario = idUsuario AND c.idProducto = idProducto;
     IF compra_existente = 0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se ha comprado el producto';
@@ -381,11 +362,11 @@ CREATE PROCEDURE aniadirCompra(
 )
 BEGIN
     if tipoEnvio = 1 THEN
-        INSERT INTO Compras(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 5 DAY);
+        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 5 DAY);
     ELSEIF tipoEnvio = 2 THEN
-        INSERT INTO Compras(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 3 DAY);
+        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 3 DAY);
     ELSEIF tipoEnvio = 3 THEN
-        INSERT INTO Compras(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 1 DAY);
+        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 1 DAY);
     END IF;
 END $$
 DELIMITER ;
@@ -397,7 +378,7 @@ CREATE PROCEDURE ultimaCompra(
 )
 BEGIN
     SELECT idCompra as ID
-    FROM Compras
+    FROM Ventas
     WHERE idUsuario = idU
     ORDER BY idCompra DESC
     LIMIT 1;
@@ -449,9 +430,9 @@ BEGIN
 END $$
 DELIMITER ;
 
---Stored procedure para que cuando le das el usuario te regrese las compras y la informacion del producto y su status
+--Stored procedure para obtener las ventas recientes de un usuario
 DELIMITER $$
-CREATE PROCEDURE obtenerCompras(
+CREATE PROCEDURE obtenerVentasUsuario(
     IN p_idUsuario INT
 )
 BEGIN
@@ -462,7 +443,7 @@ BEGIN
     p.categoria as category,
     p.rutaImagen as image,
     tp.descripcion as status
-    FROM Tipos_Status tp JOIN Compras c ON c.idStatus=tp.idStatus JOIN Contiene co ON c.idCompra = co.idCompra
+    FROM Tipos_Status tp JOIN Ventas c ON c.idStatus=tp.idStatus JOIN Contiene co ON c.idCompra = co.idCompra
     JOIN Productos p ON co.idProducto = p.idProducto 
     WHERE c.idUsuario = p_idUsuario;
 END $$
@@ -494,7 +475,7 @@ BEGIN
     WITH tablaTotal AS(
     SELECT precio*cantidad as total
     FROM Productos prod JOIN Contiene cont ON prod.idProducto=cont.idProducto
-    JOIN Compras comp ON comp.idCompra = cont.idCompra
+    JOIN Ventas comp ON comp.idCompra = cont.idCompra
     WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%'))
     SELECT SUM(total) as ingresosMes FROM tablaTotal;
 END $$
@@ -509,16 +490,16 @@ CREATE PROCEDURE egresosMes(
 BEGIN
     WITH tablaTotal AS(
     SELECT precioProveedor * cantidad as total
-    FROM Viene_De v JOIN Proveedores_Compras p ON p.idCompraProveedor = v.idCompraProveedor
+    FROM Viene_De v JOIN Compras p ON p.idCompraProveedor = v.idCompraProveedor
     WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%'))
     SELECT SUM(total) as egresosMes FROM tablaTotal;
 END $$
 DELIMITER ;
 
 
---Stored procedures para 5 productos mas comprados
+--Stored procedures para 5 productos mas vendidos
 DELIMITER $$
-CREATE PROCEDURE masComprados()
+CREATE PROCEDURE masVendidos()
 BEGIN
     SELECT nombre, SUM(cantidad) as cantidad
     FROM Contiene c JOIN Productos p ON c.idProducto = p.idProducto
@@ -556,6 +537,6 @@ DELIMITER ;
 --Select Para ver productos y sus proveedores
 SELECT prod.nombre, prov.nombreProveedor 
 FROM Productos prod JOIN Viene_De vi ON prod.idProducto = vi.idProducto 
-JOIN Proveedores_Compras pc ON vi.idCompraProveedor = pc.idCompraProveedor
+JOIN Compras pc ON vi.idCompraProveedor = pc.idCompraProveedor
 JOIN Proveedores prov ON pc.idProveedor = prov.idProveedor;
 
