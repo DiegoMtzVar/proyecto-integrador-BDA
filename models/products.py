@@ -97,10 +97,11 @@ def getCategories():
 def addProduct(name, price, category, image):
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('agregarProducto', (name, price, category, image))
+        cur.callproc('crearProducto', (name, price, 0, category, image))
         mysql.connection.commit()
         return True
-    except:
+    except Exception as e:
+        print(f"Error al ejecutar el procedimiento almacenado: {e}")
         return False
     finally:
         if cur: cur.close()
@@ -152,6 +153,17 @@ def getSales():
         return data
     except:
         return []
+    finally:
+        if cur: cur.close()
+
+def updateSaleStatus(ventaID, statusID):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('actualizarEstadoVenta', (ventaID, statusID))
+        mysql.connection.commit()
+        return True
+    except:
+        return False
     finally:
         if cur: cur.close()
 

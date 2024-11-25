@@ -353,16 +353,10 @@ BEGIN
         Productos.nombre AS name, 
         Productos.precio AS price, 
         Productos.inventarioProducto AS stock, 
-        Tipos_Categorias.descripcion AS descripcion,
+        Tipos_Categorias.descripcion AS category,
         Productos.rutaImagen AS image
-    FROM 
-        Productos
-    JOIN 
-        Viene_De ON Productos.idProducto = Viene_De.idProducto 
-    JOIN 
-        Compras ON Viene_De.idCompraProveedor = Compras.idCompraProveedor
-    JOIN 
-        Tipos_Categorias ON Productos.idCategoria = Tipos_Categorias.idCategoria;
+    FROM Productos
+    JOIN Tipos_Categorias ON Productos.idCategoria = Tipos_Categorias.idCategoria;
 END $$
 DELIMITER ;
 
@@ -595,32 +589,59 @@ DELIMITER $$
 CREATE PROCEDURE obtenerCategorias()
 BEGIN
     SELECT idCategoria as ID, 
-    descripcion as category
+    descripcion as name
     FROM Tipos_Categorias;
 END $$
 DELIMITER ;
-
---Queries (temporal)
---Select Para ver productos y sus proveedores
-SELECT prod.nombre, prov.nombreProveedor 
-FROM Productos prod JOIN Viene_De vi ON prod.idProducto = vi.idProducto 
-JOIN Compras pc ON vi.idCompraProveedor = pc.idCompraProveedor
-JOIN Proveedores prov ON pc.idProveedor = prov.idProveedor;
 
 -- Stored procedure para obtener todas las ventas
 DELIMITER $$
 CREATE PROCEDURE obtenerVentas()
 BEGIN
-    SELECT c.idCompra as ID, 
-    c.fecha as saleDate,
-    c.fecha_entrega as deliveryDate,
-    c.direccion as address,
-    u.nombre as name, 
+    SELECT v.idCompra as ID, 
+    v.fecha as saleDate,
+    v.fecha_entrega as deliveryDate,
+    SUM(p.precio * c.cantidad) as total,
+    v.direccion as address,
+    u.nombre as name,
     tp.descripcion as status
     FROM Tipos_Status tp 
-    JOIN Ventas c ON c.idStatus = tp.idStatus 
-    JOIN Usuarios u ON c.idUsuario = u.idUsuario;
+    JOIN Ventas v ON v.idStatus = tp.idStatus
+    JOIN Contiene c ON v.idCompra = c.idCompra
+    JOIN Productos p ON c.idProducto = p.idProducto
+    JOIN Usuarios u ON v.idUsuario = u.idUsuario
+    GROUP BY v.idCompra, v.fecha, v.fecha_entrega, v.direccion, u.nombre, tp.descripcion;
 END $$
+DELIMITER ;
+-- Stored procedure para calcular el total incluyendo el descuento del cupón
+DELIMITER $$
+CREATE PROCEDURE calcularTotalConDescuento(
+    IN idCompra INT
+)
+BEGIN
+    DECLARE total DECIMAL(10,2);
+    DECLARE descuento INT;
+    DECLARE totalConDescuento DECIMAL(10,2);
+
+    -- Calcular el total de la compra
+    SELECT SUM(p.precio * c.cantidad) INTO total
+    FROM Productos p
+    JOIN Contiene c ON p.idProducto = c.idProducto
+    WHERE c.idCompra = idCompra;
+
+    -- Obtener el descuento del cupón
+    SELECT cu.descuento INTO descuento
+    FROM Ventas v
+    JOIN Cupones cu ON v.codigoCupon = cu.codigoCupon
+    WHERE v.idCompra = idCompra;
+
+    -- Calcular el total con descuento
+    SET totalConDescuento = total - (total * descuento / 100);
+
+    -- Devolver el total con descuento
+    SELECT totalConDescuento AS totalConDescuento;
+END $$
+
 DELIMITER ;
 
 -- Obtener los productos de una venta
@@ -664,3 +685,59 @@ BEGIN
     WHERE vd.idCompraProveedor = idCompra;
 END $$
 DELIMITER ;
+
+-- Procedimiento almacenado actualizar el estado de una venta
+DELIMITER $$
+CREATE PROCEDURE actualizarEstadoVenta(
+    IN p_idCompra INT,
+    IN p_idStatus INT
+)
+BEGIN
+    UPDATE Ventas SET idStatus = p_idStatus WHERE idCompra = p_idCompra;
+END $$
+DELIMITER ;
+
+-- Procedimiento para crear un producto
+DELIMITER $$
+CREATE PROCEDURE crearProducto(
+    IN p_nombre VARCHAR(255),
+    IN p_precio INT,
+    IN p_inventario INT,
+    IN p_idCategoria INT,
+    IN p_rutaImagen VARCHAR(100)
+)
+BEGIN
+    INSERT INTO Productos(nombre, precio, inventarioProducto, idCategoria, rutaImagen) VALUES(p_nombre, p_precio, p_inventario, p_idCategoria, p_rutaImagen);
+END $$
+DELIMITER ;
+
+-- Procedimiento para eliminar a un usuario si no tiene compras
+DELIMITER $$
+CREATE PROCEDURE eliminarUsuario(
+    IN p_idUsuario INT
+)
+BEGIN
+    DECLARE compras INT;
+    SELECT COUNT(*) INTO compras FROM Ventas WHERE idUsuario = p_idUsuario;
+    IF compras = 0 THEN
+        DELETE FROM Usuarios WHERE idUsuario = p_idUsuario;
+    ELSE
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El usuario tiene compras';
+    END IF;
+END $$
+DELIMITER ;
+
+-- Procedimiento para eliminar un producto si no tiene compras
+DELIMITER $$
+CREATE PROCEDURE eliminarProducto(
+    IN p_idProducto INT
+)
+BEGIN
+    DECLARE compras INT;
+    SELECT COUNT(*) INTO compras FROM Contiene WHERE idProducto = p_idProducto;
+    IF compras = 0 THEN
+        DELETE FROM Productos WHERE idProducto = p_idProducto;
+    ELSE
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El producto tiene compras';
+    END IF;
+END $$

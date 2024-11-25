@@ -37,6 +37,7 @@ app.add_url_rule('/dashboard/masCompradoHisto', 'masCompradoHisto', mostSold)
 app.add_url_rule('/dashboard/porcentajeProveedor', 'porcentajeProveedor', providerPercentage)
 
 app.add_url_rule('/dashboard/ventas', 'ventas', ventas)
+app.add_url_rule('/dashboard/ventas/update/<int:ventaID>/<int:statusID>', 'ventas-updateStatus', updateStatus)
 
 app.add_url_rule('/dashboard/proveedores', 'proveedores', proveedores)
 
