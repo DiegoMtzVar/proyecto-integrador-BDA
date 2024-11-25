@@ -537,6 +537,21 @@ BEGIN
 END $$
 DELIMITER ;
 
+--Total de compras por proveedor del ultimo mes
+DELIMITER $$
+CREATE PROCEDURE totalProveedorMes(
+    IN mes INT,
+    IN anio INT
+)
+BEGIN
+    SELECT nombreProveedor, SUM(precioProveedor * cantidad) as total
+    FROM Proveedores p JOIN Proveedores_Compras pc ON p.idProveedor = pc.idProveedor
+    JOIN Viene_De vd ON pc.idCompraProveedor = vd.idCompraProveedor 
+    WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%')
+    GROUP BY p.idProveedor;
+END $$
+DELIMITER ;
+
 --Queries (temporal)
 --Select Para ver productos y sus proveedores
 SELECT prod.nombre, prov.nombreProveedor 

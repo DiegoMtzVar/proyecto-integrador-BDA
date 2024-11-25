@@ -62,3 +62,17 @@ def providerPercentage():
         return []
     finally:
         if cur: cur.close()
+
+def totalMonthlySupplier():
+    try:
+        tiempo = datetime.now()
+        anio = tiempo.year
+        mes = tiempo.month
+        cur = mysql.connection.cursor()
+        cur.callproc('totalProveedorMes', [mes, anio])
+        data = cur.fetchall()
+        return jsonify(data)
+    except:
+        return []
+    finally:
+        if cur: cur.close()

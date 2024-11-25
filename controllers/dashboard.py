@@ -99,3 +99,7 @@ def mostBought():
 @secureRoute
 def providerPercentage():
     return analytics.providerPercentage()
+
+@secureRoute
+def totalProveedorMes():
+    return analytics.totalMonthlySupplier()
