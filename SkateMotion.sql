@@ -641,3 +641,26 @@ BEGIN
     WHERE c.idCompra = idCompra;
 END $$
 DELIMITER ;
+
+--Stored procedure para obtener las compras de todos los proveedores
+DELIMITER $$
+CREATE PROCEDURE comprasProveedores()
+BEGIN
+    SELECT c.idCompraProveedor, nombreProveedor, correoProveedor, telefonoProveedor, c.fecha, SUM(vd.precioProveedor * vd.cantidad) as total
+    FROM Proveedores p JOIN Compras c ON p.idProveedor = c.idProveedor
+    JOIN Viene_De vd ON c.idCompraProveedor = vd.idCompraProveedor
+    GROUP BY c.idCompraProveedor;
+END $$
+DELIMITER ;
+
+--Stored procedure para obtener los productos en una compra
+DELIMITER $$
+CREATE PROCEDURE productosEnCompra(
+    IN idCompra INT
+)
+BEGIN
+    SELECT nombre, precioProveedor, cantidad
+    FROM Productos p JOIN Viene_De vd ON p.idProducto = vd.idProducto
+    WHERE vd.idCompraProveedor = idCompra;
+END $$
+DELIMITER ;

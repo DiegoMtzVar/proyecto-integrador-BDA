@@ -45,7 +45,7 @@ app.add_url_rule('/dashboard/usuariosGestion/promote/<int:userID>', 'usuariosGes
 app.add_url_rule('/dashboard/usuariosGestion/demote/<int:userID>', 'usuariosGestion-demote', demote)
 app.add_url_rule('/dashboard/usuariosGestion/delete/<int:userID>', 'usuariosGestion-delete', deleteUser)
 app.add_url_rule('/dashboard/usuariosGestion/getRecentPurchases/<int:userID>', 'getRecentPurchases', getRecentPurchases)
-
+app.add_url_rule('/dashboard/proveedores/getProductsInPurchase/<int:userID>', 'getProductsInPurchase', getProductsInPurchase)
 app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGestion, methods=['GET', 'POST'])
 
 app.add_url_rule('/dashboard/promociones', 'promociones', promociones)

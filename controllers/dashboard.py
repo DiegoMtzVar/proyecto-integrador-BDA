@@ -47,7 +47,11 @@ def ventas():
 # Controladores de proveedores
 @secureRoute
 def proveedores():
-    return render_template('dashboard/proveedores.html')
+    return render_template('dashboard/proveedores.html', purchases=products.getSupplierPurchases())
+
+@secureRoute
+def getProductsInPurchase(userID):
+    return jsonify(products.getProductsInPurchase(userID))
 
 # Controladores de gestión de usuarios
 @secureRoute
@@ -83,7 +87,7 @@ def deleteUser(userID):
 
 @secureRoute
 def getRecentPurchases(userID):
-    return jsonify(products.getRecentlyPurchased(userID))
+    return jsonify(products.getUserPurchases(userID))
 
 # Controladores de gestión de productos
 def agregarProducto():
@@ -118,3 +122,4 @@ def productosGestion():
 @secureRoute
 def promociones():
     return render_template('dashboard/promociones.html')
+
