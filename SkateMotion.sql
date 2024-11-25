@@ -1,3 +1,6 @@
+CREATE USER IF NOT EXISTS 'skatemotion'@'localhost' IDENTIFIED BY 'skatemotion';
+GRANT ALL PRIVILEGES ON *.* TO 'skatemotion'@'localhost';
+
 DROP DATABASE IF EXISTS SkateMotion;
 
 CREATE DATABASE SkateMotion;
