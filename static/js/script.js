@@ -20,7 +20,7 @@ $(document).ready(function() {
 
 
     // Modal de confirmación
-    $('#modal').on('show.bs.modal', function (event) { // Evento que se ejecuta al abrir el modal
+    $('#modalConfirm').on('show.bs.modal', function (event) { // Evento que se ejecuta al abrir el modal
         const button = $(event.relatedTarget); // Botón que activó el modal
 
         const title = button.data('title');
@@ -33,10 +33,6 @@ $(document).ready(function() {
 
         const modalButton = modal.find('.btn-primary')
         modalButton.attr('href', action);
-
-        modalButton.click(function() {
-            modal.modal('hide');
-        });
     });
 
     // Flash messages

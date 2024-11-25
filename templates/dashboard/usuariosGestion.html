@@ -16,8 +16,8 @@
 		{{sidebar("usuariosGestion")}}
 	{% endblock %}
 
-    <!-- Modal -->
-    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <!-- Modal de confirmación -->
+    <div class="modal fade" id="modalConfirm" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -63,8 +63,7 @@
                                         <th>ID</th>
                                         <th>Nombre</th>
                                         <th>Correo</th>
-                                        <th>Borrar</th>
-                                        <th>Derechos</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -83,7 +82,7 @@
                                         </td>
                                         <td>{{ user.email }}</td>
                                         <td class="text-center" >
-                                            <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal" 
+                                            <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modalConfirm" 
                                                 data-title="Confirmar eliminación"
                                                 data-body="¿Estás seguro de que deseas eliminar la cuenta de {{ user.name }}? Esta acción no se puede deshacer."
                                                 data-action="usuariosGestion/delete/{{ user.ID }}"
@@ -91,10 +90,8 @@
                                                 <i class="fas fa-trash"></i>
                                                 <span>Borrar</span>
                                             </button>
-                                        </td>
-                                        <td class="text-center" >
                                             {% if user.role == "usuario" %}
-                                                <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modal" 
+                                                <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modalConfirm" 
                                                     data-title="Confirmar promoción"
                                                     data-body="¿Estás seguro de que quieres promover a {{ user.name }}? Este usuario se convertirá en administrador."
                                                     data-action="usuariosGestion/promote/{{ user.ID }}"
@@ -102,7 +99,7 @@
                                                     Promover
                                                 </button>
                                             {% else %}
-                                                <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#modal" 
+                                                <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#modalConfirm" 
                                                     data-title="Confirmar promoción"
                                                     data-body="¿Estás seguro de que quieres quitarle los derechos de administrador a {{ user.name }}? Este usuario se convertirá en usuario normal."
                                                     data-action="usuariosGestion/demote/{{ user.ID }}"
@@ -141,7 +138,7 @@ let table = $('#tablaUsuarios').dataTable({
             className: 'dt-control'
         },
         {
-            targets: [3, 4],
+            targets: 3,
             searchable: false,
             orderable: false
         }
