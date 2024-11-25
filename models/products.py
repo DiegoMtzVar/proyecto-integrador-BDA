@@ -94,6 +94,29 @@ def getCompras(id):
     finally:
         if cur: cur.close()
 
+def getCategories():
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerCategorias')
+        
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
+def addProduct(name, price, category, image):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('agregarProducto', (name, price, category, image))
+        mysql.connection.commit()
+        return True
+    except:
+        return False
+    finally:
+        if cur: cur.close()
+
 def aniadirCompra(idU,direccion,entrega):
     try:
         cur = mysql.connection.cursor()

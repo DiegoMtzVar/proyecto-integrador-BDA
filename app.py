@@ -14,8 +14,8 @@ app.add_url_rule('/', 'index', index)
 # Rutas para las credenciales
 app.add_url_rule('/login', 'login', login, methods=['GET', 'POST'])
 app.add_url_rule('/register', 'register', register, methods=['GET', 'POST'])
-app.add_url_rule('/logout', 'logout', logout, methods=['GET'])
-app.add_url_rule('/api/user', 'userAPI', userAPI, methods=['GET'])
+app.add_url_rule('/logout', 'logout', logout)
+app.add_url_rule('/api/user', 'userAPI', userAPI)
 
 # Rutas para los productos
 app.add_url_rule('/patinetas', 'patinetas', productGallery, defaults={'category': 'Completa'})
@@ -42,8 +42,10 @@ app.add_url_rule('/dashboard/usuariosGestion/delete/<int:userID>', 'usuariosGest
 app.add_url_rule('/dashboard/usuariosGestion/getRecentPurchases/<int:userID>', 'getRecentPurchases', getRecentPurchases)
 
 
-app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGestion)
+app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGestion, methods=['GET', 'POST'])
 app.add_url_rule('/dashboard/promociones', 'promociones', promociones)
+
+app.add_url_rule('/dashboard/masCompradoHisto', 'masCompradoHisto', mostBought)
 
 app.register_error_handler(404, lambda e: flash('Página no encontrada', category='error') or redirect(url_for('index')))
 app.register_error_handler(500, lambda e: flash('Error interno del servidor', category='error') or redirect(url_for('index')))
