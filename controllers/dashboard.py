@@ -12,7 +12,10 @@ def secureRoute(route):
 
 @secureRoute
 def dashboard():
-    return render_template('dashboard/dashboard.html',  gTotales = analytics.getTotalEarning(), inmes = analytics.getMonthIn(), outmes = analytics.getMonthOut())
+    return render_template('dashboard/dashboard.html',  
+                           gTotales = analytics.getTotalEarning(), 
+                           inmes = analytics.getMonthIn(), 
+                           outmes = analytics.getMonthOut())
 
 @secureRoute
 def historialVentas():
@@ -89,3 +92,6 @@ def productosGestion():
 def promociones():
     return render_template('dashboard/promociones.html')
 
+@secureRoute
+def mostBought():
+    return analytics.mostBought()

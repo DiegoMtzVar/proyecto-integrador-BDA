@@ -46,7 +46,7 @@ def mostBought():
         cur = mysql.connection.cursor()
         cur.callproc('masComprados')
         data = cur.fetchall()
-        return jsonify([{"nombre" : row[0], "cantidad": row[1]} for row in data])
+        return jsonify(data)
     except:
         return []
     finally:
