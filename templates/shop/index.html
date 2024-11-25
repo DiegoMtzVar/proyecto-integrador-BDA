@@ -73,6 +73,68 @@
 </div>
 <!-- end features list section -->
 
+{% if recently_purchased %}
+<!-- product section -->
+<div class="product-section mt-150 mb-150">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 offset-lg-2 text-center">
+				<div class="section-title">	
+					<h3><span class="orange-text">Productos</span> Comprados Recientemente</h3>
+					<p>Los productos que compraste recientemente</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			{% for compra in recently_purchased %}
+			<div class="row d-flex w-100">
+				<div class="col-md-9 h-100 p-0">
+					<div class="card flex-row flex-wrap" style="margin:5px;">
+						<div class="card-header border-0">
+							<img src="{{ url_for('static', filename='img/products/' + compra.image) }}" style="max-height: 200px; max-width: 200px; object-fit: cover;" alt="">
+						</div>
+						<div class="card-block px-2">
+							<h4 class="card-title" style="margin:5px;">{{ compra.name }}</h4>
+							<p class="card-text">Categoria: {{ compra.category }}</p>
+							<p class="card-text" style="font-size: 20px;">${{ compra.price }}</p>
+							<p class="card-text">Fecha de Compra: {{ compra.date }}</p>
+
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3 h-100 p-0">
+					<div class="card h-100" style="margin:5px;">
+						<div class="card-body">
+							<p class="card-text" style="font-size:25px;">Status: {{ compra.status }}</p>
+							{% if compra.status == "Pendiente" %}
+							<div class="progress">
+								<div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>					  
+							{% elif compra.status == "En bodega" %}
+							<div class="progress">
+								<div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+							{% elif compra.status == "En camino" %}
+							<div class="progress">
+								<div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+							{% elif compra.status == "Entregado" %}
+							<div class="progress">
+								<div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+<!-- end product section -->
+{% endif %}
+
 <!-- product section -->
 <div class="product-section mt-150 mb-150">
 	<div class="container">
@@ -87,27 +149,6 @@
 
 		<div class="row">
 			{% for product in recommended_products %}
-				{{ productCard(product) }}
-			{% endfor %}
-		</div>
-	</div>
-</div>
-<!-- end product section -->
-
-<!-- product section -->
-<div class="product-section mt-150 mb-150">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-8 offset-lg-2 text-center">
-				<div class="section-title">	
-					<h3><span class="orange-text">Productos</span> Comprados Recientemente</h3>
-					<p>Los productos que compraste recientemente</p>
-				</div>
-			</div>
-		</div>
-
-		<div class="row">
-			{% for product in recently_purchased %}
 				{{ productCard(product) }}
 			{% endfor %}
 		</div>

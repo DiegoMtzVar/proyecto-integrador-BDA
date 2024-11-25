@@ -513,7 +513,7 @@ DELIMITER $$
 CREATE PROCEDURE porcentajeProveedor()
 BEGIN
     SELECT nombreProveedor, SUM(precioProveedor * cantidad) / (SELECT SUM(precioProveedor * cantidad) FROM Viene_De) as porcentaje
-    FROM Proveedores p JOIN Proveedores_Compras pc ON p.idProveedor = pc.idProveedor
+    FROM Proveedores p JOIN Compras pc ON p.idProveedor = pc.idProveedor
     JOIN Viene_De vd ON pc.idCompraProveedor = vd.idCompraProveedor GROUP BY p.idProveedor;
 END $$
 DELIMITER ;
@@ -526,7 +526,7 @@ CREATE PROCEDURE totalProveedorMes(
 )
 BEGIN
     SELECT nombreProveedor, SUM(precioProveedor * cantidad) as total
-    FROM Proveedores p JOIN Proveedores_Compras pc ON p.idProveedor = pc.idProveedor
+    FROM Proveedores p JOIN Compras pc ON p.idProveedor = pc.idProveedor
     JOIN Viene_De vd ON pc.idCompraProveedor = vd.idCompraProveedor 
     WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%')
     GROUP BY p.idProveedor;

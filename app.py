@@ -49,7 +49,7 @@ app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGes
 
 app.add_url_rule('/dashboard/promociones', 'promociones', promociones)
 
-app.add_url_rule('/dashboard/masCompradoHisto', 'masCompradoHisto', mostBought)
+app.add_url_rule('/dashboard/masCompradoHisto', 'masCompradoHisto', mostSold)
 app.add_url_rule('/dashboard/porcentajeProveedor', 'porcentajeProveedor', providerPercentage)
 app.add_url_rule('/dashboard/totalProveedorMes', 'totalProveedorMes', totalProveedorMes)
 
