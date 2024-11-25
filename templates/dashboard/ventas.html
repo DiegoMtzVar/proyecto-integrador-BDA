@@ -13,7 +13,7 @@
 <div id="wrapper">
 
     {% block sidebar %}
-		{{sidebar("ventas")}}
+		{{sidebar("Ventas")}}
 	{% endblock %}
 
     <!-- Modal -->
@@ -57,7 +57,35 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="tablaUsuarios" width="100%" cellspacing="0">
+                            <table class="table table-bordered" id="tablaVentas" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha Venta</th>
+                                        <th>Fecha Entregado</th>
+                                        <th>Usuario</th>
+                                        <th>Direccion</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for sale in sales %}
+                                    <tr>
+                                        <td>{{ sale.saleDate }}</td>
+                                        <td>{{ sale.deliveryDate }}</td>
+                                        <td>{{ sale.name }}</td>
+                                        <td>{{ sale.address }}</td>
+                                        <td>{{ sale.total }}</td>
+                                        <td>{{ sale.status }}</td>
+                                        <td>
+                                            <button class="btn btn-primary" data-toggle="modal" data-target="#modal">Editar</button>
+                                            <button class="btn btn-danger" data-toggle="modal" data-target="#modal">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+
                             
                             </table>
                         </div>

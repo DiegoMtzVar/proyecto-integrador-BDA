@@ -12,18 +12,6 @@ def getRecommendedProducts():
     finally:
         if cur: cur.close()
 
-def getRecentlyPurchased(userID):
-    try:
-        cur = mysql.connection.cursor()
-        cur.callproc('obtenerVentasUsuario', (userID,))
-        
-        data = cur.fetchall()
-        return data
-    except:
-        return []
-    finally:
-        if cur: cur.close()
-
 def getProductsByCategory(type):
     try:
         cur = mysql.connection.cursor()
@@ -83,7 +71,7 @@ def getResenas(id):
     finally:
         if cur: cur.close()
 
-def getCompras(id):
+def getUserPurchases(id):
     try:
         cur = mysql.connection.cursor()
         cur.callproc('obtenerVentasUsuario', (id,))
@@ -130,6 +118,7 @@ def aniadirCompra(idU,direccion,entrega):
     finally:
         if cur: cur.close()
     return False
+
 def ultimaCompra(id):
     try:
         cur = mysql.connection.cursor()
@@ -153,3 +142,15 @@ def aniadirContiene(idU,idC,cantidad):
     finally:
         if cur: cur.close()
     return False
+
+def getSales():
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerVentas')
+        
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
