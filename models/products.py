@@ -67,8 +67,7 @@ def getProducts():
         
         data = cur.fetchall()
         return data
-    except Exception as e:
-        print(f"Error al ejecutar el procedimiento almacenado: {e}")
+    except:
         return []
     finally:
         if cur: cur.close()

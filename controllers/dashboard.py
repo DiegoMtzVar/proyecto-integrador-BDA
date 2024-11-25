@@ -20,9 +20,23 @@ def dashboard():
                            outmes = analytics.getMonthOut())
 
 @secureRoute
+def mostSold():
+    return analytics.mostSold()
+
+@secureRoute
+def providerPercentage():
+    return analytics.providerPercentage()
+
+@secureRoute
+def totalProveedorMes():
+    return analytics.totalMonthlySupplier()
+
+# Controladores de ventas y proveedores
+@secureRoute
 def ventas():
     return render_template('dashboard/ventas.html')
 
+# Controladores de proveedores
 @secureRoute
 def proveedores():
     return render_template('dashboard/proveedores.html')
@@ -92,18 +106,7 @@ def productosGestion():
                             products=products.getProducts(), 
                             categories=products.getCategories())
 
+# Controladores de promociones
 @secureRoute
 def promociones():
     return render_template('dashboard/promociones.html')
-
-@secureRoute
-def mostSold():
-    return analytics.mostSold()
-
-@secureRoute
-def providerPercentage():
-    return analytics.providerPercentage()
-
-@secureRoute
-def totalProveedorMes():
-    return analytics.totalMonthlySupplier()
