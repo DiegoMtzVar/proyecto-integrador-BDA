@@ -476,10 +476,7 @@ DELIMITER ;
 
 --Stored procedures para 5 productos mas comprados
 DELIMITER $$
-CREATE PROCEDURE masComprados(
-    IN mes INT,
-    IN anio INT
-)
+CREATE PROCEDURE masComprados()
 BEGIN
     SELECT nombre, SUM(cantidad) as cantidad
     FROM Contiene c JOIN Productos p ON c.idProducto = p.idProducto
