@@ -16,7 +16,6 @@ def login():
             return redirect(url_for('index'))
         else:
             flash('Usuario o contraseña incorrectos', category='error')
-        
     return render_template('login.html')
 
 def register():

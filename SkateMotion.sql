@@ -14,6 +14,11 @@ CREATE TABLE Tipos_Status(
     descripcion VARCHAR(100)
 );
 
+CREATE TABLE Tipos_Envios(
+    idEnvio INT AUTO_INCREMENT PRIMARY KEY,
+    descripcion VARCHAR(100)
+);
+
 CREATE TABLE Usuarios(
     idUsuario INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255),
@@ -43,10 +48,14 @@ CREATE TABLE Proveedores(
 CREATE TABLE Compras(
     idCompra INT AUTO_INCREMENT PRIMARY KEY,
     fecha DATE,
+    fecha_entrega DATE,
+    direccion text,
     idUsuario INT,
-    idStatus INT,
+    idStatus INT DEFAULT 1,
+    idEnvio INT,
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
-    FOREIGN KEY (idStatus) REFERENCES Tipos_Status(idStatus)
+    FOREIGN KEY (idStatus) REFERENCES Tipos_Status(idStatus),
+    FOREIGN KEY (idEnvio) REFERENCES Tipos_Envios(idEnvio)
 );
 
 CREATE TABLE Contiene(
@@ -88,6 +97,11 @@ CREATE TABLE Resenas(
 INSERT INTO Tipos_Usuario(idTipo, descripcion) VALUES
 (1, 'administrador'),
 (2, 'usuario');
+
+INSERT INTO Tipos_Envios(idEnvio, descripcion) VALUES
+(1, 'Normal'),
+(2, 'Flash'),
+(3, 'Express');
 
 INSERT INTO Tipos_Status(idStatus, descripcion) VALUES
 (1, 'Pendiente'),
@@ -145,17 +159,17 @@ INSERT INTO Proveedores(idProveedor, nombreProveedor, telefonoProveedor, correoP
 (9, 'Element Skateboards', '8123456781', 'element@gmail.com', 'Calle Element 404'),
 (10, 'Birdhouse Industries', '8198765431', 'bidhouse@gmail.com', 'Avenida Globe 505');
 
-INSERT INTO Compras(idCompra, fecha, idStatus, idUsuario) VALUES 
-(1, CURDATE(),4, 1),
-(2, CURDATE(),4, 1),
-(3, CURDATE(),4, 2),
-(4, CURDATE(),4, 3),
-(5, CURDATE(),1, 4),
-(6, CURDATE(),2, 4),
-(7, CURDATE(),3, 4),
-(8, CURDATE(),4, 8),
-(9, CURDATE(),4, 9),
-(10, CURDATE(),4, 10);
+INSERT INTO Compras(idCompra, fecha, direccion, idStatus, idUsuario, idEnvio, fecha_entrega) VALUES 
+(1, CURDATE(), 'Mexico, CDMX, Polanco, Venustiano Carranza #123, 03100', 4, 1, 1, CURDATE() + INTERVAL 5 DAY),
+(2, CURDATE(), 'Mexico, CDMX, Polanco, Insurgentes Sur #456, 03100', 4, 1, 2, CURDATE() + INTERVAL 3 DAY),
+(3, CURDATE(), 'Mexico, Jalisco, Guadalajara, Benito Juarez #456, 44100', 4, 2, 3, CURDATE() + INTERVAL 1 DAY),
+(4, CURDATE(), 'Mexico, Nuevo Leon, Monterrey, Venustiano Carranza #789, 64000', 4, 3, 1, CURDATE() + INTERVAL 5 DAY),
+(5, CURDATE(), 'Mexico, Yucatan, Merida, Benito Juarez #101, 97000', 1, 4, 2, CURDATE() + INTERVAL 3 DAY),
+(6, CURDATE(), 'Mexico, Yucatan, Merida, Paseo de Montejo #202, 97000', 2, 4, 3, CURDATE() + INTERVAL 1 DAY),
+(7, CURDATE(), 'Mexico, Yucatan, Merida, Calle 60 #303, 97000', 3, 4, 1, CURDATE() + INTERVAL 5 DAY),
+(8, CURDATE(), 'Mexico, Puebla, Puebla, Venustiano Carranza #202, 72000', 4, 8, 2, CURDATE() + INTERVAL 3 DAY),
+(9, CURDATE(), 'Mexico, Veracruz, Veracruz, Benito Juarez #303, 91700', 4, 9, 3, CURDATE() + INTERVAL 1 DAY),
+(10, CURDATE(), 'Mexico, Quintana Roo, Cancun, Venustiano Carranza #404, 77500', 4, 10, 1, CURDATE() + INTERVAL 5 DAY);
 
 INSERT INTO Contiene(idProducto, idCompra, cantidad) VALUES
 (1,1,2),
@@ -360,26 +374,54 @@ DELIMITER ;
 
 --Stored Procedure para hacer una compra
 DELIMITER $$
-CREATE PROCEDURE hacerCompra(
-    IN p_idUsuario INT,
-    IN p_idProducto INT,
-    IN p_cantidad INT
+CREATE PROCEDURE aniadirCompra(
+    IN idU INT,
+    IN dir TEXT,
+    IN tipoEnvio INT
 )
 BEGIN
-    DECLARE stock INT DEFAULT 0;
-    SELECT inventarioProducto INTO stock FROM Productos WHERE idProducto = p_idProducto;
-    IF stock < p_cantidad THEN
-        SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'No hay suficiente stock';
-    ELSE
-    START TRANSACTION;
-        INSERT INTO Compras(fecha, idUsuario) VALUES(CURDATE(), p_idUsuario);
-        INSERT INTO Contiene(idProducto, idCompra, cantidad) VALUES(p_idProducto, LAST_INSERT_ID(), p_cantidad);
-        UPDATE Productos SET inventarioProducto = stock - p_cantidad WHERE idProducto = p_idProducto;
-    COMMIT;
+    if tipoEnvio = 1 THEN
+        INSERT INTO Compras(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 5 DAY);
+    ELSEIF tipoEnvio = 2 THEN
+        INSERT INTO Compras(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 3 DAY);
+    ELSEIF tipoEnvio = 3 THEN
+        INSERT INTO Compras(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 1 DAY);
     END IF;
 END $$
 DELIMITER ;
+
+--Stored procedure para regresar la ultima compra
+DELIMITER $$
+CREATE PROCEDURE ultimaCompra(
+    IN idU INT
+)
+BEGIN
+    SELECT idCompra as ID
+    FROM Compras
+    WHERE idUsuario = idU
+    ORDER BY idCompra DESC
+    LIMIT 1;
+END $$
+DELIMITER ;
+
+--Stored Procedure para añadir contiene
+DELIMITER $$
+CREATE PROCEDURE aniadirContiene(
+    IN idP INT,
+    IN idC INT,
+    IN cant INT
+)
+BEGIN
+    DECLARE stock INT DEFAULT 0;
+    select inventarioProducto into stock from Productos where idProducto = idP;
+    IF stock < cant THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No hay suficiente stock';
+    ELSE
+        INSERT INTO Contiene(idProducto, idCompra, cantidad) VALUES(idP, idC, cant);
+    END IF;
+END $$
+
+
 
 -- Procedimiento almacenado para cambiar el rol de un usuario
 DELIMITER $$

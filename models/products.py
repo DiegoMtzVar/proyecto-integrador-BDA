@@ -116,3 +116,40 @@ def addProduct(name, price, category, image):
         return False
     finally:
         if cur: cur.close()
+
+def aniadirCompra(idU,direccion,entrega):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('aniadirCompra', (idU, direccion, entrega))
+        result = cur.fetchall()
+        id = result[0]["ID"] if result else None
+        mysql.connection.commit()
+        return id
+    except Exception as e:
+        print(f"Error al ejecutar el procedimiento almacenado: {e}")
+    finally:
+        if cur: cur.close()
+    return False
+def ultimaCompra(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('ultimaCompra', (id,))
+        data = cur.fetchall()
+        return data[0]["ID"] if data else None
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
+
+def aniadirContiene(idU,idC,cantidad):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('aniadirContiene', (idU,idC,cantidad))
+        mysql.connection.commit()
+        return True
+    except Exception as e:
+        print(f"Error al ejecutar el procedimiento almacenado: {e}")
+    finally:
+        if cur: cur.close()
+    return False

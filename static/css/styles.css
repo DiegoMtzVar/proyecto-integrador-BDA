@@ -13,3 +13,9 @@
 .star-rating .fa-star.selected {
     color: gold;
 }
+
+input[type='radio'] {
+    height: 15px;
+    width: 15px;
+    vertical-align: middle;
+  }
