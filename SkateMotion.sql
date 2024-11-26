@@ -62,7 +62,7 @@ CREATE TABLE Proveedores(
 
 CREATE TABLE Ventas(
     idCompra INT AUTO_INCREMENT PRIMARY KEY,
-    fecha DATE DEFAULT,
+    fecha DATE,
     fecha_entrega DATE,
     direccion text,
     idUsuario INT,
