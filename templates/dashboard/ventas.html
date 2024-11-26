@@ -104,11 +104,11 @@
                                         <td>{{ sale.deliveryDate }}</td>
                                         <td>{{ sale.name }}</td>
                                         <td>{{ sale.address }}</td>
-                                        <td>{{ sale.total }}</td>
-                                        <td data-order="{{ statusID(sale.status) }}">
-                                            <div class="progress-bar progress-bar-striped {{ statusStyle(sale.status) }}" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                                {{sale.status}}
-                                            </div>
+                                        <td>{{ "${:,.2f}".format(sale.total) }}</td>
+                                        <td data-order="{{ statusID(sale.status) }} class="progress-bar progress-bar-striped {{ statusStyle(sale.status) }}" role="progressbar" aria-valuenow="{{ statusID(sale.status) }}" aria-valuemin="0" aria-valuemax="100"">
+                                            {{
+                                                sale.status
+                                            }}
                                         </td>
                                         <td>
                                             <button class="btn btn-primary" data-toggle="modal" data-target="#modalEstado" data-id="{{ sale.ID }}">Actualizar Estado</button>
@@ -138,14 +138,21 @@
 
 {% block script %}
 <script>
-let table = $('#tablaVentas').dataTable({
+let table = $('#tablaVentas').DataTable({
     columnDefs: [
         {
             targets: 6,
             searchable: false,
             orderable: false
         }
-    ]
+    ],
+    layout: {
+        top1: {
+            searchPanes: {
+                viewTotal: true
+            }
+        }
+    }
 });
 
 // Modal de estado

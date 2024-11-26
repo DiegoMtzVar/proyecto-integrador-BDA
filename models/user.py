@@ -66,7 +66,7 @@ def deleteUser(userID):
         
         mysql.connection.commit()
         return True
-    except:
-        return False
+    except Exception as e:
+        return e
     finally:
         if cur: cur.close()
