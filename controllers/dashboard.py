@@ -55,11 +55,27 @@ def updateStatus(ventaID, statusID):
 # Controladores de proveedores
 @secureRoute
 def proveedores():
-    return render_template('dashboard/proveedores.html', purchases=products.getSupplierPurchases())
+    if request.method == 'POST':
+        supplierID = request.form.get("proveedor")   
+        if not supplierID: return redirect(url_for('proveedores'))
+        print(request.form)
+        print( "proveedor " + supplierID)
+        purchaseID = products.addPurchase(supplierID)
+        print(purchaseID if purchaseID else "Error al agregar compra")
+        
+        print(request.form.getlist("producto"))
+        print(request.form.getlist("cantidad"))
+    return render_template('dashboard/proveedores.html', 
+                           purchases=products.getSupplierPurchases(), 
+                           suppliers=products.getSuppliers())
 
 @secureRoute
 def getProductsInPurchase(userID):
     return jsonify(products.getProductsInPurchase(userID))
+
+@secureRoute
+def getProductsBySupplier(supplierID):
+    return jsonify(products.getProductsBySupplier(supplierID))
 
 # Controladores de gestión de usuarios
 @secureRoute
@@ -121,13 +137,37 @@ def crearProducto():
 def productosGestion():
     if request.method == 'POST':
         crearProducto()
-    print(products.getProducts())
     return render_template('dashboard/productosGestion.html', 
                             products=products.getProducts(), 
                             categories=products.getCategories())
 
 # Controladores de promociones
+def createPromotion():
+    if request.method == 'POST':
+        name = request.form['name']
+        discount = request.form['discount']
+        if not name or not discount:
+            return flash('Faltan campos', category='error')
+        if products.addCoupon(name, discount):
+            flash('Promoción creada', category='info')
+        else:
+            flash('Error al crear promoción', category='error')
+    return redirect(url_for('promociones'))
+
 @secureRoute
 def promociones():
-    return render_template('dashboard/promociones.html')
+    if request.method == 'POST':
+        createPromotion()
+    print(products.getCoupons())
+    return render_template('dashboard/promociones.html', coupons=products.getCoupons())
 
+
+@secureRoute
+def updateCoupon(promoCode):
+    result = products.updateCoupon(promoCode)
+    if result == True:
+        flash('Promoción actualizada', category='info')
+    else:
+        flash(f'Error al actualizar promoción {promoCode} \n {result}', category='error')
+    
+    return redirect(url_for('promociones'))

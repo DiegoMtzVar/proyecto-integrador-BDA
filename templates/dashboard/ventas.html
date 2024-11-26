@@ -7,29 +7,9 @@
 	{{ menu("Dashboard") }}
 {% endblock %}
 
-{% macro statusStyle(status) %}
-    {% if status == "Pendiente" %}
-        bg-danger
-    {% elif status == "En bodega" %}
-        bg-warning
-    {% elif status == "En camino" %}
-        bg-info
-    {% elif status == "Entregado" %}
-        bg-success
-    {% endif %}
-{% endmacro %}
+{% macro statusStyle(status) %}{% if status == "Pendiente" %}bg-danger{% elif status == "En bodega" %}bg-warning{% elif status == "En camino" %}bg-info{% elif status == "Entregado" %}bg-success{% endif %}{% endmacro %}
 
-{% macro statusID(status) %}
-    {% if status == "Pendiente" %}
-        1
-    {% elif status == "En bodega" %}
-        2
-    {% elif status == "En camino" %}
-        3
-    {% elif status == "Entregado" %}
-        4
-    {% endif %}
-{% endmacro %}
+{% macro statusID(status) %}{% if status == "Pendiente" %}1{% elif status == "En bodega" %}2{% elif status == "En camino" %}3{% elif status == "Entregado" %}4{% endif %}{% endmacro %}
 
 {% block content %}
 <div style="width: 100%; height: 100px; background-color: #051922; margin: 0 auto; padding: 0; "></div>
@@ -89,9 +69,9 @@
                                 <thead>
                                     <tr>
                                         <th>Fecha Venta</th>
-                                        <th>Fecha Entregado</th>
+                                        <th>Fecha Entrega</th>
                                         <th>Usuario</th>
-                                        <th>Direccion</th>
+                                        <th>Dirección</th>
                                         <th>Total</th>
                                         <th>Estado</th>
                                         <th>Acciones</th>
@@ -105,7 +85,7 @@
                                         <td>{{ sale.name }}</td>
                                         <td>{{ sale.address }}</td>
                                         <td>{{ "${:,.2f}".format(sale.total) }}</td>
-                                        <td data-order="{{ statusID(sale.status) }} class="progress-bar progress-bar-striped {{ statusStyle(sale.status) }}" role="progressbar" aria-valuenow="{{ statusID(sale.status) }}" aria-valuemin="0" aria-valuemax="100"">
+                                        <td data-order="{{ statusID(sale.status) }}" class="progress-bar progress-bar-striped {{ statusStyle(sale.status) }}" role="progressbar" aria-valuenow="{{ statusID(sale.status) }}" aria-valuemin="0" aria-valuemax="4">
                                             {{
                                                 sale.status
                                             }}

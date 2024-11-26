@@ -62,7 +62,7 @@ CREATE TABLE Proveedores(
 
 CREATE TABLE Ventas(
     idCompra INT AUTO_INCREMENT PRIMARY KEY,
-    fecha DATE DEFAULT,
+    fecha DATE,
     fecha_entrega DATE,
     direccion text,
     idUsuario INT,
@@ -128,10 +128,11 @@ INSERT INTO Tipos_Status(idStatus, descripcion) VALUES
 (3, 'En camino'),
 (4, 'Entregado');
 
-INSERT INTO Cupones(codigoCupon, descuento) VALUES
-('DESC-10',10),
-('DESC-15',15),
-('DESC-20',20);
+INSERT INTO Cupones(codigoCupon, descuento, activo) VALUES
+('DESC-10',10, TRUE),
+('DESC-15',15, TRUE),
+('DESC-20',20, TRUE),
+('DESC-50',50, FALSE);
 
 INSERT INTO Tipos_Categorias(idCategoria, descripcion) VALUES
 (1, 'Tabla'),
@@ -736,8 +737,7 @@ BEGIN
 END $$
 
 
---Stored procedure para obtener los cupones
-
+--Stored procedure para obtener los cupones por ID
 DELIMITER $$
 CREATE PROCEDURE obtenerCuponesbyID(
     IN code VARCHAR(10)
@@ -748,6 +748,108 @@ BEGIN
     activo as active
     FROM Cupones
     WHERE codigoCupon = code;
+END $$
+DELIMITER ;
+
+-- Stored procedure para obtener todos los cupones
+DELIMITER $$
+CREATE PROCEDURE obtenerCupones()
+BEGIN
+    SELECT codigoCupon as code, 
+    descuento as discount, 
+    activo as active
+    FROM Cupones;
+END $$
+DELIMITER ;
+
+-- Stored procedure para crear un cupón
+DELIMITER $$
+CREATE PROCEDURE crearCupon(
+    IN code VARCHAR(10),
+    IN discount INT
+)
+BEGIN
+    INSERT INTO Cupones(codigoCupon, descuento) VALUES(code, discount);
+END $$
+DELIMITER ;
+
+-- Stored procedure para desactivar o activar un cupon dependiendo del estado actual
+DELIMITER $$
+CREATE PROCEDURE actualizarCupon(
+    IN code VARCHAR(10)
+)
+BEGIN
+    DECLARE active BOOLEAN;
+    SELECT activo INTO active FROM Cupones WHERE codigoCupon = code;
+    IF active THEN
+        UPDATE Cupones SET activo = FALSE WHERE codigoCupon = code;
+    ELSE
+        UPDATE Cupones SET activo = TRUE WHERE codigoCupon = code;
+    END IF;
+END $$
+DELIMITER ;
+
+--Stored procedure para obtener los productos de un proveedor
+DELIMITER $$
+CREATE PROCEDURE productosProveedor(
+    IN idProveedor INT
+)
+BEGIN
+    SELECT p.idProducto, nombre, precioProveedor
+    FROM Productos p JOIN Viene_De vd ON p.idProducto = vd.idProducto
+    JOIN Compras pc ON vd.idCompraProveedor = pc.idCompraProveedor
+    WHERE pc.idProveedor = idProveedor;
+END $$
+DELIMITER ;
+
+--Stored procedure para obtener los proveedores
+DELIMITER $$
+CREATE PROCEDURE obtenerProveedores()
+BEGIN
+    SELECT idProveedor as ID, 
+    nombreProveedor as name, 
+    telefonoProveedor as phone, 
+    correoProveedor as email, 
+    dirProveedor as address
+    FROM Proveedores;
+END $$
+DELIMITER ;
+
+-- Stored procedure para crear una compra
+DELIMITER $$
+CREATE PROCEDURE crearCompra(
+    IN idProveedor INT
+)
+BEGIN
+    INSERT INTO Compras(fecha, idProveedor) VALUES(CURDATE(), idProveedor);
+END $$
+DELIMITER ;
+
+-- Stored procedure obtener el ID de la ultima compra hacia un proveedor
+DELIMITER $$
+CREATE PROCEDURE obtenerUltimaCompra(
+    IN idProveedor INT
+)
+BEGIN
+    SELECT idCompraProveedor as ID
+    FROM Compras
+    WHERE idProveedor = idProveedor
+    ORDER BY idCompraProveedor DESC
+    LIMIT 1;
+END $$
+DELIMITER ;
+
+-- Stored procedure para agregar un producto a una compra
+DELIMITER $$
+CREATE PROCEDURE agregarProductoCompra(
+    IN idProducto INT,
+    IN idCompra INT,
+    IN cantidad INT
+)
+BEGIN
+    DECLARE precio INT;
+    SELECT precioProveedor INTO precio FROM Viene_De WHERE idProducto = idProducto AND idCompraProveedor = idCompra;
+    INSERT INTO Viene_De(idProducto, idCompraProveedor, precioProveedor, cantidad) VALUES(idProducto, idCompra, precio, cantidad);
 END $$
 DELIMITER ;
 

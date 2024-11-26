@@ -36,28 +36,29 @@ app.add_url_rule('/resena/<int:id>', 'resena', resena, methods=['GET', 'POST'])
 app.add_url_rule('/dashboard', 'dashboard', dashboard)
 app.add_url_rule('/dashboard/masCompradoHisto', 'masCompradoHisto', mostSold)
 app.add_url_rule('/dashboard/porcentajeProveedor', 'porcentajeProveedor', providerPercentage)
-
-app.add_url_rule('/dashboard/ventas', 'ventas', ventas)
-app.add_url_rule('/dashboard/ventas/update/<int:ventaID>/<int:statusID>', 'ventas-updateStatus', updateStatus)
-
-app.add_url_rule('/dashboard/proveedores', 'proveedores', proveedores)
-
-app.add_url_rule('/dashboard/usuariosGestion', 'usuariosGestion', usuariosGestion)
-app.add_url_rule('/dashboard/usuariosGestion/promote/<int:userID>', 'usuariosGestion-promote', promote)
-app.add_url_rule('/dashboard/usuariosGestion/demote/<int:userID>', 'usuariosGestion-demote', demote)
-app.add_url_rule('/dashboard/usuariosGestion/delete/<int:userID>', 'usuariosGestion-delete', deleteUser)
-app.add_url_rule('/dashboard/usuariosGestion/getRecentPurchases/<int:userID>', 'getRecentPurchases', getRecentPurchases)
-app.add_url_rule('/dashboard/proveedores/getProductsInPurchase/<int:userID>', 'getProductsInPurchase', getProductsInPurchase)
-app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGestion, methods=['GET', 'POST'])
-
-app.add_url_rule('/dashboard/promociones', 'promociones', promociones)
-
 app.add_url_rule('/dashboard/masCompradoHisto', 'masCompradoHisto', mostSold)
 app.add_url_rule('/dashboard/porcentajeProveedor', 'porcentajeProveedor', providerPercentage)
 app.add_url_rule('/dashboard/totalProveedorMes', 'totalProveedorMes', totalProveedorMes)
 app.add_url_rule('/dashboard/totalProveedor', 'totalProveedor', totalProveedor)
 app.add_url_rule('/dashboard/stockProducts', 'stockProducts', stockProducts)
 
+app.add_url_rule('/dashboard/ventas', 'ventas', ventas)
+app.add_url_rule('/dashboard/ventas/update/<int:ventaID>/<int:statusID>', 'ventas-updateStatus', updateStatus)
+
+app.add_url_rule('/dashboard/proveedores', 'proveedores', proveedores, methods=['GET', 'POST'])
+app.add_url_rule('/dashboard/proveedores/getProductsBySupplier/<int:supplierID>', 'getProductsBySupplier', getProductsBySupplier)
+app.add_url_rule('/dashboard/proveedores/getProductsInPurchase/<int:userID>', 'getProductsInPurchase', getProductsInPurchase)
+
+app.add_url_rule('/dashboard/usuariosGestion', 'usuariosGestion', usuariosGestion)
+app.add_url_rule('/dashboard/usuariosGestion/promote/<int:userID>', 'usuariosGestion-promote', promote)
+app.add_url_rule('/dashboard/usuariosGestion/demote/<int:userID>', 'usuariosGestion-demote', demote)
+app.add_url_rule('/dashboard/usuariosGestion/delete/<int:userID>', 'usuariosGestion-delete', deleteUser)
+app.add_url_rule('/dashboard/usuariosGestion/getRecentPurchases/<int:userID>', 'getRecentPurchases', getRecentPurchases)
+
+app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGestion, methods=['GET', 'POST'])
+
+app.add_url_rule('/dashboard/promociones', 'promociones', promociones, methods=['GET', 'POST'])
+app.add_url_rule('/dashboard/promociones/update/<string:promoCode>', 'promociones-delete', updateCoupon, methods=['GET', 'POST'])
 
 app.register_error_handler(404, lambda e: flash('Página no encontrada', category='error') or redirect(url_for('index')))
 app.register_error_handler(500, lambda e: flash('Error interno del servidor', category='error') or redirect(url_for('index')))
