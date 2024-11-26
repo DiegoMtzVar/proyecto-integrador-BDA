@@ -776,3 +776,29 @@ BEGIN
     WHERE codigoCupon = code;
 END $$
 DELIMITER ;
+
+--Stored procedure para obtener los productos de un proveedor
+DELIMITER $$
+CREATE PROCEDURE productosProveedor(
+    IN idProveedor INT
+)
+BEGIN
+    SELECT nombre, precioProveedor
+    FROM Productos p JOIN Viene_De vd ON p.idProducto = vd.idProducto
+    JOIN Compras pc ON vd.idCompraProveedor = pc.idCompraProveedor
+    WHERE pc.idProveedor = idProveedor;
+END $$
+DELIMITER ;
+
+--Stored procedure para obtener los proveedores
+DELIMITER $$
+CREATE PROCEDURE obtenerProveedores()
+BEGIN
+    SELECT idProveedor as ID, 
+    nombreProveedor as name, 
+    telefonoProveedor as phone, 
+    correoProveedor as email, 
+    dirProveedor as address
+    FROM Proveedores;
+END $$
+DELIMITER ;

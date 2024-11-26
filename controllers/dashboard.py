@@ -55,11 +55,17 @@ def updateStatus(ventaID, statusID):
 # Controladores de proveedores
 @secureRoute
 def proveedores():
-    return render_template('dashboard/proveedores.html', purchases=products.getSupplierPurchases())
+    return render_template('dashboard/proveedores.html', 
+                           purchases=products.getSupplierPurchases(), 
+                           suppliers=products.getSuppliers())
 
 @secureRoute
 def getProductsInPurchase(userID):
     return jsonify(products.getProductsInPurchase(userID))
+
+@secureRoute
+def getProductsBySupplier(supplierID):
+    return jsonify(products.getProductsBySupplier(supplierID))
 
 # Controladores de gestión de usuarios
 @secureRoute

@@ -203,3 +203,26 @@ def getProductsInPurchase(id):
         return []
     finally:
         if cur: cur.close()
+
+def getProductsBySupplier(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('productosProveedor', (id,))
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
+def getSuppliers():
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerProveedores')
+        
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()

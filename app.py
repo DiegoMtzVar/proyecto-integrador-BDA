@@ -49,6 +49,7 @@ app.add_url_rule('/dashboard/usuariosGestion/delete/<int:userID>', 'usuariosGest
 app.add_url_rule('/dashboard/usuariosGestion/getRecentPurchases/<int:userID>', 'getRecentPurchases', getRecentPurchases)
 app.add_url_rule('/dashboard/proveedores/getProductsInPurchase/<int:userID>', 'getProductsInPurchase', getProductsInPurchase)
 app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGestion, methods=['GET', 'POST'])
+app.add_url_rule('/dashboard/proveedores/getProductsBySupplier/<int:supplierID>', 'getProductsBySupplier', getProductsBySupplier)
 
 app.add_url_rule('/dashboard/promociones', 'promociones', promociones)
 

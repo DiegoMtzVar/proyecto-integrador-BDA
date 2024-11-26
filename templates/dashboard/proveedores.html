@@ -15,23 +15,6 @@
     {% block sidebar %}
 		{{sidebar("Proveedores")}}
 	{% endblock %}
-
-    <script>
-        function validateForm(e) {
-            var form = document.querySelector('.modal-content');
-            if (form.checkValidity()) {
-                form.submit();
-            } else {
-                e.preventDefault();
-                setTimeout(function() {
-                    var modal = document.getElementById('modal');
-                    $(modal).modal('show');
-                }, 500);
-                var modal = document.getElementById('modal');
-                $(modal).modal('show');
-            }
-        }
-    </script>
     <!-- Modal creación de compra -->
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -49,30 +32,28 @@
                         <label for="proveedor">Proveedores</label>
                         <select class="form-control" id="proveedor" name="proveedor" required>
                             <option value="" disabled selected>Selecciona un proveedor</option>
-                            {% for compra in purchases %}
-                                <option value="{{ compra.idCompraProveedor }}">{{ compra.nombreProveedor }}</option>
+                            {% for supplier in suppliers %}
+                                <option value="{{ supplier.ID }}">{{ supplier.name }}</option>
                             {% endfor %}
                         </select>
                         <br>
-                        <label for="producto">Producto</label>
-                        <select class="form-control" id="producto" name="producto" required>
-                            <option value="" disabled selected>Selecciona un producto</option>
-                            {% for compra in purchases %}
-                                <option value="{{ compra.idCompraProveedor }}">{{ compra.nombreProveedor }}</option>
-                            {% endfor %}
-                        </select><br>
-                        <label for="cantidad">Cantidad</label>
-                        <input type="number" class="form-control" id="cantidad" name="cantidad" min="0" required>
-                        
-                        <label for="image">Imagen</label>
-                        <input type="file" class="form-control" id="image" name="image" required>
+                        <div id="product-container">
+                            <div class="container p-3 mb-3 bg-light border rounded product-input">
+                                <label for="producto">Producto</label>
+                                <select class="form-control" id="producto" name="producto" required>
+                                    <option value="" disabled selected>Selecciona un producto</option>
+                                </select><br>
+                                <label for="cantidad">Cantidad</label>
+                                <input type="number" class="form-control" id="cantidad" name="cantidad" min="0" required oninput="calculateTotal">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary w-100" type="button" onclick="addProductInput()">Agregar Producto</button>
                     </div>
                 </div>
-
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                    <button class="btn btn-primary" type="submit" onclick="validateForm(event)">Confirmar</button>
+                    <button class="btn btn-primary" type="submit" onclick="">Confirmar</button>
                 </div>
             </form>
         </div>
@@ -147,23 +128,49 @@
 
 {% block script %}
 <script>
+function createProductInput() {
+    let productInput = document.createElement('div');
+    productInput.classList.add('container', 'p-3', 'mb-3', 'bg-light', 'border', 'rounded', 'product-input');
+    productInput.innerHTML = `
+        <label for="producto">Producto</label>
+        <select class="form-control" id="producto" name="producto" required>
+        </select><br>
+
+        <label for="cantidad">Cantidad</label>
+        <input type="number" class="form-control" id="cantidad" name="cantidad" min="0" required oninput="calculateTotal">
+        `;
+    return productInput;
+}
+
+products = []
 $('#proveedor').on('change', function() {
     let id = $(this).val();
     let request = $.ajax({
-        url: '/dashboard/proveedores/getProducts/' + id,
+        url: '/dashboard/proveedores/getProductsBySupplier/' + id,
         type: 'GET',
         dataType: 'json'
     });
 
     request.done(function(data) {
-        let select = $('#producto');
-        select.empty();
-        select.append('<option value="" disabled selected>Selecciona un producto</option>');
-        data.forEach(function(product) {
-            select.append(`<option value="${product.idProducto}">${product.nombre}</option>`);
-        });
+        products = data;
+        $('#product-container').empty();
+        addProductInput();
     });
 });
+
+function addProductInput() {
+    let newProductInput = createProductInput();
+    let productSelect = $(newProductInput).find('select[name="producto"]');
+    productSelect.append('<option value="" disabled selected>Selecciona un producto</option>');
+    products.forEach(function(product) {
+        productSelect.append(`<option value="${product.idProducto}">${product.nombre}</option>`);
+    });
+    $('#product-container').append(newProductInput);
+}
+
+
+
+
 
 let table = $('#tablaCompras').dataTable({
     columnDefs: [
