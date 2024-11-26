@@ -38,7 +38,7 @@
 						<h3>{{ product.name }}</h3>
 						<p class="single-product-pricing">${{ product.price }}</p>
 						<div class="single-product-form">	
-							<a href="cart.html" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+							<a href="{{ url_for('cart', p=product.ID) }}" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
 							<p><strong>Categoria: </strong>{{product.category}}</p>
 						</div>
 						<h4>Ya compraste este producto?, añade una reseña:</h4><br>
