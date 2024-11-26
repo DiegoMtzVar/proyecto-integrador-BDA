@@ -43,6 +43,14 @@
                                 <option value="{{ category.ID }}">{{ category.name }}</option>
                             {% endfor %}
                         </select>
+
+                        <label for="supplier">Proveedor</label>
+                        <select class="form-control" id="supplier" name="supplier" required>
+                            <option value="" disabled selected>Selecciona un proveedor</option>
+                            {% for supplier in suppliers %}
+                                <option value="{{ supplier.ID }}">{{ supplier.name }}</option>
+                            {% endfor %}
+                        </select>
                         
                         <label for="image">Imagen</label>
                         <input type="file" class="form-control" id="image" name="image" required>

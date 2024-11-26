@@ -48,6 +48,7 @@ app.add_url_rule('/dashboard/ventas/update/<int:ventaID>/<int:statusID>', 'venta
 app.add_url_rule('/dashboard/proveedores', 'proveedores', proveedores, methods=['GET', 'POST'])
 app.add_url_rule('/dashboard/proveedores/getProductsBySupplier/<int:supplierID>', 'getProductsBySupplier', getProductsBySupplier)
 app.add_url_rule('/dashboard/proveedores/getProductsInPurchase/<int:userID>', 'getProductsInPurchase', getProductsInPurchase)
+app.add_url_rule('/dashboard/proveedores/createSupplier', 'getSupplierPurchases', methods=['POST'])
 
 app.add_url_rule('/dashboard/usuariosGestion', 'usuariosGestion', usuariosGestion)
 app.add_url_rule('/dashboard/usuariosGestion/promote/<int:userID>', 'usuariosGestion-promote', promote)

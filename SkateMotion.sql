@@ -46,7 +46,7 @@ CREATE TABLE Productos(
     idProducto INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255),
     precio INT,
-    inventarioProducto INT,
+    inventarioProducto INT DEFAULT 0,
     idCategoria INT,
     rutaImagen VARCHAR(100),
     FOREIGN KEY (idCategoria) REFERENCES Tipos_Categorias(idCategoria)
@@ -101,6 +101,15 @@ CREATE TABLE Viene_De(
     PRIMARY KEY (idProducto, idCompraProveedor),
     FOREIGN KEY (idCompraProveedor) REFERENCES Compras(idCompraProveedor),
     FOREIGN KEY (idProducto) REFERENCES Productos(idProducto)
+);
+
+CREATE TABLE CatalogoProveedor(
+    idProducto INT,
+    idProveedor INT,
+    precioProveedor INT,
+    PRIMARY KEY (idProducto, idProveedor),
+    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto),
+    FOREIGN KEY (idProveedor) REFERENCES Proveedores(idProveedor)
 );
 
 CREATE TABLE Resenas(
@@ -253,6 +262,32 @@ INSERT INTO Viene_De(idProducto, idCompraProveedor, precioProveedor, cantidad) V
 (22, 8, 550, 5),
 (23, 8, 550, 6),
 (24, 2, 750, 4);
+
+INSERT INTO CatalogoProveedor(idProducto, idProveedor, precioProveedor) VALUES
+(1, 1, 600),
+(2, 2, 500),
+(3, 2, 500),
+(4, 2, 500),
+(5, 3, 750),
+(6, 9, 700),
+(7, 5, 300),
+(8, 5, 350),
+(9, 4, 150),
+(10, 4, 300),
+(11, 4, 320),
+(12, 5, 200),
+(13, 7, 210),
+(14, 7, 210),
+(15, 9, 150),
+(16, 7, 220),
+(17, 6, 500),
+(18, 6, 550),
+(19, 9, 1100),
+(20, 10, 1000),
+(21, 10, 1000),
+(22, 8, 550),
+(23, 8, 550),
+(24, 2, 750);
 
 --STORED PROCEDURES
 --Stored procedure para login de un usuario que regresa la id y el rol si existe
@@ -696,12 +731,13 @@ DELIMITER $$
 CREATE PROCEDURE crearProducto(
     IN p_nombre VARCHAR(255),
     IN p_precio INT,
-    IN p_inventario INT,
-    IN p_idCategoria INT,
-    IN p_rutaImagen VARCHAR(100)
+    IN p_categoria INT,
+    IN p_imagen VARCHAR(255),
+    IN p_proveedor INT
 )
 BEGIN
-    INSERT INTO Productos(nombre, precio, inventarioProducto, idCategoria, rutaImagen) VALUES(p_nombre, p_precio, p_inventario, p_idCategoria, p_rutaImagen);
+    INSERT INTO Productos(nombre, precio, idCategoria, rutaImagen) VALUES(p_nombre, p_precio, p_categoria, p_imagen);
+    INSERT INTO CatalogoProveedor(idProducto, idProveedor, precioProveedor) VALUES((SELECT MAX(idProducto) FROM Productos), p_proveedor, p_precio);
 END $$
 DELIMITER ;
 
@@ -795,10 +831,13 @@ CREATE PROCEDURE productosProveedor(
     IN idProveedor INT
 )
 BEGIN
-    SELECT p.idProducto, nombre, precioProveedor
-    FROM Productos p JOIN Viene_De vd ON p.idProducto = vd.idProducto
-    JOIN Compras pc ON vd.idCompraProveedor = pc.idCompraProveedor
-    WHERE pc.idProveedor = idProveedor;
+    SELECT idProducto as ID, 
+    nombre as name, 
+    precio as price, 
+    inventarioProducto as stock, 
+    rutaImagen as image
+    FROM Productos
+    WHERE idProducto IN (SELECT cp.idProducto FROM CatalogoProveedor cp WHERE cp.idProveedor = idProveedor);
 END $$
 DELIMITER ;
 
@@ -853,6 +892,18 @@ BEGIN
 END $$
 DELIMITER ;
 
+-- Stored procedure para crear un proveedor
+DELIMITER $$
+CREATE PROCEDURE crearProveedor(
+    IN nombre VARCHAR(255),
+    IN telefono VARCHAR(10),
+    IN correo VARCHAR(255),
+    IN direccion VARCHAR(255)
+)
+BEGIN
+    INSERT INTO Proveedores(nombreProveedor, telefonoProveedor, correoProveedor, dirProveedor) VALUES(nombre, telefono, correo, direccion);
+END $$
+DELIMITER ;
 
 --Trigger para poner en default true el cupon activo
 DELIMITER $$

@@ -16,7 +16,7 @@
 		{{sidebar("Proveedores")}}
 	{% endblock %}
     <!-- Modal creación de compra -->
-    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalCompra" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form class="modal-content" method="POST" enctype="multipart/form-data">
                 <!-- Modal Header -->
@@ -53,6 +53,38 @@
         </div>
     </div>
 
+    <!-- modal creación de proveedor -->
+    <div class="modal fade" id="modalProveedor" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form action="dashboard/proveedores/createSupplier" class="modal-content" method="POST" enctype="multipart/form-data">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Crear Proveedor</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name">Nombre</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                        <label for="email">Correo</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <label for="phone">Teléfono</label>
+                        <input type="text" class="form-control" id="phone" name="phone" required>
+                        <label for="address">Dirección</label>
+                        <input type="text" class="form-control" id="address" name="address" required>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-primary" type="submit">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
@@ -69,7 +101,8 @@
                             <h1 class="h3 mb-2 text-gray-800">Compras a Proveedores</h1>
                             <p class="mb-4">Aquí puedes mandar pedidos a proveedores y visualizar pedidos previos</p>
                         </div>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#modal">Hacer Pedido</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalProveedor">Agregar proveedor</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalCompra">Hacer Pedido</button>
                     </div>
 
                     <!-- content card -->
@@ -172,6 +205,8 @@ $('#proveedor').on('change', function() {
 });
 
 function addProductInput() {
+    if (order.products.length >= products.length) { return; }
+
     let newProductInput = createProductInput();
 
     productIndex = order.products.length;
@@ -184,7 +219,7 @@ function addProductInput() {
     let productSelect = $(newProductInput).find('select[name="producto"]');
     //productSelect.append('<option value="" disabled selected>Selecciona un producto</option>');
     products.forEach(function(product) {
-        productSelect.append(`<option value="${product.idProducto}">${product.nombre}</option>`);
+        productSelect.append(`<option value="${product.ID}">${product.name}</option>`);
     });
     productSelect.on('change', function() {
         order.products[productIndex].product = $(this).val();

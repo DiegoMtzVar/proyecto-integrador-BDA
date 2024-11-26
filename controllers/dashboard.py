@@ -77,6 +77,23 @@ def getProductsInPurchase(userID):
 def getProductsBySupplier(supplierID):
     return jsonify(products.getProductsBySupplier(supplierID))
 
+@secureRoute
+def createSupplier():
+    name = request.form['name']
+    email = request.form['email']
+    phone = request.form['phone']
+    address = request.form['address']
+    
+    if not name or not email or not phone or not address:
+        return flash('Faltan campos', category='error')
+    
+    if products.addSupplier(name, email, phone, address):
+        flash('Proveedor agregado', category='info')
+    else:
+        flash('Error al agregar proveedor', category='error')
+        
+    return redirect(url_for('proveedores'))
+
 # Controladores de gestión de usuarios
 @secureRoute
 def usuariosGestion():
@@ -120,14 +137,15 @@ def crearProducto():
     price = request.form['price']
     category = request.form['category']
     image = request.files['image']
+    supplier = request.form['supplier']
     
-    if not name or not price or not category or not image:
+    if not name or not price or not category or not image or not supplier:
         return flash('Faltan campos', category='error')
     
     if not image.filename.endswith(('.png', '.jpg', '.jpeg', '.gif')):
         return flash('Formato de imagen no soportado', category='error')
     
-    if products.addProduct(name, price, category, image.filename):
+    if products.addProduct(name, price, category, image.filename, supplier):
         image.save(f'static/img/products/{image.filename}')
         flash('Producto agregado', category='info')
     else:
@@ -139,7 +157,8 @@ def productosGestion():
         crearProducto()
     return render_template('dashboard/productosGestion.html', 
                             products=products.getProducts(), 
-                            categories=products.getCategories())
+                            categories=products.getCategories(),
+                            suppliers=products.getSuppliers())
 
 # Controladores de promociones
 def createPromotion():

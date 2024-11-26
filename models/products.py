@@ -94,10 +94,10 @@ def getCategories():
     finally:
         if cur: cur.close()
 
-def addProduct(name, price, category, image):
+def addProduct(name, price, category, image, supplier):
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('crearProducto', (name, price, 0, category, image))
+        cur.callproc('crearProducto', (name, price, category, image, supplier))
         mysql.connection.commit()
         return True
     except Exception as e:
@@ -285,6 +285,17 @@ def getRecentPurchase(supplierID):
         return data
     except:
         return []
+    finally:
+        if cur: cur.close()
+
+def addSupplier(name, email, phone, address):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('crearProveedor', (name, email, phone, address))
+        mysql.connection.commit()
+        return True
+    except:
+        return False
     finally:
         if cur: cur.close()
 
