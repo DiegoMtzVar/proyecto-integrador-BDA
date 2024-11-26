@@ -86,10 +86,11 @@ def demote(userID):
 
 @secureRoute
 def deleteUser(userID):
-    if user.deleteUser(userID):
+    result = user.deleteUser(userID)
+    if result == True:
         flash('Usuario eliminado', category='info')
     else:
-        flash(f'Error al eliminar usuario con ID: {userID}', category='error')
+        flash(f'Error al eliminar usuario con ID: {userID} \n {result}', category='error')
     
     return redirect(url_for('usuariosGestion'))
 
