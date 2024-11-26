@@ -29,7 +29,7 @@ CREATE TABLE Tipos_Categorias(
 CREATE TABLE Cupones(
     codigoCupon VARCHAR(10),
     descuento INT,
-    activo BOOLEAN DEFAULT TRUE,
+    activo BOOLEAN,
     PRIMARY KEY (codigoCupon)
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE Usuarios(
     nombre VARCHAR(255),
     contra VARCHAR(255),
     correo VARCHAR(255) UNIQUE,
-    idTipo INT DEFAULT 2,
+    idTipo INT,
     FOREIGN KEY (idTipo) REFERENCES Tipos_Usuario(idTipo)
 );
 
@@ -62,11 +62,11 @@ CREATE TABLE Proveedores(
 
 CREATE TABLE Ventas(
     idCompra INT AUTO_INCREMENT PRIMARY KEY,
-    fecha DATE DEFAULT CURDATE(),
+    fecha DATE DEFAULT,
     fecha_entrega DATE,
     direccion text,
     idUsuario INT,
-    idStatus INT DEFAULT 1,
+    idStatus INT,
     idEnvio INT,
     codigoCupon VARCHAR(10),
     total int,
@@ -748,5 +748,46 @@ BEGIN
     activo as active
     FROM Cupones
     WHERE codigoCupon = code;
+END $$
+DELIMITER ;
+
+
+--Trigger para poner en default true el cupon activo
+DELIMITER $$
+CREATE TRIGGER activarCupon
+BEFORE INSERT ON Cupones
+FOR EACH ROW
+BEGIN
+    SET NEW.activo = TRUE;
+END $$
+DELIMITER ;
+
+--Trigger para poner en default 2 cuando se cree un usuario
+DELIMITER $$
+CREATE TRIGGER defaultUser
+BEFORE INSERT ON Usuarios
+FOR EACH ROW
+BEGIN
+    SET NEW.idTipo = 2;
+END $$
+DELIMITER ;
+
+--Trigger para poner el dia de hoy en default al crear una venta
+DELIMITER $$
+CREATE TRIGGER defaultDate
+BEFORE INSERT ON Ventas
+FOR EACH ROW
+BEGIN
+    SET NEW.fecha = CURDATE();
+END $$
+DELIMITER ;
+
+--Trigger para poner el status en default 1 al crear una venta
+DELIMITER $$
+CREATE TRIGGER defaultStatus
+BEFORE INSERT ON Ventas
+FOR EACH ROW
+BEGIN
+    SET NEW.idStatus = 1;
 END $$
 DELIMITER ;
