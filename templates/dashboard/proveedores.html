@@ -32,7 +32,7 @@
             }
         }
     </script>
-    <!-- Modal creación de promociones -->
+    <!-- Modal creación de compra -->
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form class="modal-content" method="POST" enctype="multipart/form-data">
@@ -44,21 +44,25 @@
                     </button>
                 </div>
 
-                <div class="modal-body">
+                <div class="modal-body" style="z-index: 1;">
                     <div class="form-group">
-                        <label for="name">TODO</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
-
-                        <label for="price">TODO</label>
-                        <input type="number" class="form-control" id="price" name="price" min="0" required>
-
-                        <label for="category">Categoría</label>
-                        <select class="form-control" id="category" name="category" required>
-                            <option value="" disabled selected>Selecciona una categoría</option>
-                            {% for category in categories %}
-                                <option value="{{ category.ID }}">{{ category.name }}</option>
+                        <label for="proveedor">Proveedores</label>
+                        <select class="form-control" id="proveedor" name="proveedor" required>
+                            <option value="" disabled selected>Selecciona un proveedor</option>
+                            {% for compra in purchases %}
+                                <option value="{{ compra.idCompraProveedor }}">{{ compra.nombreProveedor }}</option>
                             {% endfor %}
                         </select>
+                        <br>
+                        <label for="producto">Producto</label>
+                        <select class="form-control" id="producto" name="producto" required>
+                            <option value="" disabled selected>Selecciona un producto</option>
+                            {% for compra in purchases %}
+                                <option value="{{ compra.idCompraProveedor }}">{{ compra.nombreProveedor }}</option>
+                            {% endfor %}
+                        </select><br>
+                        <label for="cantidad">Cantidad</label>
+                        <input type="number" class="form-control" id="cantidad" name="cantidad" min="0" required>
                         
                         <label for="image">Imagen</label>
                         <input type="file" class="form-control" id="image" name="image" required>
@@ -143,6 +147,24 @@
 
 {% block script %}
 <script>
+$('#proveedor').on('change', function() {
+    let id = $(this).val();
+    let request = $.ajax({
+        url: '/dashboard/proveedores/getProducts/' + id,
+        type: 'GET',
+        dataType: 'json'
+    });
+
+    request.done(function(data) {
+        let select = $('#producto');
+        select.empty();
+        select.append('<option value="" disabled selected>Selecciona un producto</option>');
+        data.forEach(function(product) {
+            select.append(`<option value="${product.idProducto}">${product.nombre}</option>`);
+        });
+    });
+});
+
 let table = $('#tablaCompras').dataTable({
     columnDefs: [
         {

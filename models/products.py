@@ -106,10 +106,10 @@ def addProduct(name, price, category, image):
     finally:
         if cur: cur.close()
 
-def aniadirCompra(idU,direccion,entrega):
+def aniadirCompra(idU,direccion,entrega,total):
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('aniadirCompra', (idU, direccion, entrega))
+        cur.callproc('aniadirCompra', (idU, direccion, entrega,total))
         result = cur.fetchall()
         id = result[0]["ID"] if result else None
         mysql.connection.commit()

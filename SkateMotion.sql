@@ -29,7 +29,7 @@ CREATE TABLE Tipos_Categorias(
 CREATE TABLE Cupones(
     codigoCupon VARCHAR(10),
     descuento INT,
-    activo BOOLEAN DEFAULT TRUE,
+    activo BOOLEAN,
     PRIMARY KEY (codigoCupon)
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE Usuarios(
     nombre VARCHAR(255),
     contra VARCHAR(255),
     correo VARCHAR(255) UNIQUE,
-    idTipo INT DEFAULT 2,
+    idTipo INT,
     FOREIGN KEY (idTipo) REFERENCES Tipos_Usuario(idTipo)
 );
 
@@ -62,13 +62,14 @@ CREATE TABLE Proveedores(
 
 CREATE TABLE Ventas(
     idCompra INT AUTO_INCREMENT PRIMARY KEY,
-    fecha DATE DEFAULT CURDATE(),
+    fecha DATE DEFAULT,
     fecha_entrega DATE,
     direccion text,
     idUsuario INT,
-    idStatus INT DEFAULT 1,
+    idStatus INT,
     idEnvio INT,
     codigoCupon VARCHAR(10),
+    total int,
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
     FOREIGN KEY (idStatus) REFERENCES Tipos_Status(idStatus),
     FOREIGN KEY (idEnvio) REFERENCES Tipos_Envios(idEnvio),
@@ -189,17 +190,17 @@ INSERT INTO Proveedores(idProveedor, nombreProveedor, telefonoProveedor, correoP
 (9, 'Element Skateboards', '8123456781', 'element@gmail.com', 'Calle Element 404'),
 (10, 'Birdhouse Industries', '8198765431', 'bidhouse@gmail.com', 'Avenida Globe 505');
 
-INSERT INTO Ventas(idCompra, fecha, direccion, idStatus, idUsuario, idEnvio, fecha_entrega) VALUES 
-(1, CURDATE(), 'Mexico, CDMX, Polanco, Venustiano Carranza #123, 03100', 4, 1, 1, CURDATE() + INTERVAL 5 DAY),
-(2, CURDATE(), 'Mexico, CDMX, Polanco, Insurgentes Sur #456, 03100', 4, 1, 2, CURDATE() + INTERVAL 3 DAY),
-(3, CURDATE(), 'Mexico, Jalisco, Guadalajara, Benito Juarez #456, 44100', 4, 2, 3, CURDATE() + INTERVAL 1 DAY),
-(4, CURDATE(), 'Mexico, Nuevo Leon, Monterrey, Venustiano Carranza #789, 64000', 4, 3, 1, CURDATE() + INTERVAL 5 DAY),
-(5, CURDATE(), 'Mexico, Yucatan, Merida, Benito Juarez #101, 97000', 1, 4, 2, CURDATE() + INTERVAL 3 DAY),
-(6, CURDATE(), 'Mexico, Yucatan, Merida, Paseo de Montejo #202, 97000', 2, 4, 3, CURDATE() + INTERVAL 1 DAY),
-(7, CURDATE(), 'Mexico, Yucatan, Merida, Calle 60 #303, 97000', 3, 4, 1, CURDATE() + INTERVAL 5 DAY),
-(8, CURDATE(), 'Mexico, Puebla, Puebla, Venustiano Carranza #202, 72000', 4, 8, 2, CURDATE() + INTERVAL 3 DAY),
-(9, CURDATE(), 'Mexico, Veracruz, Veracruz, Benito Juarez #303, 91700', 4, 9, 3, CURDATE() + INTERVAL 1 DAY),
-(10, CURDATE(), 'Mexico, Quintana Roo, Cancun, Venustiano Carranza #404, 77500', 4, 10, 1, CURDATE() + INTERVAL 5 DAY);
+INSERT INTO Ventas(idCompra, fecha, direccion, idStatus, idUsuario, idEnvio, fecha_entrega, total) VALUES 
+(1, CURDATE(), 'Mexico, CDMX, Polanco, Venustiano Carranza #123, 03100', 4, 1, 1, CURDATE() + INTERVAL 5 DAY, 4400),
+(2, CURDATE(), 'Mexico, CDMX, Polanco, Insurgentes Sur #456, 03100', 4, 1, 2, CURDATE() + INTERVAL 3 DAY, 1240),
+(3, CURDATE(), 'Mexico, Jalisco, Guadalajara, Benito Juarez #456, 44100', 4, 2, 3, CURDATE() + INTERVAL 1 DAY, 2000),
+(4, CURDATE(), 'Mexico, Nuevo Leon, Monterrey, Venustiano Carranza #789, 64000', 4, 3, 1, CURDATE() + INTERVAL 5 DAY, 2200),
+(5, CURDATE(), 'Mexico, Yucatan, Merida, Benito Juarez #101, 97000', 1, 4, 2, CURDATE() + INTERVAL 3 DAY, 1580),
+(6, CURDATE(), 'Mexico, Yucatan, Merida, Paseo de Montejo #202, 97000', 2, 4, 3, CURDATE() + INTERVAL 1 DAY, 5100),
+(7, CURDATE(), 'Mexico, Yucatan, Merida, Calle 60 #303, 97000', 3, 4, 1, CURDATE() + INTERVAL 5 DAY, 3000),
+(8, CURDATE(), 'Mexico, Puebla, Puebla, Venustiano Carranza #202, 72000', 4, 8, 2, CURDATE() + INTERVAL 3 DAY, 740),
+(9, CURDATE(), 'Mexico, Veracruz, Veracruz, Benito Juarez #303, 91700', 4, 9, 3, CURDATE() + INTERVAL 1 DAY, 1400),
+(10, CURDATE(), 'Mexico, Quintana Roo, Cancun, Venustiano Carranza #404, 77500', 4, 10, 1, CURDATE() + INTERVAL 5 DAY, 2200);
 
 INSERT INTO Contiene(idProducto, idCompra, cantidad, precio) VALUES
 (1, 1, 2, 1200),
@@ -393,15 +394,18 @@ DELIMITER $$
 CREATE PROCEDURE aniadirCompra(
     IN idU INT,
     IN dir TEXT,
-    IN tipoEnvio INT
+    IN tipoEnvio INT,
+    IN totall int
 )
 BEGIN
     if tipoEnvio = 1 THEN
-        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 5 DAY);
+        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega,total) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 5 DAY,totall);
     ELSEIF tipoEnvio = 2 THEN
-        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 3 DAY);
+        set totall=totall+300;
+        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega,total) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 3 DAY,totall);
     ELSEIF tipoEnvio = 3 THEN
-        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 1 DAY);
+        set totall=totall+500;
+        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega,total) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 1 DAY,totall);
     END IF;
 END $$
 DELIMITER ;
@@ -500,11 +504,13 @@ DELIMITER $$
 CREATE PROCEDURE gananciasTotales()
 BEGIN
     WITH tablaTotal1 AS(
-    SELECT SUM(cont.precio*cantidad) as total1
-    FROM Productos prod JOIN Contiene cont ON prod.idProducto=cont.idProducto)
-    , tablaTotal2 AS(
-    SELECT SUM(precioProveedor * cantidad) as total2
-    FROM Viene_De)
+        SELECT SUM(v.total) as total1
+        FROM Ventas v
+    ),
+    tablaTotal2 AS(
+        SELECT SUM(precioProveedor * cantidad) as total2
+        FROM Viene_De
+    )
     SELECT total1 - total2 as total 
     FROM tablaTotal1 JOIN tablaTotal2;
 END $$
@@ -518,10 +524,11 @@ CREATE PROCEDURE ingresosMes(
 )
 BEGIN
     WITH tablaTotal AS(
-    SELECT cont.precio*cantidad as total
+    SELECT comp.total as total
     FROM Productos prod JOIN Contiene cont ON prod.idProducto=cont.idProducto
     JOIN Ventas comp ON comp.idCompra = cont.idCompra
-    WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%'))
+    WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%')
+    group by comp.idCompra)
     SELECT SUM(total) as ingresosMes FROM tablaTotal;
 END $$
 DELIMITER ;
@@ -614,51 +621,22 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE obtenerVentas()
 BEGIN
-    SELECT v.idCompra as ID, 
-    v.fecha as saleDate,
-    v.fecha_entrega as deliveryDate,
-    SUM(p.precio * c.cantidad) as total,
-    v.direccion as address,
-    u.nombre as name,
-    tp.descripcion as status
+    SELECT 
+        v.idCompra as ID, 
+        v.fecha as saleDate,
+        v.fecha_entrega as deliveryDate,
+        v.total as total,
+        v.direccion as address,
+        u.nombre as name,
+        tp.descripcion as status
     FROM Tipos_Status tp 
     JOIN Ventas v ON v.idStatus = tp.idStatus
-    JOIN Contiene c ON v.idCompra = c.idCompra
-    JOIN Productos p ON c.idProducto = p.idProducto
-    JOIN Usuarios u ON v.idUsuario = u.idUsuario
-    GROUP BY v.idCompra, v.fecha, v.fecha_entrega, v.direccion, u.nombre, tp.descripcion;
+    JOIN Usuarios u ON v.idUsuario = u.idUsuario;
+
+    SELECT SUM(v.total) as sumaTotal FROM Ventas v;
 END $$
 DELIMITER ;
--- Stored procedure para calcular el total incluyendo el descuento del cupón
-DELIMITER $$
-CREATE PROCEDURE calcularTotalConDescuento(
-    IN idCompra INT
-)
-BEGIN
-    DECLARE total DECIMAL(10,2);
-    DECLARE descuento INT;
-    DECLARE totalConDescuento DECIMAL(10,2);
 
-    -- Calcular el total de la compra
-    SELECT SUM(p.precio * c.cantidad) INTO total
-    FROM Productos p
-    JOIN Contiene c ON p.idProducto = c.idProducto
-    WHERE c.idCompra = idCompra;
-
-    -- Obtener el descuento del cupón
-    SELECT cu.descuento INTO descuento
-    FROM Ventas v
-    JOIN Cupones cu ON v.codigoCupon = cu.codigoCupon
-    WHERE v.idCompra = idCompra;
-
-    -- Calcular el total con descuento
-    SET totalConDescuento = total - (total * descuento / 100);
-
-    -- Devolver el total con descuento
-    SELECT totalConDescuento AS totalConDescuento;
-END $$
-
-DELIMITER ;
 
 -- Obtener los productos de una venta
 DELIMITER $$
@@ -759,7 +737,7 @@ BEGIN
 END $$
 
 
---Stored procedure para obtener los cupones
+--Stored procedure para obtener los cupones por ID
 DELIMITER $$
 CREATE PROCEDURE obtenerCuponesbyID(
     IN code VARCHAR(10)
@@ -808,5 +786,45 @@ BEGIN
     ELSE
         UPDATE Cupones SET activo = TRUE WHERE codigoCupon = code;
     END IF;
+END $$
+DELIMITER ;
+
+--Trigger para poner en default true el cupon activo
+DELIMITER $$
+CREATE TRIGGER activarCupon
+BEFORE INSERT ON Cupones
+FOR EACH ROW
+BEGIN
+    SET NEW.activo = TRUE;
+END $$
+DELIMITER ;
+
+--Trigger para poner en default 2 cuando se cree un usuario
+DELIMITER $$
+CREATE TRIGGER defaultUser
+BEFORE INSERT ON Usuarios
+FOR EACH ROW
+BEGIN
+    SET NEW.idTipo = 2;
+END $$
+DELIMITER ;
+
+--Trigger para poner el dia de hoy en default al crear una venta
+DELIMITER $$
+CREATE TRIGGER defaultDate
+BEFORE INSERT ON Ventas
+FOR EACH ROW
+BEGIN
+    SET NEW.fecha = CURDATE();
+END $$
+DELIMITER ;
+
+--Trigger para poner el status en default 1 al crear una venta
+DELIMITER $$
+CREATE TRIGGER defaultStatus
+BEFORE INSERT ON Ventas
+FOR EACH ROW
+BEGIN
+    SET NEW.idStatus = 1;
 END $$
 DELIMITER ;
