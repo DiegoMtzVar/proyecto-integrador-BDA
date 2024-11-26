@@ -127,13 +127,37 @@ def crearProducto():
 def productosGestion():
     if request.method == 'POST':
         crearProducto()
-    print(products.getProducts())
     return render_template('dashboard/productosGestion.html', 
                             products=products.getProducts(), 
                             categories=products.getCategories())
 
 # Controladores de promociones
+def createPromotion():
+    if request.method == 'POST':
+        name = request.form['name']
+        discount = request.form['discount']
+        if not name or not discount:
+            return flash('Faltan campos', category='error')
+        if products.addCoupon(name, discount):
+            flash('Promoción creada', category='info')
+        else:
+            flash('Error al crear promoción', category='error')
+    return redirect(url_for('promociones'))
+
 @secureRoute
 def promociones():
-    return render_template('dashboard/promociones.html')
+    if request.method == 'POST':
+        createPromotion()
+    print(products.getCoupons())
+    return render_template('dashboard/promociones.html', coupons=products.getCoupons())
 
+
+@secureRoute
+def updateCoupon(promoCode):
+    result = products.updateCoupon(promoCode)
+    if result == True:
+        flash('Promoción actualizada', category='info')
+    else:
+        flash(f'Error al actualizar promoción {promoCode} \n {result}', category='error')
+    
+    return redirect(url_for('promociones'))

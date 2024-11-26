@@ -144,6 +144,18 @@ def aniadirContiene(idU,idC,cantidad,promocion):
         if cur: cur.close()
     return False
 
+def getCoupons():
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerCupones')
+        
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
 def getCuponesbyID(cupon):
     try:
         cur = mysql.connection.cursor()
@@ -153,6 +165,29 @@ def getCuponesbyID(cupon):
         return data
     except:
         return []
+    finally:
+        if cur: cur.close()
+
+def addCoupon(name, discount):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('crearCupon', (name, discount))
+        mysql.connection.commit()
+        return True
+    except:
+        return False
+    finally:
+        if cur: cur.close()
+
+def updateCoupon(couponID):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('actualizarCupon', (couponID,))
+        
+        mysql.connection.commit()
+        return True
+    except Exception as e:
+        return e
     finally:
         if cur: cur.close()
 

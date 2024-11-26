@@ -51,7 +51,8 @@ app.add_url_rule('/dashboard/proveedores/getProductsInPurchase/<int:userID>', 'g
 app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGestion, methods=['GET', 'POST'])
 app.add_url_rule('/dashboard/proveedores/getProductsBySupplier/<int:supplierID>', 'getProductsBySupplier', getProductsBySupplier)
 
-app.add_url_rule('/dashboard/promociones', 'promociones', promociones)
+app.add_url_rule('/dashboard/promociones', 'promociones', promociones, methods=['GET', 'POST'])
+app.add_url_rule('/dashboard/promociones/update/<string:promoCode>', 'promociones-delete', updateCoupon, methods=['GET', 'POST'])
 
 app.add_url_rule('/dashboard/masCompradoHisto', 'masCompradoHisto', mostSold)
 app.add_url_rule('/dashboard/porcentajeProveedor', 'porcentajeProveedor', providerPercentage)

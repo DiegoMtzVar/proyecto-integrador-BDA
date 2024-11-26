@@ -29,7 +29,7 @@ CREATE TABLE Tipos_Categorias(
 CREATE TABLE Cupones(
     codigoCupon VARCHAR(10),
     descuento INT,
-    activo BOOLEAN DEFAULT TRUE,
+    activo BOOLEAN,
     PRIMARY KEY (codigoCupon)
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE Usuarios(
     nombre VARCHAR(255),
     contra VARCHAR(255),
     correo VARCHAR(255) UNIQUE,
-    idTipo INT DEFAULT 2,
+    idTipo INT,
     FOREIGN KEY (idTipo) REFERENCES Tipos_Usuario(idTipo)
 );
 
@@ -62,11 +62,11 @@ CREATE TABLE Proveedores(
 
 CREATE TABLE Ventas(
     idCompra INT AUTO_INCREMENT PRIMARY KEY,
-    fecha DATE DEFAULT CURDATE(),
+    fecha DATE,
     fecha_entrega DATE,
     direccion text,
     idUsuario INT,
-    idStatus INT DEFAULT 1,
+    idStatus INT,
     idEnvio INT,
     codigoCupon VARCHAR(10),
     total int,
@@ -128,10 +128,11 @@ INSERT INTO Tipos_Status(idStatus, descripcion) VALUES
 (3, 'En camino'),
 (4, 'Entregado');
 
-INSERT INTO Cupones(codigoCupon, descuento) VALUES
-('DESC-10',10),
-('DESC-15',15),
-('DESC-20',20);
+INSERT INTO Cupones(codigoCupon, descuento, activo) VALUES
+('DESC-10',10, TRUE),
+('DESC-15',15, TRUE),
+('DESC-20',20, TRUE),
+('DESC-50',50, FALSE);
 
 INSERT INTO Tipos_Categorias(idCategoria, descripcion) VALUES
 (1, 'Tabla'),
@@ -503,11 +504,13 @@ DELIMITER $$
 CREATE PROCEDURE gananciasTotales()
 BEGIN
     WITH tablaTotal1 AS(
-    SELECT SUM(cont.precio*cantidad) as total1
-    FROM Productos prod JOIN Contiene cont ON prod.idProducto=cont.idProducto)
-    , tablaTotal2 AS(
-    SELECT SUM(precioProveedor * cantidad) as total2
-    FROM Viene_De)
+        SELECT SUM(v.total) as total1
+        FROM Ventas v
+    ),
+    tablaTotal2 AS(
+        SELECT SUM(precioProveedor * cantidad) as total2
+        FROM Viene_De
+    )
     SELECT total1 - total2 as total 
     FROM tablaTotal1 JOIN tablaTotal2;
 END $$
@@ -521,10 +524,11 @@ CREATE PROCEDURE ingresosMes(
 )
 BEGIN
     WITH tablaTotal AS(
-    SELECT cont.precio*cantidad as total
+    SELECT comp.total as total
     FROM Productos prod JOIN Contiene cont ON prod.idProducto=cont.idProducto
     JOIN Ventas comp ON comp.idCompra = cont.idCompra
-    WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%'))
+    WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%')
+    group by comp.idCompra)
     SELECT SUM(total) as ingresosMes FROM tablaTotal;
 END $$
 DELIMITER ;
@@ -617,51 +621,22 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE obtenerVentas()
 BEGIN
-    SELECT v.idCompra as ID, 
-    v.fecha as saleDate,
-    v.fecha_entrega as deliveryDate,
-    SUM(p.precio * c.cantidad) as total,
-    v.direccion as address,
-    u.nombre as name,
-    tp.descripcion as status
+    SELECT 
+        v.idCompra as ID, 
+        v.fecha as saleDate,
+        v.fecha_entrega as deliveryDate,
+        v.total as total,
+        v.direccion as address,
+        u.nombre as name,
+        tp.descripcion as status
     FROM Tipos_Status tp 
     JOIN Ventas v ON v.idStatus = tp.idStatus
-    JOIN Contiene c ON v.idCompra = c.idCompra
-    JOIN Productos p ON c.idProducto = p.idProducto
-    JOIN Usuarios u ON v.idUsuario = u.idUsuario
-    GROUP BY v.idCompra, v.fecha, v.fecha_entrega, v.direccion, u.nombre, tp.descripcion;
+    JOIN Usuarios u ON v.idUsuario = u.idUsuario;
+
+    SELECT SUM(v.total) as sumaTotal FROM Ventas v;
 END $$
 DELIMITER ;
--- Stored procedure para calcular el total incluyendo el descuento del cupón
-DELIMITER $$
-CREATE PROCEDURE calcularTotalConDescuento(
-    IN idCompra INT
-)
-BEGIN
-    DECLARE total DECIMAL(10,2);
-    DECLARE descuento INT;
-    DECLARE totalConDescuento DECIMAL(10,2);
 
-    -- Calcular el total de la compra
-    SELECT SUM(p.precio * c.cantidad) INTO total
-    FROM Productos p
-    JOIN Contiene c ON p.idProducto = c.idProducto
-    WHERE c.idCompra = idCompra;
-
-    -- Obtener el descuento del cupón
-    SELECT cu.descuento INTO descuento
-    FROM Ventas v
-    JOIN Cupones cu ON v.codigoCupon = cu.codigoCupon
-    WHERE v.idCompra = idCompra;
-
-    -- Calcular el total con descuento
-    SET totalConDescuento = total - (total * descuento / 100);
-
-    -- Devolver el total con descuento
-    SELECT totalConDescuento AS totalConDescuento;
-END $$
-
-DELIMITER ;
 
 -- Obtener los productos de una venta
 DELIMITER $$
@@ -762,8 +737,7 @@ BEGIN
 END $$
 
 
---Stored procedure para obtener los cupones
-
+--Stored procedure para obtener los cupones por ID
 DELIMITER $$
 CREATE PROCEDURE obtenerCuponesbyID(
     IN code VARCHAR(10)
@@ -774,6 +748,44 @@ BEGIN
     activo as active
     FROM Cupones
     WHERE codigoCupon = code;
+END $$
+DELIMITER ;
+
+-- Stored procedure para obtener todos los cupones
+DELIMITER $$
+CREATE PROCEDURE obtenerCupones()
+BEGIN
+    SELECT codigoCupon as code, 
+    descuento as discount, 
+    activo as active
+    FROM Cupones;
+END $$
+DELIMITER ;
+
+-- Stored procedure para crear un cupón
+DELIMITER $$
+CREATE PROCEDURE crearCupon(
+    IN code VARCHAR(10),
+    IN discount INT
+)
+BEGIN
+    INSERT INTO Cupones(codigoCupon, descuento) VALUES(code, discount);
+END $$
+DELIMITER ;
+
+-- Stored procedure para desactivar o activar un cupon dependiendo del estado actual
+DELIMITER $$
+CREATE PROCEDURE actualizarCupon(
+    IN code VARCHAR(10)
+)
+BEGIN
+    DECLARE active BOOLEAN;
+    SELECT activo INTO active FROM Cupones WHERE codigoCupon = code;
+    IF active THEN
+        UPDATE Cupones SET activo = FALSE WHERE codigoCupon = code;
+    ELSE
+        UPDATE Cupones SET activo = TRUE WHERE codigoCupon = code;
+    END IF;
 END $$
 DELIMITER ;
 
@@ -800,5 +812,45 @@ BEGIN
     correoProveedor as email, 
     dirProveedor as address
     FROM Proveedores;
+END $$
+DELIMITER ;
+
+--Trigger para poner en default true el cupon activo
+DELIMITER $$
+CREATE TRIGGER activarCupon
+BEFORE INSERT ON Cupones
+FOR EACH ROW
+BEGIN
+    SET NEW.activo = TRUE;
+END $$
+DELIMITER ;
+
+--Trigger para poner en default 2 cuando se cree un usuario
+DELIMITER $$
+CREATE TRIGGER defaultUser
+BEFORE INSERT ON Usuarios
+FOR EACH ROW
+BEGIN
+    SET NEW.idTipo = 2;
+END $$
+DELIMITER ;
+
+--Trigger para poner el dia de hoy en default al crear una venta
+DELIMITER $$
+CREATE TRIGGER defaultDate
+BEFORE INSERT ON Ventas
+FOR EACH ROW
+BEGIN
+    SET NEW.fecha = CURDATE();
+END $$
+DELIMITER ;
+
+--Trigger para poner el status en default 1 al crear una venta
+DELIMITER $$
+CREATE TRIGGER defaultStatus
+BEFORE INSERT ON Ventas
+FOR EACH ROW
+BEGIN
+    SET NEW.idStatus = 1;
 END $$
 DELIMITER ;
