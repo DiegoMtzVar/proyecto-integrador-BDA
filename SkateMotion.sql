@@ -32,6 +32,7 @@ CREATE TABLE Cupones(
     activo BOOLEAN DEFAULT TRUE,
     PRIMARY KEY (codigoCupon)
 );
+
 CREATE TABLE Usuarios(
     idUsuario INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255),
@@ -78,6 +79,7 @@ CREATE TABLE Contiene(
     idProducto INT,
     idCompra INT,
     cantidad INT,
+    precio INT,
     PRIMARY KEY (idProducto, idCompra),
     FOREIGN KEY (idCompra) REFERENCES Ventas(idCompra),
     FOREIGN KEY (idProducto) REFERENCES Productos(idProducto)
@@ -124,6 +126,11 @@ INSERT INTO Tipos_Status(idStatus, descripcion) VALUES
 (2, 'En bodega'),
 (3, 'En camino'),
 (4, 'Entregado');
+
+INSERT INTO Cupones(codigoCupon, descuento) VALUES
+('DESC-10',10),
+('DESC-15',15),
+('DESC-20',20);
 
 INSERT INTO Tipos_Categorias(idCategoria, descripcion) VALUES
 (1, 'Tabla'),
@@ -193,19 +200,19 @@ INSERT INTO Ventas(idCompra, fecha, direccion, idStatus, idUsuario, idEnvio, fec
 (9, CURDATE(), 'Mexico, Veracruz, Veracruz, Benito Juarez #303, 91700', 4, 9, 3, CURDATE() + INTERVAL 1 DAY),
 (10, CURDATE(), 'Mexico, Quintana Roo, Cancun, Venustiano Carranza #404, 77500', 4, 10, 1, CURDATE() + INTERVAL 5 DAY);
 
-INSERT INTO Contiene(idProducto, idCompra, cantidad) VALUES
-(1,1,2),
-(20,1,1),
-(13,2,2),
-(5,3,1),
-(19,4,1),
-(11,5,2),
-(21,6,2),
-(7,6,1),
-(3,7,3),
-(16,8,1),
-(9,9,3),
-(18,10,2);
+INSERT INTO Contiene(idProducto, idCompra, cantidad, precio) VALUES
+(1, 1, 2, 1200),
+(20, 1, 1, 2000),
+(13, 2, 2, 420),
+(5, 3, 1, 1500),
+(19, 4, 1, 2200),
+(11, 5, 2, 640),
+(21, 6, 2, 2000),
+(7, 6, 1, 600),
+(3, 7, 3, 1000),
+(16, 8, 1, 440),
+(9, 9, 3, 300),
+(18, 10, 2, 1100);
 
 INSERT INTO Compras(idCompraProveedor, fecha, idProveedor) VALUES
 (1, CURDATE(), 1),
@@ -417,17 +424,24 @@ DELIMITER $$
 CREATE PROCEDURE aniadirContiene(
     IN idP INT,
     IN idC INT,
-    IN cant INT
+    IN cant INT,
+    IN disc INT
 )
 BEGIN
     DECLARE stock INT DEFAULT 0;
+    declare price int DEFAULT 0;
     select inventarioProducto into stock from Productos where idProducto = idP;
+    select precio into price from Productos where idProducto = idP;
     IF stock < cant THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No hay suficiente stock';
     ELSE
-        INSERT INTO Contiene(idProducto, idCompra, cantidad) VALUES(idP, idC, cant);
+        IF disc > 0 THEN
+            set price = price - (price * disc / 100);
+        END IF;
+            INSERT INTO Contiene(idProducto, idCompra, cantidad, precio) VALUES(idP, idC, cant, price);
     END IF;
 END $$
+DELIMITER ;
 
 
 
@@ -485,7 +499,7 @@ DELIMITER $$
 CREATE PROCEDURE gananciasTotales()
 BEGIN
     WITH tablaTotal1 AS(
-    SELECT SUM(precio*cantidad) as total1
+    SELECT SUM(cont.precio*cantidad) as total1
     FROM Productos prod JOIN Contiene cont ON prod.idProducto=cont.idProducto)
     , tablaTotal2 AS(
     SELECT SUM(precioProveedor * cantidad) as total2
@@ -503,7 +517,7 @@ CREATE PROCEDURE ingresosMes(
 )
 BEGIN
     WITH tablaTotal AS(
-    SELECT precio*cantidad as total
+    SELECT cont.precio*cantidad as total
     FROM Productos prod JOIN Contiene cont ON prod.idProducto=cont.idProducto
     JOIN Ventas comp ON comp.idCompra = cont.idCompra
     WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%'))
@@ -593,6 +607,7 @@ BEGIN
     FROM Tipos_Categorias;
 END $$
 DELIMITER ;
+
 
 -- Stored procedure para obtener todas las ventas
 DELIMITER $$
@@ -741,3 +756,19 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El producto tiene compras';
     END IF;
 END $$
+
+
+--Stored procedure para obtener los cupones
+
+DELIMITER $$
+CREATE PROCEDURE obtenerCuponesbyID(
+    IN code VARCHAR(10)
+)
+BEGIN
+    SELECT codigoCupon as code, 
+    descuento as discount, 
+    activo as active
+    FROM Cupones
+    WHERE codigoCupon = code;
+END $$
+DELIMITER ;

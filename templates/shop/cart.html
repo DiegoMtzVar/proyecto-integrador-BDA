@@ -69,8 +69,17 @@
 							<tr class="total-data">
 								<td><strong>Total: </strong></td>
 								<td>${{ total }}</td>
-							
 							</tr>
+							{% if promocion %}
+							<tr class="total-data">
+								<td><strong>Descuento: </strong></td>
+								<td>{{ promocion.discount }}%</td>
+							</tr>
+							<tr class="total-data">
+								<td><strong>Total con Descuento: </strong></td>
+								<td>${{ total - (total * promocion.discount/100) }}</td>
+							</tr>
+							{% endif %}
 						</tbody>
 					</table>
 					<div class="cart-buttons">
@@ -79,11 +88,11 @@
 				</div>
 
 				<div class="coupon-section">
-					<h3>Apply Coupon</h3>
+					<h3>Agregar Cupon</h3>
 					<div class="coupon-form-wrap">
-						<form action="index.html">
-							<p><input type="text" placeholder="Coupon"></p>
-							<p><input type="submit" value="Apply"></p>
+						<form action="{{ url_for('cupon') }}" method="POST">
+							<p><input type="text" name="cupon" id="cupon" placeholder="Coupon" required></p>
+							<p><input type="submit" value="Aplicar"></p>
 						</form>
 					</div>
 				</div>
@@ -91,5 +100,5 @@
 		</div>
 	</div>
 </div>
-<!-- end cart -->
+
 {% endblock %}

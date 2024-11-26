@@ -21,6 +21,8 @@ def addProductToCart(product, quantity):
         cart[product] = {'quantity': quantity, **getProductById(product)}
     session['cart'] = cart
 
+    
+
 
 def cart():
     if not session.get("user"):
@@ -40,7 +42,7 @@ def cart():
         return redirect(url_for('cart'))
     cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
     total = sum([product['price'] * product['quantity'] for product in cart_products])
-    return render_template('shop/cart.html', products=cart_products, total=total)
+    return render_template('shop/cart.html', products=cart_products, total=total, compras=compras)
 
 def single_product(id):
     product = getProductById(id)
@@ -86,7 +88,7 @@ def checkout():
         flash('No tienes productos en el carrito', category='error')
         return redirect(url_for('cart'))
     total = sum([product['price'] * product['quantity'] for product in cart_products])
-    return render_template('shop/checkout.html', products=cart_products, total=total)
+    return render_template('shop/checkout.html', products=cart_products, total=total, compras=compras)
 
 def finalizarCompra():
     if not session.get("user"):
@@ -100,15 +102,27 @@ def finalizarCompra():
         calle = request.form['calle']
         postal = request.form['postal']
         direccion = pais+", "+estado+", "+municipio+", "+calle+", "+postal
+        promocion=session.get('promocion', {})
+        discount = promocion.get('discount', 0)
         cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
         aniadirCompra(session['user']['ID'],direccion,entrega)
         id=ultimaCompra(session['user']['ID'])
-        print(id)
         if id:
             for product in cart_products:
-                aniadirContiene(product['ID'],id,product['quantity'])
+                aniadirContiene(product['ID'],id,product['quantity'],discount)
             session['cart'] = {}
             flash('Compra realizada', category='info')
         else:
             flash('Error al realizar la compra', category='error')
+    return redirect(url_for('cart'))
+
+def cupon():
+    if not session.get("user"):
+        flash('Debes iniciar sesión para agregar productos al carrito', category='error')
+        return redirect(url_for('login'))
+    nCupon=request.form['cupon']
+    cupon=getCuponesbyID(nCupon)
+    if cupon:
+        session['promocion']=cupon
+        flash('Cupon añadido', category='info')
     return redirect(url_for('cart'))

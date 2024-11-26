@@ -132,10 +132,10 @@ def ultimaCompra(id):
         if cur: cur.close()
 
 
-def aniadirContiene(idU,idC,cantidad):
+def aniadirContiene(idU,idC,cantidad,promocion):
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('aniadirContiene', (idU,idC,cantidad))
+        cur.callproc('aniadirContiene', (idU,idC,cantidad,promocion))
         mysql.connection.commit()
         return True
     except Exception as e:
@@ -143,6 +143,19 @@ def aniadirContiene(idU,idC,cantidad):
     finally:
         if cur: cur.close()
     return False
+
+def getCuponesbyID(cupon):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerCuponesbyID', (cupon,))
+        
+        data = cur.fetchone() if cur else False
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
 
 def getSales():
     try:
