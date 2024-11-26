@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="modal-body" style="z-index: 1;">
-                    <div class="form-group">
+                    <div class="form-group" id="form">
                         <label for="proveedor">Proveedores</label>
                         <select class="form-control" id="proveedor" name="proveedor" required>
                             <option value="" disabled selected>Selecciona un proveedor</option>
@@ -38,22 +38,16 @@
                         </select>
                         <br>
                         <div id="product-container">
-                            <div class="container p-3 mb-3 bg-light border rounded product-input">
-                                <label for="producto">Producto</label>
-                                <select class="form-control" id="producto" name="producto" required>
-                                    <option value="" disabled selected>Selecciona un producto</option>
-                                </select><br>
-                                <label for="cantidad">Cantidad</label>
-                                <input type="number" class="form-control" id="cantidad" name="cantidad" min="0" required>
-                            </div>
+                            <div class="container p-3 mb-3 bg-light border rounded product-input"></div>
                         </div>
-                        <button class="btn btn-primary w-100" type="button" onclick="addProductInput()">Agregar Producto</button>
+                        <br>
+                        <button id="submit-btn" class="btn btn-primary w-100" type="button" onclick="addProductInput()">Agregar Producto</button>
                     </div>
                 </div>
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                    <button class="btn btn-primary" type="submit" onclick="">Confirmar</button>
+                    <button class="btn btn-primary" type="submit" onclick="submitOrder()">Confirmar</button>
                 </div>
             </form>
         </div>
@@ -92,7 +86,7 @@
                                             <th>ID Compra</th>
                                             <th>Proveedor</th>
                                             <th>Correo</th>
-                                            <th>Telefono</th>
+                                            <th>Teléfono</th>
                                             <th>Fecha</th>
                                             <th>Total</th>
                                         </tr>
@@ -128,12 +122,27 @@
 
 {% block script %}
 <script>
+order = {
+    provider: '',
+    products: []
+}
+
+products = []
+
+form = $('#form');
+providerInput = $('#proveedor');
+productContainer = $('#product-container');
+submitBtn = $('#submit-btn');
+submitBtn.prop('disabled', true);
+
+
 function createProductInput() {
     let productInput = document.createElement('div');
     productInput.classList.add('container', 'p-3', 'mb-3', 'bg-light', 'border', 'rounded', 'product-input');
     productInput.innerHTML = `
         <label for="producto">Producto</label>
         <select class="form-control" id="producto" name="producto" required>
+            <option value="" disabled selected>Selecciona un producto</option>
         </select><br>
 
         <label for="cantidad">Cantidad</label>
@@ -142,12 +151,6 @@ function createProductInput() {
     return productInput;
 }
 
-order = {
-    provider: '',
-    products: []
-}
-
-products = []
 $('#proveedor').on('change', function() {
     let id = $(this).val();
     let request = $.ajax({
@@ -158,39 +161,57 @@ $('#proveedor').on('change', function() {
 
     request.done(function(data) {
         order = {
-            provider: '',
+            provider: id,
             products: []
         }
         products = data;
-        order.provider = id;
-        $('#product-container').empty();
+        productContainer.empty();
         addProductInput();
+        submitBtn.prop('disabled', false);
     });
 });
 
 function addProductInput() {
     let newProductInput = createProductInput();
 
+    productIndex = order.products.length;
+    order.products[productIndex] = {
+        product: '',
+        quantity: 0
+    };
+
+    // Fill product select
     let productSelect = $(newProductInput).find('select[name="producto"]');
-    productSelect.append('<option value="" disabled selected>Selecciona un producto</option>');
+    //productSelect.append('<option value="" disabled selected>Selecciona un producto</option>');
     products.forEach(function(product) {
         productSelect.append(`<option value="${product.idProducto}">${product.nombre}</option>`);
     });
     productSelect.on('change', function() {
+        order.products[productIndex].product = $(this).val();
         console.log($(this).val());
     });
 
+    // Quantity input
     let quantityInput = $(newProductInput).find('input[name="cantidad"]');
     quantityInput.on('input', function() {
+        order.products[productIndex].quantity = $(this).val();
         console.log($(this).val());
+        console.log(JSON.stringify(order))
     });
-    $('#product-container').append(newProductInput);
+
+    productContainer.append(newProductInput);
+}
+function submitOrder() {
+    console.log(order);
+    $('<form>', {
+        "id": "orderForm",
+        "html": '<input type="hidden" name="order" value="' + encodeURIComponent(JSON.stringify(order)) + '" />',
+        "method": 'POST',
+        "action": '/dashboard/proveedores'
+    }).appendTo(document.body).submit();
 }
 
-
-
-
-
+// DataTable
 let table = $('#tablaCompras').dataTable({
     columnDefs: [
         {

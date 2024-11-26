@@ -815,6 +815,45 @@ BEGIN
 END $$
 DELIMITER ;
 
+-- Stored procedure para crear una compra
+DELIMITER $$
+CREATE PROCEDURE crearCompra(
+    IN idProveedor INT
+)
+BEGIN
+    INSERT INTO Compras(fecha, idProveedor) VALUES(CURDATE(), idProveedor);
+END $$
+DELIMITER ;
+
+-- Stored procedure obtener el ID de la ultima compra hacia un proveedor
+DELIMITER $$
+CREATE PROCEDURE obtenerUltimaCompra(
+    IN idProveedor INT
+)
+BEGIN
+    SELECT idCompraProveedor as ID
+    FROM Compras
+    WHERE idProveedor = idProveedor
+    ORDER BY idCompraProveedor DESC
+    LIMIT 1;
+END $$
+DELIMITER ;
+
+-- Stored procedure para agregar un producto a una compra
+DELIMITER $$
+CREATE PROCEDURE agregarProductoCompra(
+    IN idProducto INT,
+    IN idCompra INT,
+    IN cantidad INT
+)
+BEGIN
+    DECLARE precio INT;
+    SELECT precioProveedor INTO precio FROM Viene_De WHERE idProducto = idProducto AND idCompraProveedor = idCompra;
+    INSERT INTO Viene_De(idProducto, idCompraProveedor, precioProveedor, cantidad) VALUES(idProducto, idCompra, precio, cantidad);
+END $$
+DELIMITER ;
+
+
 --Trigger para poner en default true el cupon activo
 DELIMITER $$
 CREATE TRIGGER activarCupon

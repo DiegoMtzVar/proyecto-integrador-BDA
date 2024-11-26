@@ -261,3 +261,40 @@ def getSuppliers():
         return []
     finally:
         if cur: cur.close()
+
+def addPurchase(supplierID):
+    try:
+        cur = mysql.connection.cursor()
+        
+        cur.callproc('crearCompra', (supplierID,))
+        purchaseID = cur.fetchone()
+        
+        mysql.connection.commit()
+        return purchaseID
+    except Exception as e:
+        print(f"Error al ejecutar el procedimiento almacenado: {e}")
+        return False
+    finally:
+        if cur: cur.close()
+
+def getRecentPurchase(supplierID):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('obtenerUltimaCompra', (supplierID,))
+        data = cur.fetchall()
+        return data
+    except:
+        return []
+    finally:
+        if cur: cur.close()
+
+def addPurchaseProduct(purchaseID, productID, quantity):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('agregarProductoCompra', (purchaseID, productID, quantity))
+        mysql.connection.commit()
+        return True
+    except:
+        return False
+    finally:
+        if cur: cur.close()

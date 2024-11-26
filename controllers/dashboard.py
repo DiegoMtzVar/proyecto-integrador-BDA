@@ -55,6 +55,16 @@ def updateStatus(ventaID, statusID):
 # Controladores de proveedores
 @secureRoute
 def proveedores():
+    if request.method == 'POST':
+        supplierID = request.form.get("proveedor")   
+        if not supplierID: return redirect(url_for('proveedores'))
+        print(request.form)
+        print( "proveedor " + supplierID)
+        purchaseID = products.addPurchase(supplierID)
+        print(purchaseID if purchaseID else "Error al agregar compra")
+        
+        print(request.form.getlist("producto"))
+        print(request.form.getlist("cantidad"))
     return render_template('dashboard/proveedores.html', 
                            purchases=products.getSupplierPurchases(), 
                            suppliers=products.getSuppliers())
