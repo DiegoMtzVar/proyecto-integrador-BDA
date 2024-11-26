@@ -127,10 +127,11 @@ INSERT INTO Tipos_Status(idStatus, descripcion) VALUES
 (3, 'En camino'),
 (4, 'Entregado');
 
-INSERT INTO Cupones(codigoCupon, descuento) VALUES
-('DESC-10',10),
-('DESC-15',15),
-('DESC-20',20);
+INSERT INTO Cupones(codigoCupon, descuento, activo) VALUES
+('DESC-10',10, TRUE),
+('DESC-15',15, TRUE),
+('DESC-20',20, TRUE),
+('DESC-50',50, FALSE);
 
 INSERT INTO Tipos_Categorias(idCategoria, descripcion) VALUES
 (1, 'Tabla'),
@@ -759,7 +760,6 @@ END $$
 
 
 --Stored procedure para obtener los cupones
-
 DELIMITER $$
 CREATE PROCEDURE obtenerCuponesbyID(
     IN code VARCHAR(10)
@@ -770,5 +770,43 @@ BEGIN
     activo as active
     FROM Cupones
     WHERE codigoCupon = code;
+END $$
+DELIMITER ;
+
+-- Stored procedure para obtener todos los cupones
+DELIMITER $$
+CREATE PROCEDURE obtenerCupones()
+BEGIN
+    SELECT codigoCupon as code, 
+    descuento as discount, 
+    activo as active
+    FROM Cupones;
+END $$
+DELIMITER ;
+
+-- Stored procedure para crear un cupón
+DELIMITER $$
+CREATE PROCEDURE crearCupon(
+    IN code VARCHAR(10),
+    IN discount INT
+)
+BEGIN
+    INSERT INTO Cupones(codigoCupon, descuento) VALUES(code, discount);
+END $$
+DELIMITER ;
+
+-- Stored procedure para desactivar o activar un cupon dependiendo del estado actual
+DELIMITER $$
+CREATE PROCEDURE actualizarCupon(
+    IN code VARCHAR(10)
+)
+BEGIN
+    DECLARE active BOOLEAN;
+    SELECT activo INTO active FROM Cupones WHERE codigoCupon = code;
+    IF active THEN
+        UPDATE Cupones SET activo = FALSE WHERE codigoCupon = code;
+    ELSE
+        UPDATE Cupones SET activo = TRUE WHERE codigoCupon = code;
+    END IF;
 END $$
 DELIMITER ;

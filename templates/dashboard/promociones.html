@@ -46,29 +46,18 @@
 
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name">TODO</label>
+                        <label for="name">Código</label>
                         <input type="text" class="form-control" id="name" name="name" required>
 
-                        <label for="price">TODO</label>
-                        <input type="number" class="form-control" id="price" name="price" min="0" required>
-
-                        <label for="category">Categoría</label>
-                        <select class="form-control" id="category" name="category" required>
-                            <option value="" disabled selected>Selecciona una categoría</option>
-                            {% for category in categories %}
-                                <option value="{{ category.ID }}">{{ category.name }}</option>
-                            {% endfor %}
-                        </select>
-                        
-                        <label for="image">Imagen</label>
-                        <input type="file" class="form-control" id="image" name="image" required>
+                        <label for="discount">Descuento</label>
+                        <input type="number" class="form-control" id="discount" name="discount" min="0" required>
                     </div>
                 </div>
 
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                    <button class="btn btn-primary" type="submit" onclick="validateForm(event)">Confirmar</button>
+                    <button class="btn btn-primary" type="submit">Confirmar</button>
                 </div>
             </form>
         </div>
@@ -106,24 +95,24 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Descuento</th>
-                                            <th>Editar</th>
-                                            <th>Borrar</th>
+                                            <th>Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for promocion in promociones %}
-                                        <tr>
-                                            <td class="text-center">  {{ promocion.ID }}</td>
-                                            <td>{{ promocion.discount }}</td>
+                                        {% for coupon in coupons %}
+                                        <tr class={% if not coupon.active %}table-danger{% endif %} >
+                                            <td class="text-center">  {{ coupon.code }}</td>
+                                            <td>{{ coupon.discount }}</td>
                                             <td class="text-center">
-                                                <a href="/dashboard/promociones/edit/{{ promocion.ID }}" class="btn btn-primary btn-circle">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                            </td>
-                                            <td class="text-center">
-                                                <a href="/dashboard/promociones/delete/{{ promocion.ID }}" class="btn btn-danger btn-circle">
+                                                {% if coupon.active %}
+                                                <a href="/dashboard/promociones/update/{{ coupon.code }}" class="btn btn-danger btn-circle">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
+                                                {% else %}
+                                                <a href="/dashboard/promociones/update/{{ coupon.code }}" class="btn btn-success btn-circle">
+                                                    <i class="fas fa-check"></i>
+                                                </a>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -143,4 +132,12 @@
 
 </div>
 <!-- End of Page Wrapper -->
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            $('#tablaPromociones').DataTable();
+        });
+    </script>
 {% endblock %}
