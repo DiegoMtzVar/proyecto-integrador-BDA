@@ -69,6 +69,7 @@ CREATE TABLE Ventas(
     idStatus INT DEFAULT 1,
     idEnvio INT,
     codigoCupon VARCHAR(10),
+    total int,
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
     FOREIGN KEY (idStatus) REFERENCES Tipos_Status(idStatus),
     FOREIGN KEY (idEnvio) REFERENCES Tipos_Envios(idEnvio),
@@ -188,17 +189,17 @@ INSERT INTO Proveedores(idProveedor, nombreProveedor, telefonoProveedor, correoP
 (9, 'Element Skateboards', '8123456781', 'element@gmail.com', 'Calle Element 404'),
 (10, 'Birdhouse Industries', '8198765431', 'bidhouse@gmail.com', 'Avenida Globe 505');
 
-INSERT INTO Ventas(idCompra, fecha, direccion, idStatus, idUsuario, idEnvio, fecha_entrega) VALUES 
-(1, CURDATE(), 'Mexico, CDMX, Polanco, Venustiano Carranza #123, 03100', 4, 1, 1, CURDATE() + INTERVAL 5 DAY),
-(2, CURDATE(), 'Mexico, CDMX, Polanco, Insurgentes Sur #456, 03100', 4, 1, 2, CURDATE() + INTERVAL 3 DAY),
-(3, CURDATE(), 'Mexico, Jalisco, Guadalajara, Benito Juarez #456, 44100', 4, 2, 3, CURDATE() + INTERVAL 1 DAY),
-(4, CURDATE(), 'Mexico, Nuevo Leon, Monterrey, Venustiano Carranza #789, 64000', 4, 3, 1, CURDATE() + INTERVAL 5 DAY),
-(5, CURDATE(), 'Mexico, Yucatan, Merida, Benito Juarez #101, 97000', 1, 4, 2, CURDATE() + INTERVAL 3 DAY),
-(6, CURDATE(), 'Mexico, Yucatan, Merida, Paseo de Montejo #202, 97000', 2, 4, 3, CURDATE() + INTERVAL 1 DAY),
-(7, CURDATE(), 'Mexico, Yucatan, Merida, Calle 60 #303, 97000', 3, 4, 1, CURDATE() + INTERVAL 5 DAY),
-(8, CURDATE(), 'Mexico, Puebla, Puebla, Venustiano Carranza #202, 72000', 4, 8, 2, CURDATE() + INTERVAL 3 DAY),
-(9, CURDATE(), 'Mexico, Veracruz, Veracruz, Benito Juarez #303, 91700', 4, 9, 3, CURDATE() + INTERVAL 1 DAY),
-(10, CURDATE(), 'Mexico, Quintana Roo, Cancun, Venustiano Carranza #404, 77500', 4, 10, 1, CURDATE() + INTERVAL 5 DAY);
+INSERT INTO Ventas(idCompra, fecha, direccion, idStatus, idUsuario, idEnvio, fecha_entrega, total) VALUES 
+(1, CURDATE(), 'Mexico, CDMX, Polanco, Venustiano Carranza #123, 03100', 4, 1, 1, CURDATE() + INTERVAL 5 DAY, 4400),
+(2, CURDATE(), 'Mexico, CDMX, Polanco, Insurgentes Sur #456, 03100', 4, 1, 2, CURDATE() + INTERVAL 3 DAY, 1240),
+(3, CURDATE(), 'Mexico, Jalisco, Guadalajara, Benito Juarez #456, 44100', 4, 2, 3, CURDATE() + INTERVAL 1 DAY, 2000),
+(4, CURDATE(), 'Mexico, Nuevo Leon, Monterrey, Venustiano Carranza #789, 64000', 4, 3, 1, CURDATE() + INTERVAL 5 DAY, 2200),
+(5, CURDATE(), 'Mexico, Yucatan, Merida, Benito Juarez #101, 97000', 1, 4, 2, CURDATE() + INTERVAL 3 DAY, 1580),
+(6, CURDATE(), 'Mexico, Yucatan, Merida, Paseo de Montejo #202, 97000', 2, 4, 3, CURDATE() + INTERVAL 1 DAY, 5100),
+(7, CURDATE(), 'Mexico, Yucatan, Merida, Calle 60 #303, 97000', 3, 4, 1, CURDATE() + INTERVAL 5 DAY, 3000),
+(8, CURDATE(), 'Mexico, Puebla, Puebla, Venustiano Carranza #202, 72000', 4, 8, 2, CURDATE() + INTERVAL 3 DAY, 740),
+(9, CURDATE(), 'Mexico, Veracruz, Veracruz, Benito Juarez #303, 91700', 4, 9, 3, CURDATE() + INTERVAL 1 DAY, 1400),
+(10, CURDATE(), 'Mexico, Quintana Roo, Cancun, Venustiano Carranza #404, 77500', 4, 10, 1, CURDATE() + INTERVAL 5 DAY, 2200);
 
 INSERT INTO Contiene(idProducto, idCompra, cantidad, precio) VALUES
 (1, 1, 2, 1200),
@@ -392,15 +393,18 @@ DELIMITER $$
 CREATE PROCEDURE aniadirCompra(
     IN idU INT,
     IN dir TEXT,
-    IN tipoEnvio INT
+    IN tipoEnvio INT,
+    IN totall int
 )
 BEGIN
     if tipoEnvio = 1 THEN
-        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 5 DAY);
+        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega,total) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 5 DAY,totall);
     ELSEIF tipoEnvio = 2 THEN
-        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 3 DAY);
+        set totall=totall+300;
+        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega,total) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 3 DAY,totall);
     ELSEIF tipoEnvio = 3 THEN
-        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 1 DAY);
+        set totall=totall+500;
+        INSERT INTO Ventas(fecha, direccion, idUsuario, idEnvio, fecha_entrega,total) VALUES(CURDATE(), dir, idU, tipoEnvio, CURDATE() + INTERVAL 1 DAY,totall);
     END IF;
 END $$
 DELIMITER ;

@@ -42,7 +42,8 @@ def cart():
         return redirect(url_for('cart'))
     cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
     total = sum([product['price'] * product['quantity'] for product in cart_products])
-    return render_template('shop/cart.html', products=cart_products, total=total, compras=compras)
+    promocion=session.get('promocion', {})
+    return render_template('shop/cart.html', products=cart_products, total=total,promocion=promocion)
 
 def single_product(id):
     product = getProductById(id)
@@ -88,7 +89,8 @@ def checkout():
         flash('No tienes productos en el carrito', category='error')
         return redirect(url_for('cart'))
     total = sum([product['price'] * product['quantity'] for product in cart_products])
-    return render_template('shop/checkout.html', products=cart_products, total=total, compras=compras)
+    promocion=session.get('promocion', {})    
+    return render_template('shop/checkout.html', products=cart_products, total=total,promocion=promocion)
 
 def finalizarCompra():
     if not session.get("user"):
@@ -105,12 +107,17 @@ def finalizarCompra():
         promocion=session.get('promocion', {})
         discount = promocion.get('discount', 0)
         cart_products = [{'ID': product_id, **details} for product_id, details in session.get('cart', {}).items()]
-        aniadirCompra(session['user']['ID'],direccion,entrega)
+        total = sum([product['price'] * product['quantity'] for product in cart_products])
+        if discount>0:
+            total=total-(total*discount/100) 
+        aniadirCompra(session['user']['ID'],direccion,entrega,total)
         id=ultimaCompra(session['user']['ID'])
+        #para calcular total de la compra
         if id:
             for product in cart_products:
                 aniadirContiene(product['ID'],id,product['quantity'],discount)
             session['cart'] = {}
+            session['promocion'] = {}
             flash('Compra realizada', category='info')
         else:
             flash('Error al realizar la compra', category='error')
