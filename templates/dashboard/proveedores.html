@@ -44,7 +44,7 @@
                                     <option value="" disabled selected>Selecciona un producto</option>
                                 </select><br>
                                 <label for="cantidad">Cantidad</label>
-                                <input type="number" class="form-control" id="cantidad" name="cantidad" min="0" required oninput="calculateTotal">
+                                <input type="number" class="form-control" id="cantidad" name="cantidad" min="0" required>
                             </div>
                         </div>
                         <button class="btn btn-primary w-100" type="button" onclick="addProductInput()">Agregar Producto</button>
@@ -137,9 +137,14 @@ function createProductInput() {
         </select><br>
 
         <label for="cantidad">Cantidad</label>
-        <input type="number" class="form-control" id="cantidad" name="cantidad" min="0" required oninput="calculateTotal">
+        <input type="number" class="form-control" id="cantidad" name="cantidad" min="0" required>
         `;
     return productInput;
+}
+
+order = {
+    provider: '',
+    products: []
 }
 
 products = []
@@ -152,7 +157,12 @@ $('#proveedor').on('change', function() {
     });
 
     request.done(function(data) {
+        order = {
+            provider: '',
+            products: []
+        }
         products = data;
+        order.provider = id;
         $('#product-container').empty();
         addProductInput();
     });
@@ -160,10 +170,19 @@ $('#proveedor').on('change', function() {
 
 function addProductInput() {
     let newProductInput = createProductInput();
+
     let productSelect = $(newProductInput).find('select[name="producto"]');
     productSelect.append('<option value="" disabled selected>Selecciona un producto</option>');
     products.forEach(function(product) {
         productSelect.append(`<option value="${product.idProducto}">${product.nombre}</option>`);
+    });
+    productSelect.on('change', function() {
+        console.log($(this).val());
+    });
+
+    let quantityInput = $(newProductInput).find('input[name="cantidad"]');
+    quantityInput.on('input', function() {
+        console.log($(this).val());
     });
     $('#product-container').append(newProductInput);
 }

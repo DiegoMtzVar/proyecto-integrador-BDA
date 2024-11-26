@@ -795,7 +795,7 @@ CREATE PROCEDURE productosProveedor(
     IN idProveedor INT
 )
 BEGIN
-    SELECT nombre, precioProveedor
+    SELECT p.idProducto, nombre, precioProveedor
     FROM Productos p JOIN Viene_De vd ON p.idProducto = vd.idProducto
     JOIN Compras pc ON vd.idCompraProveedor = pc.idCompraProveedor
     WHERE pc.idProveedor = idProveedor;
