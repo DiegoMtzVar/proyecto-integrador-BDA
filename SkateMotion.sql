@@ -881,14 +881,14 @@ DELIMITER ;
 -- Stored procedure para agregar un producto a una compra
 DELIMITER $$
 CREATE PROCEDURE agregarProductoCompra(
-    IN idProducto INT,
-    IN idCompra INT,
-    IN cantidad INT
+    IN idP INT,
+    IN idC INT,
+    IN cant INT
 )
 BEGIN
-    DECLARE precio INT;
-    SELECT precioProveedor INTO precio FROM Viene_De WHERE idProducto = idProducto AND idCompraProveedor = idCompra;
-    INSERT INTO Viene_De(idProducto, idCompraProveedor, precioProveedor, cantidad) VALUES(idProducto, idCompra, precio, cantidad);
+    DECLARE price INT;
+    SELECT precioProveedor INTO price FROM Viene_De WHERE idProducto = idP AND idCompraProveedor = idC;
+    INSERT INTO Viene_De(idProducto, idCompraProveedor, precioProveedor, cantidad) VALUES(idP, idC, price, cant);
 END $$
 DELIMITER ;
 
