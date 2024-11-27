@@ -200,16 +200,16 @@ INSERT INTO Proveedores(idProveedor, nombreProveedor, telefonoProveedor, correoP
 (10, 'Birdhouse Industries', '8198765431', 'bidhouse@gmail.com', 'Avenida Globe 505');
 
 INSERT INTO Ventas(idCompra, fecha, direccion, idStatus, idUsuario, idEnvio, fecha_entrega, total) VALUES 
-(1, CURDATE(), 'Mexico, CDMX, Polanco, Venustiano Carranza #123, 03100', 4, 1, 1, CURDATE() + INTERVAL 5 DAY, 4400),
-(2, CURDATE(), 'Mexico, CDMX, Polanco, Insurgentes Sur #456, 03100', 4, 1, 2, CURDATE() + INTERVAL 3 DAY, 1240),
-(3, CURDATE(), 'Mexico, Jalisco, Guadalajara, Benito Juarez #456, 44100', 4, 2, 3, CURDATE() + INTERVAL 1 DAY, 2000),
-(4, CURDATE(), 'Mexico, Nuevo Leon, Monterrey, Venustiano Carranza #789, 64000', 4, 3, 1, CURDATE() + INTERVAL 5 DAY, 2200),
-(5, CURDATE(), 'Mexico, Yucatan, Merida, Benito Juarez #101, 97000', 1, 4, 2, CURDATE() + INTERVAL 3 DAY, 1580),
-(6, CURDATE(), 'Mexico, Yucatan, Merida, Paseo de Montejo #202, 97000', 2, 4, 3, CURDATE() + INTERVAL 1 DAY, 5100),
-(7, CURDATE(), 'Mexico, Yucatan, Merida, Calle 60 #303, 97000', 3, 4, 1, CURDATE() + INTERVAL 5 DAY, 3000),
-(8, CURDATE(), 'Mexico, Puebla, Puebla, Venustiano Carranza #202, 72000', 4, 8, 2, CURDATE() + INTERVAL 3 DAY, 740),
-(9, CURDATE(), 'Mexico, Veracruz, Veracruz, Benito Juarez #303, 91700', 4, 9, 3, CURDATE() + INTERVAL 1 DAY, 1400),
-(10, CURDATE(), 'Mexico, Quintana Roo, Cancun, Venustiano Carranza #404, 77500', 4, 10, 1, CURDATE() + INTERVAL 5 DAY, 2200);
+(1, '2023-07-15', 'Mexico, CDMX, Polanco, Venustiano Carranza #123, 03100', 4, 1, 1, '2023-07-20', 4400),
+(2, '2023-08-10', 'Mexico, CDMX, Polanco, Insurgentes Sur #456, 03100', 4, 1, 2, '2023-08-13', 1240),
+(3, '2023-09-05', 'Mexico, Jalisco, Guadalajara, Benito Juarez #456, 44100', 4, 2, 3, '2023-09-06', 2000),
+(4, '2023-07-25', 'Mexico, Nuevo Leon, Monterrey, Venustiano Carranza #789, 64000', 4, 3, 1, '2023-07-30', 2200),
+(5, '2023-08-20', 'Mexico, Yucatan, Merida, Benito Juarez #101, 97000', 1, 4, 2, '2023-08-23', 1580),
+(6, '2023-09-01', 'Mexico, Yucatan, Merida, Paseo de Montejo #202, 97000', 2, 4, 3, '2023-09-02', 5100),
+(7, '2023-07-30', 'Mexico, Yucatan, Merida, Calle 60 #303, 97000', 3, 4, 1, '2023-08-04', 3000),
+(8, '2023-08-15', 'Mexico, Puebla, Puebla, Venustiano Carranza #202, 72000', 4, 8, 2, '2023-08-18', 740),
+(9, '2023-09-10', 'Mexico, Veracruz, Veracruz, Benito Juarez #303, 91700', 4, 9, 3, '2023-09-11', 1400),
+(10, '2023-07-20', 'Mexico, Quintana Roo, Cancun, Venustiano Carranza #404, 77500', 4, 10, 1, '2023-07-25', 2200);
 
 INSERT INTO Contiene(idProducto, idCompra, cantidad, precio) VALUES
 (1, 1, 2, 1200),
@@ -238,22 +238,22 @@ INSERT INTO Compras(idCompraProveedor, fecha, idProveedor) VALUES
 (10, CURDATE(), 10);
 
 INSERT INTO Viene_De(idProducto, idCompraProveedor, precioProveedor, cantidad) VALUES
-(1, 1, 600, 10),
-(2, 2, 500, 12),
-(3, 2, 500, 14),
-(4, 2, 500, 20),
-(5, 3, 750, 5),
-(6, 9, 700, 10),
-(7, 5, 300, 10),
+(1, 1, 600, 3),
+(2, 2, 500, 3),
+(3, 2, 500, 5),
+(4, 2, 500, 8),
+(5, 3, 750, 2),
+(6, 9, 700, 1),
+(7, 5, 300, 2),
 (8, 5, 350, 5),
-(9, 4, 150, 8),
+(9, 4, 150, 3),
 (10, 4, 300, 4),
 (11, 4, 320, 5),
-(12, 5, 200, 9),
-(13, 7, 210, 10),
-(14, 7, 210, 6),
-(15, 9, 150, 5),
-(16, 7, 220, 6),
+(12, 5, 200, 5),
+(13, 7, 210, 2),
+(14, 7, 210, 1),
+(15, 9, 150, 3),
+(16, 7, 220, 4),
 (17, 6, 500, 2),
 (18, 6, 550, 4),
 (19, 9, 1100, 3),
