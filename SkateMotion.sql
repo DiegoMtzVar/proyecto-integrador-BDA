@@ -944,3 +944,16 @@ BEGIN
     SET NEW.idStatus = 1;
 END $$
 DELIMITER ;
+
+--Trigger para que se actualize el inventario antes de agregar algo a la tabla viene_de
+DELIMITER $$
+CREATE TRIGGER actualizarInventario
+BEFORE INSERT ON Viene_De
+FOR EACH ROW
+BEGIN
+    DECLARE cant int default 0;
+    SELECT inventarioProducto INTO cant FROM Productos WHERE idProducto = NEW.idProducto;
+    set cant = cant + NEW.cantidad;
+    UPDATE Productos set inventarioProducto = cant WHERE idProducto = NEW.idProducto;
+END $$
+DELIMITER ;
