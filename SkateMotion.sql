@@ -46,7 +46,7 @@ CREATE TABLE Productos(
     idProducto INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255),
     precio INT,
-    inventarioProducto INT DEFAULT 0,
+    inventarioProducto INT,
     idCategoria INT,
     rutaImagen VARCHAR(100),
     FOREIGN KEY (idCategoria) REFERENCES Tipos_Categorias(idCategoria)
@@ -935,6 +935,16 @@ BEGIN
 END $$
 DELIMITER ;
 
+--Trigger para poner el dia de hoy en default al crear una compra
+DELIMITER $$
+CREATE TRIGGER defaultDateCompra
+BEFORE INSERT ON Compras
+FOR EACH ROW
+BEGIN
+    SET NEW.fecha = CURDATE();
+END $$
+DELIMITER ;
+
 --Trigger para poner el status en default 1 al crear una venta
 DELIMITER $$
 CREATE TRIGGER defaultStatus
@@ -957,3 +967,14 @@ BEGIN
     UPDATE Productos set inventarioProducto = cant WHERE idProducto = NEW.idProducto;
 END $$
 DELIMITER ;
+
+--Trigger para que se ponga en 0 el producto cuando se añade
+DELIMITER $$
+CREATE TRIGGER insertInventario
+before INSERT ON Productos
+FOR EACH ROW
+BEGIN 
+    SET NEW.inventarioProducto = 0;
+END $$
+DELIMITER ;
+
