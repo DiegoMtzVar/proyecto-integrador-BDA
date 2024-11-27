@@ -149,7 +149,7 @@ formatRecentPurchases = function(data) {
     return (
         data.map(function(purchase) {
             if (purchase.status == 'Pendiente') {
-                syleClass = 'bg-danger';
+                styleClass = 'bg-danger';
                 width = 25;
             } else if (purchase.status == 'En bodega') {
                 styleClass = 'bg-warning';
