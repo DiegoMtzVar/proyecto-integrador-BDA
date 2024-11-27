@@ -56,15 +56,23 @@ def updateStatus(ventaID, statusID):
 @secureRoute
 def proveedores():
     if request.method == 'POST':
-        supplierID = request.form.get("proveedor")   
-        if not supplierID: return redirect(url_for('proveedores'))
-        print(request.form)
-        print( "proveedor " + supplierID)
-        purchaseID = products.addPurchase(supplierID)
-        print(purchaseID if purchaseID else "Error al agregar compra")
+        supplierID = request.form.get("proveedor")
         
-        print(request.form.getlist("producto"))
-        print(request.form.getlist("cantidad"))
+        purchaseAdded = products.addPurchase(supplierID)
+        if purchaseAdded:
+            purchaseID = products.getRecentPurchase(supplierID)
+            for i in range(len(request.form.getlist("producto"))):
+                product_id = int(request.form.getlist("producto")[i])
+                quantity = int(request.form.getlist("cantidad")[i])
+                
+                if not products.addPurchaseProduct(purchaseID, product_id, quantity):
+                    flash('Error al crear compra', category='error')
+                    return redirect(url_for('proveedores'))
+                
+            flash('Compra creada', category='info')
+        else:
+            flash('Error al crear compra', category='error')
+            
     return render_template('dashboard/proveedores.html', 
                            purchases=products.getSupplierPurchases(), 
                            suppliers=products.getSuppliers())

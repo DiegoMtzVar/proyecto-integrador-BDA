@@ -48,7 +48,7 @@ app.add_url_rule('/dashboard/ventas/update/<int:ventaID>/<int:statusID>', 'venta
 app.add_url_rule('/dashboard/proveedores', 'proveedores', proveedores, methods=['GET', 'POST'])
 app.add_url_rule('/dashboard/proveedores/getProductsBySupplier/<int:supplierID>', 'getProductsBySupplier', getProductsBySupplier)
 app.add_url_rule('/dashboard/proveedores/getProductsInPurchase/<int:userID>', 'getProductsInPurchase', getProductsInPurchase)
-app.add_url_rule('/dashboard/proveedores/createSupplier', 'getSupplierPurchases', methods=['POST'])
+app.add_url_rule('/dashboard/proveedores/createSupplier', 'createSupplier', createSupplier, methods=['POST'])
 
 app.add_url_rule('/dashboard/usuariosGestion', 'usuariosGestion', usuariosGestion)
 app.add_url_rule('/dashboard/usuariosGestion/promote/<int:userID>', 'usuariosGestion-promote', promote)
@@ -61,7 +61,7 @@ app.add_url_rule('/dashboard/productosGestion', 'productosGestion', productosGes
 app.add_url_rule('/dashboard/promociones', 'promociones', promociones, methods=['GET', 'POST'])
 app.add_url_rule('/dashboard/promociones/update/<string:promoCode>', 'promociones-delete', updateCoupon, methods=['GET', 'POST'])
 
-app.register_error_handler(404, lambda e: flash('Página no encontrada', category='error') or redirect(url_for('index')))
+#app.register_error_handler(404, lambda e: flash('Página no encontrada', category='error') or redirect(url_for('index')))
 app.register_error_handler(500, lambda e: flash('Error interno del servidor', category='error') or redirect(url_for('index')))
 
 

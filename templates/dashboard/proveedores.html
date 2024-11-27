@@ -56,7 +56,7 @@
     <!-- modal creación de proveedor -->
     <div class="modal fade" id="modalProveedor" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <form action="dashboard/proveedores/createSupplier" class="modal-content" method="POST" enctype="multipart/form-data">
+            <form action="proveedores/createSupplier" class="modal-content" method="POST" enctype="multipart/form-data">
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalLabel">Crear Proveedor</h5>
@@ -258,7 +258,8 @@ let table = $('#tablaCompras').dataTable({
             searchable: false,
             orderable: false
         }
-    ]
+    ],
+    order: [[0, 'desc']]
 });
 
 formatRecentPurchases = function(data) {  

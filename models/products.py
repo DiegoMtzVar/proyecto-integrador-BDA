@@ -267,10 +267,9 @@ def addPurchase(supplierID):
         cur = mysql.connection.cursor()
         
         cur.callproc('crearCompra', (supplierID,))
-        purchaseID = cur.fetchone()
         
         mysql.connection.commit()
-        return purchaseID
+        return True
     except Exception as e:
         print(f"Error al ejecutar el procedimiento almacenado: {e}")
         return False
@@ -281,21 +280,10 @@ def getRecentPurchase(supplierID):
     try:
         cur = mysql.connection.cursor()
         cur.callproc('obtenerUltimaCompra', (supplierID,))
-        data = cur.fetchall()
-        return data
+        data = cur.fetchone()
+        return data["ID"]
     except:
         return []
-    finally:
-        if cur: cur.close()
-
-def addSupplier(name, email, phone, address):
-    try:
-        cur = mysql.connection.cursor()
-        cur.callproc('crearProveedor', (name, email, phone, address))
-        mysql.connection.commit()
-        return True
-    except:
-        return False
     finally:
         if cur: cur.close()
 
@@ -303,6 +291,18 @@ def addPurchaseProduct(purchaseID, productID, quantity):
     try:
         cur = mysql.connection.cursor()
         cur.callproc('agregarProductoCompra', (purchaseID, productID, quantity))
+        mysql.connection.commit()
+        return True
+    except Exception as e:
+        print(f"Error al ejecutar agregarProductoCompra: {e}")
+        return False
+    finally:
+        if cur: cur.close()
+
+def addSupplier(name, email, phone, address):
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('crearProveedor', (name, email, phone, address))
         mysql.connection.commit()
         return True
     except:
