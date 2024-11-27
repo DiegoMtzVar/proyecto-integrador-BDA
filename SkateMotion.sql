@@ -121,7 +121,28 @@ CREATE TABLE Resenas(
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
     FOREIGN KEY (idProducto) REFERENCES Productos(idProducto)
 );
+--Trigger para que se actualize el inventario antes de agregar algo a la tabla viene_de
+DELIMITER $$
+CREATE TRIGGER actualizarInventario
+BEFORE INSERT ON Viene_De
+FOR EACH ROW
+BEGIN
+    DECLARE cant int default 0;
+    SELECT inventarioProducto INTO cant FROM Productos WHERE idProducto = NEW.idProducto;
+    set cant = cant + NEW.cantidad;
+    UPDATE Productos set inventarioProducto = cant WHERE idProducto = NEW.idProducto;
+END $$
+DELIMITER ;
 
+--Trigger para que se ponga en 0 el producto cuando se añade
+DELIMITER $$
+CREATE TRIGGER insertInventario
+before INSERT ON Productos
+FOR EACH ROW
+BEGIN 
+    SET NEW.inventarioProducto = 0;
+END $$
+DELIMITER ;
 INSERT INTO Tipos_Usuario(idTipo, descripcion) VALUES
 (1, 'administrador'),
 (2, 'usuario');
@@ -200,42 +221,42 @@ INSERT INTO Proveedores(idProveedor, nombreProveedor, telefonoProveedor, correoP
 (10, 'Birdhouse Industries', '8198765431', 'bidhouse@gmail.com', 'Avenida Globe 505');
 
 INSERT INTO Ventas(idCompra, fecha, direccion, idStatus, idUsuario, idEnvio, fecha_entrega, total) VALUES 
-(1, '2023-07-15', 'Mexico, CDMX, Polanco, Venustiano Carranza #123, 03100', 4, 1, 1, '2023-07-20', 4400),
-(2, '2023-08-10', 'Mexico, CDMX, Polanco, Insurgentes Sur #456, 03100', 4, 1, 2, '2023-08-13', 1240),
-(3, '2023-09-05', 'Mexico, Jalisco, Guadalajara, Benito Juarez #456, 44100', 4, 2, 3, '2023-09-06', 2000),
-(4, '2023-07-25', 'Mexico, Nuevo Leon, Monterrey, Venustiano Carranza #789, 64000', 4, 3, 1, '2023-07-30', 2200),
-(5, '2023-08-20', 'Mexico, Yucatan, Merida, Benito Juarez #101, 97000', 1, 4, 2, '2023-08-23', 1580),
-(6, '2023-09-01', 'Mexico, Yucatan, Merida, Paseo de Montejo #202, 97000', 2, 4, 3, '2023-09-02', 5100),
-(7, '2023-07-30', 'Mexico, Yucatan, Merida, Calle 60 #303, 97000', 3, 4, 1, '2023-08-04', 3000),
-(8, '2023-08-15', 'Mexico, Puebla, Puebla, Venustiano Carranza #202, 72000', 4, 8, 2, '2023-08-18', 740),
-(9, '2023-09-10', 'Mexico, Veracruz, Veracruz, Benito Juarez #303, 91700', 4, 9, 3, '2023-09-11', 1400),
-(10, '2023-07-20', 'Mexico, Quintana Roo, Cancun, Venustiano Carranza #404, 77500', 4, 10, 1, '2023-07-25', 2200);
+(1, '2024-11-20', 'Mexico, CDMX, Polanco, Venustiano Carranza #123, 03100', 4, 1, 1, CURDATE() + INTERVAL 5 DAY, 44000),
+(2, '2024-10-10', 'Mexico, CDMX, Polanco, Insurgentes Sur #456, 03100', 4, 1, 2, CURDATE() + INTERVAL 3 DAY, 1240),
+(3, '2024-10-15', 'Mexico, Jalisco, Guadalajara, Benito Juarez #456, 44100', 4, 2, 3, CURDATE() + INTERVAL 1 DAY, 2000),
+(4, '2024-09-19', 'Mexico, Nuevo Leon, Monterrey, Venustiano Carranza #789, 64000', 4, 3, 1, CURDATE() + INTERVAL 5 DAY, 2200),
+(5, '2024-11-22', 'Mexico, Yucatan, Merida, Benito Juarez #101, 97000', 1, 4, 2, CURDATE() + INTERVAL 3 DAY, 1580),
+(6, '2024-11-26', 'Mexico, Yucatan, Merida, Paseo de Montejo #202, 97000', 2, 4, 3, CURDATE() + INTERVAL 1 DAY, 5100),
+(7, '2024-11-07', 'Mexico, Yucatan, Merida, Calle 60 #303, 97000', 3, 4, 1, CURDATE() + INTERVAL 5 DAY, 3000),
+(8, '2024-11-08', 'Mexico, Puebla, Puebla, Venustiano Carranza #202, 72000', 4, 8, 2, CURDATE() + INTERVAL 3 DAY, 740),
+(9, '2024-11-25', 'Mexico, Veracruz, Veracruz, Benito Juarez #303, 91700', 4, 9, 3, CURDATE() + INTERVAL 1 DAY, 1400),
+(10, '2024-11-20', 'Mexico, Quintana Roo, Cancun, Venustiano Carranza #404, 77500', 4, 10, 1, CURDATE() + INTERVAL 5 DAY, 2200);
 
 INSERT INTO Contiene(idProducto, idCompra, cantidad, precio) VALUES
-(1, 1, 2, 1200),
-(20, 1, 1, 2000),
-(13, 2, 2, 420),
-(5, 3, 1, 1500),
-(19, 4, 1, 2200),
-(11, 5, 2, 640),
-(21, 6, 2, 2000),
-(7, 6, 1, 600),
+(1, 1, 6, 1200),
+(20, 1, 10, 2000),
+(13, 2, 4, 420),
+(5, 3, 8, 1500),
+(19, 4, 6, 2200),
+(11, 5, 5, 640),
+(21, 6, 7, 2000),
+(7, 6, 4, 600),
 (3, 7, 3, 1000),
-(16, 8, 1, 440),
+(16, 8, 5, 440),
 (9, 9, 3, 300),
 (18, 10, 2, 1100);
 
 INSERT INTO Compras(idCompraProveedor, fecha, idProveedor) VALUES
-(1, CURDATE(), 1),
-(2, CURDATE(), 2),
-(3, CURDATE(), 3),
-(4, CURDATE(), 4),
-(5, CURDATE(), 5),
-(6, CURDATE(), 6),
-(7, CURDATE(), 7),
-(8, CURDATE(), 8),
-(9, CURDATE(), 9),
-(10, CURDATE(), 10);
+(1, '2024-11-20', 1),
+(2, '2024-10-10', 2),
+(3, '2024-10-15', 3),
+(4, '2024-09-19', 4),
+(5, '2024-11-22', 5),
+(6, '2024-11-26', 6),
+(7, '2024-11-07', 7),
+(8, '2024-11-08', 8),
+(9, '2024-11-25', 9),
+(10, '2024-11-20', 10);
 
 INSERT INTO Viene_De(idProducto, idCompraProveedor, precioProveedor, cantidad) VALUES
 (1, 1, 600, 3),
@@ -538,16 +559,16 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE gananciasTotales()
 BEGIN
-    WITH tablaTotal1 AS(
-        SELECT SUM(v.total) as total1
-        FROM Ventas v
-    ),
-    tablaTotal2 AS(
-        SELECT SUM(precioProveedor * cantidad) as total2
-        FROM Viene_De
-    )
-    SELECT total1 - total2 as total 
-    FROM tablaTotal1 JOIN tablaTotal2;
+    DECLARE total1 INT;
+    DECLARE total2 INT;
+    
+    SELECT SUM(v.total) INTO total1
+    FROM Ventas v;
+    
+    SELECT SUM(precioProveedor * cantidad) INTO total2
+    FROM Viene_De;
+    
+    SELECT total1 - total2 as total;
 END $$
 DELIMITER ;
 
@@ -558,13 +579,9 @@ CREATE PROCEDURE ingresosMes(
     IN anio INT
 )
 BEGIN
-    WITH tablaTotal AS(
-    SELECT comp.total as total
-    FROM Productos prod JOIN Contiene cont ON prod.idProducto=cont.idProducto
-    JOIN Ventas comp ON comp.idCompra = cont.idCompra
-    WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%')
-    group by comp.idCompra)
-    SELECT SUM(total) as ingresosMes FROM tablaTotal;
+    SELECT SUM(comp.total) as ingresosMes
+    FROM Ventas comp
+    WHERE comp.fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%');
 END $$
 DELIMITER ;
 
@@ -575,11 +592,13 @@ CREATE PROCEDURE egresosMes(
     IN anio INT
 )
 BEGIN
-    WITH tablaTotal AS(
+    CREATE TEMPORARY TABLE tablaTotal AS
     SELECT precioProveedor * cantidad as total
     FROM Viene_De v JOIN Compras p ON p.idCompraProveedor = v.idCompraProveedor
-    WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%'))
+    WHERE fecha LIKE CONCAT( CAST(anio AS CHAR) , '-', CAST(mes AS CHAR),'%');
+    
     SELECT SUM(total) as egresosMes FROM tablaTotal;
+    DROP TEMPORARY TABLE tablaTotal;
 END $$
 DELIMITER ;
 
@@ -955,26 +974,5 @@ BEGIN
 END $$
 DELIMITER ;
 
---Trigger para que se actualize el inventario antes de agregar algo a la tabla viene_de
-DELIMITER $$
-CREATE TRIGGER actualizarInventario
-BEFORE INSERT ON Viene_De
-FOR EACH ROW
-BEGIN
-    DECLARE cant int default 0;
-    SELECT inventarioProducto INTO cant FROM Productos WHERE idProducto = NEW.idProducto;
-    set cant = cant + NEW.cantidad;
-    UPDATE Productos set inventarioProducto = cant WHERE idProducto = NEW.idProducto;
-END $$
-DELIMITER ;
 
---Trigger para que se ponga en 0 el producto cuando se añade
-DELIMITER $$
-CREATE TRIGGER insertInventario
-before INSERT ON Productos
-FOR EACH ROW
-BEGIN 
-    SET NEW.inventarioProducto = 0;
-END $$
-DELIMITER ;
 

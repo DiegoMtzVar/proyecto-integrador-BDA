@@ -14,6 +14,7 @@ def secureRoute(route):
 # Controladores del dashboard
 @secureRoute
 def dashboard():
+    print(analytics.getMonthIn())
     return render_template('dashboard/dashboard.html',  
                            gTotales = analytics.getTotalEarning(), 
                            inmes = analytics.getMonthIn(), 

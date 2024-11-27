@@ -21,7 +21,10 @@ def getMonthIn():
         cur = mysql.connection.cursor()
         cur.callproc('ingresosMes', [mes, anio])
         data = cur.fetchone()
+        if data is None:
+            data = 0
         return data
+    
     except:
         return []
     finally:
