@@ -11,7 +11,9 @@ def comprasRecientes():
     if not session.get("user"):
         flash('Debes iniciar sesión para ver tus compras', category='error')
         return redirect(url_for('login'))
-    return render_template('shop/comprasRecientes.html', compras=getUserPurchases(session['user']['ID']))
+    return render_template('shop/comprasRecientes.html', 
+                           compras=getUserPurchases(session['user']['ID']),
+                           host_url=request.host_url)
 
 def addProductToCart(product, quantity):
     cart = session.get('cart', {})

@@ -28,16 +28,21 @@
 	{% for compra in compras %}
     <div class="row d-flex">
         <div class="col-md-9 h-100 p-0">
-            <div class="card flex-row flex-wrap" style="margin:5px;">
-                <div class="card-header border-0">
-					<img src="{{ url_for('static', filename='img/products/' + compra.image) }}" style="max-height: 200px; max-width: 200px; object-fit: cover;" alt="">
+            <div class="card flex-row flex-wrap justify-content-between" style="margin:5px;">
+				<div class="d-flex flex-row flex-wrap" style="margin:5px;">
+					<div class="card-header border-0">
+						<img src="{{ url_for('static', filename='img/products/' + compra.image) }}" style="max-height: 200px; max-width: 200px; object-fit: cover;" alt="">
+					</div>
+					<div class="card-block px-2">
+						<h4 class="card-title" style="margin:5px;">{{ compra.name }}</h4>
+						<p class="card-text">Categoria: {{ compra.category }}</p>
+						<p class="card-text" style="font-size: 20px;">${{ compra.price }}</p>
+						<p class="card-text">Fecha de Compra: {{ compra.date }}</p>
+					</div>
 				</div>
-				<div class="card-block px-2">
-					<h4 class="card-title" style="margin:5px;">{{ compra.name }}</h4>
-					<p class="card-text">Categoria: {{ compra.category }}</p>
-					<p class="card-text" style="font-size: 20px;">${{ compra.price }}</p>
-					<p class="card-text">Fecha de Compra: {{ compra.date }}</p>
-
+				<div class="mt-auto">
+					<a href="https://api.whatsapp.com/send?text=Acabo de comprar {{ compra.name }} en 🛹Skate Motion 🛹. Velo aquí {{host_url + 'single-product/' + compra.ID|string }}" 
+					class="btn btn-primary p-3 m-3 text-white" target="_blank">Compartir</a>
 				</div>
             </div>
         </div>
