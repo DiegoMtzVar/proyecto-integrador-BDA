@@ -301,11 +301,13 @@ def addPurchaseProduct(purchaseID, productID, quantity):
 
 def addSupplier(name, email, phone, address):
     try:
+        print(name, email, phone, address)
         cur = mysql.connection.cursor()
-        cur.callproc('crearProveedor', (name, email, phone, address))
+        cur.callproc('crearProveedor', (name, phone, email, address))
         mysql.connection.commit()
         return True
-    except:
+    except Exception as e:
+        print(f"Error al ejecutar el procedimiento almacenado: {e}")
         return False
     finally:
         if cur: cur.close()
